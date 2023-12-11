@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/07 16:16:34 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/11 19:54:56 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 
 /* standard headers */
+# include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>	// getcwd chdir / isatty ttyname ttyslot 
@@ -28,7 +29,6 @@
 # include <termio.h>	// tcsetattr tcgetattr
 # include <readline/readline.h>
 # include <readline/history.h>
-
 # include "struct.h"
 
 #endif
