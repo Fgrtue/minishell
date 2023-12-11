@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/11 12:35:21 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/11 12:44:13 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/11 17:16:06 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,6 @@ ALGORITHM:
 		updates the content, length and the stat of the first one, str_joining
 		with the second one if it is IN_QUOTE, and deletes the following node
 		(Clearning everything)
+*/
 
+#include <stdio.h>
