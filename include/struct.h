@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 12:41:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/11 11:49:14 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/11 16:22:16 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ enum e_token
 	PIPE_LINE = '|',
 	REDIR_IN = '<',
 	REDIR_OUT = '>',
-	HERE_DOC,
-	DREDIR_OUT,
+	HERE_DOC, // <<
+	DREDIR_OUT, // >>
 };
 
 enum e_state

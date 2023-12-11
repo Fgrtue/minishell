@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/11 14:45:27 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/11 16:31:14 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
  * check: the manual for $ and evironmental variables 
  * TO DO: the big struct
  * TO DO: create the copy of the env
+ * TO DO: handle the case when 
  * 
 */
 int	main(int argc, char **argv, char **env)

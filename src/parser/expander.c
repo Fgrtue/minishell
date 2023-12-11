@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 16:39:12 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/08 16:39:15 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/11 16:48:13 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,19 @@ void EXPAND (node, env)
 	env is a 2D array
 	
     go iteratively through env (note that you shouldn't move the pointer, in env), 
-	and find the line which starts with the name of the variable plus = (use strjoin 
-	to create such line and ft_strnstr(const char *big, const char *little, size_t 
-	len), protect strjoin and ft_strnstr)
+	and find the line which starts with the name of the variable plus = (UPD: no,
+	it seems that the first variant is still better cause we have to be able to
+	update environment UPD: use getenv instead of :: use strjoin to create such 
+	line and ft_strnstr(const char *big, const char *little, size_t 
+	len), protect strjoin and ft_strnstr). Split the string with spaces, so that
+	a command argument like ls -la becomes a proper command.
+	
 
 	once you found this line, copy the content of it to some buffer and then
 	change the content of the node for this buffer (use *ft_strdup(const char *s)
 	and protect it). 
 	Also free the previous content of the node
 	
-
+*** DO NOT EXPAND ENV VAR (the env after '<<')
 
 */
