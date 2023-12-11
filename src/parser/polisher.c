@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/11 12:35:21 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/11 17:16:06 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/11 18:20:44 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,3 @@ ALGORITHM:
 		with the second one if it is IN_QUOTE, and deletes the following node
 		(Clearning everything)
 */
-
-#include <stdio.h>
-#include <unistd.h>
