@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 12:41:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/08 16:56:35 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/11 11:49:14 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_cmd
 {
 	char			**args;
 	// int				(*builtin)(t_tools *, struct s_cmd *);
+	int				num_redir;
 	t_lexer			*redirections;
 	struct s_cmd	*prev;
 	struct s_cmd	*next;
