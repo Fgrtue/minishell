@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/11 16:31:14 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/11 18:20:37 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,5 @@ int	main(int argc, char **argv, char **env)
 		// parser = ft_parser(lexer, env);
 		// executor(parser, env, exit_status);
 		// cleaner(lexer, parser);
-		
 	}
 }
