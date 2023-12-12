@@ -6,13 +6,12 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/11 19:54:56 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/12 15:17:45 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
 
 /* standard headers */
 # include <unistd.h>
@@ -30,5 +29,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "struct.h"
+# include "lexer.h"
+# include "libft.h"
 
 #endif
