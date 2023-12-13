@@ -51,6 +51,5 @@ int	main(int argc, char **argv, char **env)
 		// parser = ft_parser(lexer, env);
 		// executor(parser, env, exit_status);
 		// cleaner(lexer, parser);
-		
 	}
 }
