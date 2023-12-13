@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 12:41:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/11 16:22:16 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/11 19:31:04 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ enum e_token
 	WORD = -1,
 	WHITE_SPACE = ' ',
 //	NEW_LINE = '\n', //	?
-	QOUTE = '\'',
+	QUOTE = '\'',
 	DOUBLE_QUOTE = '\"',
 //	ESCAPE = '\\', // ?
 	ENV = '$',
