@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 12:27:46 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/12 19:55:00 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/13 17:54:13 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ int word_len(char* str)
 	i = 0;
 	if (!str)
 		return (0);
-	while (*str && (*str != WHITE_SPACE))
+	while (*str && (*str != ' ' && *str != '\'' && *str != '\"' \
+					&& *str != '>' && *str != '<' && *str != '|'))
 	{
 		str++;
 		i++;
