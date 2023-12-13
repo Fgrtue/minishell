@@ -6,11 +6,13 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 11:09:00 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/12 20:07:16 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/13 11:45:24 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+
 
 void lexer_setstate(t_lexer* lexer)
 {
