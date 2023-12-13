@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/07 16:16:34 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/13 10:40:08 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,16 @@
 # include <readline/history.h>
 
 # include "struct.h"
+# include "../libft/libft.h"
+
+
+t_lexer	*ft_lexnew(char *content, int token);
+void	ft_lexaddfront(t_lexer** lexer, t_lexer* new);
+void	ft_lexaddback(t_lexer **lexer, t_lexer *new);
+t_lexer	*ft_lexlast(t_lexer* lexer);
+void	ft_lexdel(t_lexer* node);
+void	ft_lexclean(t_lexer** lexer);
+void	ft_lexinsert(t_lexer **lst, t_lexer* prev, t_lexer* next, t_lexer* node);
+t_lexer	*ft_lexretract(t_lexer **lst, t_lexer *node);
 
 #endif

@@ -6,9 +6,50 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/11 12:35:21 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/11 18:20:44 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/12 17:47:55 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "../../include/minishell.h"
+
+t_lexer	*ft_lexjoin(t_lexer **lst, t_lexer *lexer)
+{
+	t_lexer	*node;
+	char	*str;
+
+	str = NULL;
+	while (lexer->state != GENERAL)
+	{
+		str = ft_strjoin_free(str, lexer->content);
+		lexer = lexer->next;
+		ft_lexdel(ft_lexretract(lst, lexer->prev));
+	}
+	node = ft_lexnew(str, WORD);
+	ft_lexinsert(lst, lexer->prev, lexer, node);
+	return (node);
+}
+
+void	polish_lex(t_lexer **lst)
+{
+	t_lexer	*lex;
+	t_lexer	*tmp;
+
+	lex = *lst;
+	while (lex)
+	{
+		if (lex->state != GENERAL)
+			lex = ft_lexjoin(lst, lex);
+		if (lex->token == WHITE_SPACE || lex->token == QOUTE || \
+			lex->token == DOUBLE_QUOTE)
+		{
+			tmp = lex;
+			lex = lex->next;
+			ft_lexretract(lst, tmp);
+		}
+		else
+			lex = lex->next;
+	}
+}
 
 /**
  * 

@@ -6,9 +6,86 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/11 14:36:03 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/13 11:30:47 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "../../include/minishell.h"
+
+t_cmd	*ft_cmdnew(void)
+{
+	t_cmd	*cmd;
+
+	cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!cmd)
+		perror("malloc");
+	cmd->num_redir = 0;
+	return (cmd);
+}
+
+t_lexer	*fill_cmd_args(t_lexer *lexer, t_cmd *cmd, int size)
+{
+	int	i;
+	
+	cmd->args = ft_calloc(sizeof(char *), size + 1);
+	if (cmd->args == NULL)
+		perror("malloc"); // todo: error()
+	i = 0;
+	while (lexer && lexer->token != PIPE_LINE)
+	{
+		cmd->args[i] = ft_strdup(lexer->content);
+		if (!cmd->args[i])
+			perror("malloc");
+		lexer = lexer->next;
+	}
+	cmd->args[size] = NULL;
+	return (lexer);
+}
+
+t_lexer	*fill_cmd(t_lexer **lst, t_lexer *lexer, t_cmd *cmd)
+{
+	int		cmd_len;
+	
+	cmd_len = 0;
+	while (lexer && lexer->token != PIPE_LINE)
+	{
+		if (lexer->token == REDIR_IN || lexer->token == REDIR_OUT \
+			|| lexer->token == HERE_DOC || lexer->token == DREDIR_OUT)
+		{
+			lexer = lexer->next->next;
+			ft_lexaddback(&(cmd->redir), ft_lexretract(lst, lexer->prev->prev));
+			ft_lexaddback(&(cmd->redir), ft_lexretract(lst, lexer->prev));
+			cmd->redir++;
+		}
+		else
+		{
+			lexer = lexer->next;
+			cmd_len++;
+		}
+	}
+	while (!lexer->prev && lexer->prev->token != PIPE_LINE)
+		lexer = lexer->prev;
+	lexer = fill_cmd_args(lexer, cmd, cmd_len);
+	return (lexer);
+}
+
+t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
+{
+	t_cmd 	*cmd;
+	t_cmd	*cur;
+	
+	cmd = NULL;
+	while (lexer)
+	{
+		if (lexer->token == PIPE_LINE)
+			lexer = lexer->next;
+		cur = ft_cmdnew();
+		lexer = fill_cmd(lst, lexer, cur);
+		ft_cmdaddback(&cmd, ft_cmdnew());
+	}
+	// todo: free(lexer)
+	return (cmd);
+}
 
 /**
  * There will be two functions:
@@ -29,7 +106,7 @@
  * 
  * ALGORITHM:
  * 
- * We need a pointer that will be used for tracking the beggning of new iteration.
+ * We need a pointer that will be used for lexering the beggning of new iteration.
  * It will be updated when we finish with the part unting the closest pipe or NULL.
  * First we allocate the memory for the current t_cmd. Then we use two functions 
  * 

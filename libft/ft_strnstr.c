@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/07 11:49:17 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/08 15:46:46 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/10/11 16:37:33 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 locates the *first* occurrence of the nul-terminated *little* in *big*,
 but not more than len characters are searched
 **characters that appear after '\0' are not searched
-
-GIVE BACK THE POINTER +1 to skip the =
-
 */
 
 char	*ft_strnstr(const char *big, const char *little, size_t len)
