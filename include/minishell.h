@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/13 12:35:11 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/13 16:37:35 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,17 @@
 # include "lexer.h"
 # include "../libft/libft.h"
 
+void	expand_env(t_lexer **lst, char **env, int exit_c);
+void	polish_lex(t_lexer **lst);
+t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer);
 
-t_lexer	*ft_lexnew(char *content, int token);
-void	ft_lexaddfront(t_lexer** lexer, t_lexer* new);
-void	ft_lexaddback(t_lexer **lexer, t_lexer *new);
-t_lexer	*ft_lexlast(t_lexer* lexer);
-void	ft_lexdel(t_lexer* node);
-void	ft_lexclean(t_lexer** lexer);
-void	ft_lexinsert(t_lexer **lst, t_lexer* prev, t_lexer* next, t_lexer* node);
-t_lexer	*ft_lexretract(t_lexer **lst, t_lexer *node);
+t_cmd*	ft_cmdnew(void);
+void	ft_cmdaddfront(t_cmd** cmd, t_cmd* new);
+void	ft_cmdaddback(t_cmd** cmd, t_cmd* new);
+t_cmd*	ft_cmdlast(t_cmd* cmd);
+void	ft_cmddel(t_cmd* node);
+void    ft_cmdclean(t_cmd** cmd);
 
-
+void print_lex(t_lexer* lexer);
 
 #endif

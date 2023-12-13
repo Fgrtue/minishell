@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/11 19:19:28 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/13 14:34:03 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
  * TO DO: handle the case when 
  * TO DO: if you have more than 1 redirections, write only in the last one
  * TO DO: handle the signals
+ * TO CHECK: When you provide an env var that doesn't exist, what happens?
+ * When it is empty string? 
 */
 int	main(int argc, char **argv, char **env)
 {

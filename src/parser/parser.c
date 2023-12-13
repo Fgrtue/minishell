@@ -6,22 +6,11 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/13 11:30:47 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/13 17:07:02 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-t_cmd	*ft_cmdnew(void)
-{
-	t_cmd	*cmd;
-
-	cmd = (t_cmd *)malloc(sizeof(t_cmd));
-	if (!cmd)
-		perror("malloc");
-	cmd->num_redir = 0;
-	return (cmd);
-}
 
 t_lexer	*fill_cmd_args(t_lexer *lexer, t_cmd *cmd, int size)
 {
@@ -63,7 +52,7 @@ t_lexer	*fill_cmd(t_lexer **lst, t_lexer *lexer, t_cmd *cmd)
 			cmd_len++;
 		}
 	}
-	while (!lexer->prev && lexer->prev->token != PIPE_LINE)
+	while (!(lexer->prev) && lexer->prev->token != PIPE_LINE)
 		lexer = lexer->prev;
 	lexer = fill_cmd_args(lexer, cmd, cmd_len);
 	return (lexer);
@@ -83,7 +72,7 @@ t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
 		lexer = fill_cmd(lst, lexer, cur);
 		ft_cmdaddback(&cmd, ft_cmdnew());
 	}
-	// todo: free(lexer)
+	ft_lexclean(lst);
 	return (cmd);
 }
 

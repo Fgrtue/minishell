@@ -6,7 +6,7 @@
 /*   By: jessie <jessie@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/18 16:00:57 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/12 11:46:33 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/13 13:52:59 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ char	*read_from_file(int fd, char *line)
 {
 	ssize_t		bytesread;
 	char		*buffer;
-	char		*tmp;
 
 	buffer = (char *)malloc(BUFFER_SIZE + 1);
 	if (!buffer)

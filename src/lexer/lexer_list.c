@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 12:50:39 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/12 18:33:51 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/13 16:58:43 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,23 +48,36 @@ void	ft_lexaddback(t_lexer **lexer, t_lexer *new)
 
     last = NULL;
 	if ((*lexer) == NULL)
-		ft_lexaddfront(lexer, new);
-	else
     {
+		ft_lexaddfront(lexer, new);
+    }
+    else
+    {
+        printf("We get here 3\n");
         last = ft_lexlast(*lexer);
 		last->next = new;
         new->prev = last; 
         new->next = NULL;
+        printf("We get here 4\n");
     }
 }
 
 t_lexer*	ft_lexlast(t_lexer* lexer)
 {
+    printf("We get here 5\n");
 	if (lexer == NULL)
+    {
 		return (NULL);
-	while (lexer->next != NULL)
-		lexer = lexer->next;
-	return (lexer);
+    }
+    print_lex(lexer);
+    printf("We get here 6\n");
+    while (lexer->next != NULL)
+    {
+    	printf("We get here 7\n");
+        lexer = lexer->next;
+    }
+        printf("We get here 8\n");
+    return (lexer);
 }
 
 void	ft_lexdel(t_lexer* node)

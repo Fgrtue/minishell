@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 11:09:00 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/13 11:45:24 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/13 16:44:20 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void lexer_setstate(t_lexer* lexer)
 		if (lexer->token == DOUBLE_QUOTE)
 		{
 			lexer = lexer->next;
-			while (lexer->token != DOUBLE_QUOTE)
+			while (lexer && lexer->token != DOUBLE_QUOTE)
 			{
 				lexer->state = IN_DQUOTE;
 				lexer = lexer->next;
@@ -30,13 +30,12 @@ void lexer_setstate(t_lexer* lexer)
 		else if (lexer->token == QUOTE)
 		{
 			lexer = lexer->next;
-			while (lexer->token != QUOTE)
+			while (lexer && lexer->token != QUOTE)
 			{
 				lexer->state = IN_QUOTE;
 				lexer = lexer->next;
 			}
 		}
-		lexer->state = GENERAL;
 		lexer = lexer->next;
 	}
 }
@@ -65,7 +64,7 @@ t_lexer*    lexer_tokenizer(t_lexer** lexer, char* str)
 }
 
 
-t_lexer* lexer(char* str)
+t_lexer* ft_lexer(char* str)
 {
 	t_lexer*	lexer;
 	
@@ -74,18 +73,18 @@ t_lexer* lexer(char* str)
 		return(NULL);
 	lexer = lexer_tokenizer(&lexer, str);
 	lexer_setstate(lexer);
-	print_list(lexer);
+	// print_list(lexer);
 	return (lexer);
 }
 
-/*
 
-Test the tokenizer
-Test set the state
 
-void print_list(t_lexer* lexer);
+// Test the tokenizer
+// Test set the state
 
-void print_list(t_lexer* lexer)
+void print_lex(t_lexer* lexer);
+
+void print_lex(t_lexer* lexer)
 {
     printf("************************************\n");
     while(lexer)
@@ -102,15 +101,55 @@ void print_list(t_lexer* lexer)
         lexer = lexer->next;
     }
 }
-
-int main(void)
+void print_args(char** args)
 {
-    // char* line = "The >> <<  $is < \" command \" \' NULL \' ^ & () ";
-
-	char* line = "command1 \" command2 \" \' command3 \'";
-
-    lexer(line);
-	return 0;
+    int i = 0;
+    
+    printf("The content:\n");
+    while(args[i])
+    {
+        printf("    %d. %s\n", i, args[i]);
+        i++;
+    }
 }
 
-*/
+void print_cmd(t_cmd* cmd)
+{
+    printf("************************************\n");
+    while(cmd)
+    {
+        printf("NAME: %p\n", cmd);
+        printf("************************************\n");
+        print_args(cmd->args);
+        printf("The num of redir: %d\n", cmd->num_redir);
+        printf("Redir: %p\n", cmd->redir);
+		print_lex(cmd->redir);
+        printf("prev: %p\n", cmd->prev);
+        printf("next: %p\n", cmd->next);
+        printf("************************************\n");
+        cmd = cmd->next;
+    }
+}
+
+int main(int argc, char **argv, char **env)
+{
+    char* line = "> file  command \"$is$is|\"  $USER$?123$LS > file2 | < file3 echo \" fjkd $LS$?? \"";
+	t_lexer	*lst;
+	t_cmd	*cmds;
+	// char* line = "command1 \" command2 \" \' command3 \'";
+
+    lst = ft_lexer(line);
+	// print_list(lst);
+	// printf("#######################################\n");
+	// printf("EXPANSION\n");
+	// printf("#######################################\n");
+	expand_env(&lst, env, 0);
+	// print_list(lst);
+	polish_lex(&lst);
+	// print_lex(lst);
+	cmds = get_cmds(&lst, lst);
+	// print_cmd(cmds);
+	return (0);
+}
+
+

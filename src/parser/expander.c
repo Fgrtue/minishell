@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 16:39:12 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/12 17:46:24 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/13 14:41:00 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,17 @@ char	*ft_expand_env(char *vars, char **env, int exit_c)
 	while (tabs[++i])
 	{
 		if (tabs[i][0] == '?')
-			contents = ft_strjoin_free(ft_itoa(exit_c), tabs[i] + 1);
+		{
+			tmp = ft_itoa(exit_c);
+			contents = ft_strjoin_free(contents, tmp);
+			contents = ft_strjoin_free(contents, tabs[i] + 1);
+		}
 		else
 		{
 			tmp = find_variable(tabs[i], env);
 			contents = ft_strjoin_free(contents, tmp);
-			free(tmp);
 		}
+		free(tmp);
 	}
 	free_arr(tabs);
 	return (contents);
@@ -120,8 +124,8 @@ void	expand_env(t_lexer **lst, char **env, int exit_c)
 				lexer->len = ft_strlen(tmp);
 			}
 		}
-		if (lexer->token == ENV)
-			lexer->token = WORD;
+		// if (lexer->token == ENV)
+		// 	lexer->token = WORD;
 		lexer = lexer->next;
 	}
 }

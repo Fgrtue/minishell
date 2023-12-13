@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/11 12:35:21 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/12 17:47:55 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/13 14:39:53 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,12 @@ void	polish_lex(t_lexer **lst)
 	{
 		if (lex->state != GENERAL)
 			lex = ft_lexjoin(lst, lex);
-		if (lex->token == WHITE_SPACE || lex->token == QOUTE || \
-			lex->token == DOUBLE_QUOTE)
+		if (lex->token == WHITE_SPACE || lex->token == QUOTE || \
+			lex->token == DOUBLE_QUOTE || (lex->token == ENV && lex->len == 0))
 		{
 			tmp = lex;
 			lex = lex->next;
-			ft_lexretract(lst, tmp);
+			ft_lexdel(ft_lexretract(lst, tmp));
 		}
 		else
 			lex = lex->next;
