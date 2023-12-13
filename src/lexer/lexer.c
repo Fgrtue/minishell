@@ -6,69 +6,111 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 11:09:00 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/08 15:10:10 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/13 11:45:24 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-// CHECK: WHEATHER WE NEED BACKSLASH IN OUR TOKENS OF D_QUOTE OR QUOTE
-// CHECK: DO WE NEED \n AS TOKEN and \ ?
-
-// ALGO:
-
-// INPUT: String;
-// OUTPUT: LL with lexical parts
-// Go character by character through the string
-// if you find:
-// 		- WHITE SPACE
-//		- QUOTE
-//		- DQUOTE
-//		- PIPE
-//	CREATE A NODE WITH A TOKEN OF THE CORRESPONDING TYPE
-// if you find
-//		- ENV
-//	TAKE EVERYTHING AFTER UNTIL THE WHITE SPACE OR $
-//	AND CREATE A NODE FOR THIS THING WITH TYPE ENV
-//	
-//	If you find
-//	- REDIR_IN
-//	CHECK WHEATHER THE NEXT CHAR IS ALSO REDIR_IN
-//	If it is, then take the last two characters and
-//	create a node for them with token of type HERE_DOC
-//	If it is not, then create a node for it with type
-//	REDIR_IN;
-//
-//	If you find
-//	- REDIR_OUT
-//	CHECK WHEATHER THE NEXT CHAR IS ALSO REDIR_OUT
-//	If it is, then take the last two characters and
-//	create a node for them with token of type DREDIR_OUT
-//	If it is not, then create a node for it with type
-//	REDIR_OUT;
-//
-//	If it is nothing of that, then
-//	THIS IS A WORD
-//	Thus, create a node for everything starting from the first
-//	letter to the first space that you find and assign token WORD
-//	to it.
-
-//	THEN ADD THE NODE TO THE LL;
-
-//	Now the part for setting the state
-//	WE WILL USE THE STATE TO TRACK THE STATE 
-//	ITERATEVELY GO THROUGH LINKED LIST 
-//	AND ASSIGN THE PROPER STATE TO IT DEPENDING WHEATHER IT IS IN THE QUOTE OR NOT
+#include "../../include/minishell.h"
 
 
-// TO DO:
-/**
- 	1. Functions for linked list:
-		
-		1) Create a node for linked list;
-		2) Add back to LL;
-		3) Clear LL;
+
+void lexer_setstate(t_lexer* lexer)
+{
+	while (lexer)
+	{
+		if (lexer->token == DOUBLE_QUOTE)
+		{
+			lexer = lexer->next;
+			while (lexer->token != DOUBLE_QUOTE)
+			{
+				lexer->state = IN_DQUOTE;
+				lexer = lexer->next;
+			}
+		}
+		else if (lexer->token == QUOTE)
+		{
+			lexer = lexer->next;
+			while (lexer->token != QUOTE)
+			{
+				lexer->state = IN_QUOTE;
+				lexer = lexer->next;
+			}
+		}
+		lexer->state = GENERAL;
+		lexer = lexer->next;
+	}
+}
+
+t_lexer*    lexer_tokenizer(t_lexer** lexer, char* str)
+{
+    while (*str)
+	{
+		if (*str == WHITE_SPACE || *str == QUOTE
+		|| *str == DOUBLE_QUOTE || *str == PIPE_LINE)
+			str = handle_sntx(str, lexer, *str);
+		else if (*str == REDIR_OUT && *(str + 1) == REDIR_OUT)
+			str = handle_dredir(str, lexer, DREDIR_OUT);
+        else if (*str == REDIR_IN && *(str + 1) == REDIR_IN)
+            str = handle_dredir(str, lexer, HERE_DOC);
+		else if (*str == REDIR_OUT)
+			str = handle_redir(str, lexer, REDIR_OUT);
+		else if (*str == REDIR_IN)
+			str = handle_redir(str, lexer, REDIR_IN);
+		else if (*str == ENV)
+			str = handle_word(str, lexer, ENV);
+		else
+			str = handle_word(str, lexer, WORD);
+	}
+    return (*lexer);
+}
+
+
+t_lexer* lexer(char* str)
+{
+	t_lexer*	lexer;
 	
-	2. A FUNCTION FOR CREATION OF OUR LL WITH THE CONTENT, TOKENS AND LENGTH; 
-	3. A FUNCTION FOR SETTING THE STATE;
-	
+	lexer = NULL;
+	if (!str || !*str)
+		return(NULL);
+	lexer = lexer_tokenizer(&lexer, str);
+	lexer_setstate(lexer);
+	print_list(lexer);
+	return (lexer);
+}
+
+/*
+
+Test the tokenizer
+Test set the state
+
+void print_list(t_lexer* lexer);
+
+void print_list(t_lexer* lexer)
+{
+    printf("************************************\n");
+    while(lexer)
+    {
+        printf("NAME: %p\n", lexer);
+        printf("************************************\n");
+        printf("content: %s\n", lexer->content);
+        printf("len: %i\n", lexer->len);
+        printf("token: %i\n", lexer->token);
+        printf("state: %i\n", lexer->state);
+        printf("prev: %p\n", lexer->prev);
+        printf("next: %p\n", lexer->next);
+        printf("************************************\n");
+        lexer = lexer->next;
+    }
+}
+
+int main(void)
+{
+    // char* line = "The >> <<  $is < \" command \" \' NULL \' ^ & () ";
+
+	char* line = "command1 \" command2 \" \' command3 \'";
+
+    lexer(line);
+	return 0;
+}
+
 */
-
