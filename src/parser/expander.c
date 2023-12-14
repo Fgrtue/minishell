@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 16:39:12 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/13 14:41:00 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/14 19:17:59 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,21 @@ char	*find_variable(char *var, char **env)
 {
 	int		i;
 	char	*content;
+	char	*var_new;
 
 	i = 0;
-	var = ft_strjoin(var, "=");
-	while (env[i] && ft_strncmp(env[i], var, ft_strlen(var)) != 0)
+	var_new = ft_strjoin(var, "=");
+	while (env[i] && ft_strncmp(env[i], var_new, ft_strlen(var_new)) != 0)
 		i++;
 	if (env[i])
-		content = ft_strdup(env[i] + ft_strlen(var));
+		content = ft_strdup(env[i] + ft_strlen(var_new));
 	else
 		content = ft_calloc(sizeof(char), 1);
 	if (!content)
 		perror("malloc"); // todo: write another error() to exit(0)
 	if (!env[i])
 		content[0] = '\0';
+	free(var_new);
 	return (content);
 }
 

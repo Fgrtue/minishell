@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/11 12:35:21 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/13 14:39:53 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/14 19:09:00 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void	polish_lex(t_lexer **lst)
 		else
 			lex = lex->next;
 	}
+	if ((*lst)->token == PIPE_LINE || ft_lexlast(*lst)->token == PIPE_LINE)
+		exit(1); // TO DO: error("syntax error");
 }
 
 /**

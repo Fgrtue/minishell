@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/13 17:07:02 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/14 19:00:10 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,38 +26,54 @@ t_lexer	*fill_cmd_args(t_lexer *lexer, t_cmd *cmd, int size)
 		if (!cmd->args[i])
 			perror("malloc");
 		lexer = lexer->next;
+		i++;
 	}
 	cmd->args[size] = NULL;
 	return (lexer);
 }
 
-t_lexer	*fill_cmd(t_lexer **lst, t_lexer *lexer, t_cmd *cmd)
+void	fill_cmd(t_lexer **lst, t_lexer *lexer, t_cmd *cmd)
 {
-	int		cmd_len;
-	
-	cmd_len = 0;
 	while (lexer && lexer->token != PIPE_LINE)
 	{
 		if (lexer->token == REDIR_IN || lexer->token == REDIR_OUT \
 			|| lexer->token == HERE_DOC || lexer->token == DREDIR_OUT)
 		{
-			lexer = lexer->next->next;
-			ft_lexaddback(&(cmd->redir), ft_lexretract(lst, lexer->prev->prev));
-			ft_lexaddback(&(cmd->redir), ft_lexretract(lst, lexer->prev));
-			cmd->redir++;
+			if (lexer->next->token != WORD && lexer->next->token != ENV)
+				exit(EXIT_FAILURE); // TO DO: error("syntax error near unexpected token");
+			if (lexer->prev != NULL)
+			{
+				lexer = lexer->prev;
+				ft_lexaddback(&(cmd->redir), ft_lexretract(lst, lexer->next));
+				ft_lexaddback(&(cmd->redir), ft_lexretract(lst, lexer->next));
+				lexer = lexer->next;
+			}
+			else
+			{
+				ft_lexaddback(&(cmd->redir), ft_lexretract(lst, *lst));
+				ft_lexaddback(&(cmd->redir), ft_lexretract(lst, *lst));
+				lexer = *lst;
+			}
+			cmd->num_redir++;
 		}
 		else
-		{
 			lexer = lexer->next;
-			cmd_len++;
-		}
 	}
-	while (!(lexer->prev) && lexer->prev->token != PIPE_LINE)
-		lexer = lexer->prev;
-	lexer = fill_cmd_args(lexer, cmd, cmd_len);
-	return (lexer);
 }
 
+int	args_size(t_lexer *lexer)
+{
+	int	size;
+
+	size = 0;
+	while (lexer && lexer->token != PIPE_LINE)
+	{
+		size++;
+		lexer = lexer->next;
+	}
+	return (size);
+}
+	
 t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
 {
 	t_cmd 	*cmd;
@@ -66,13 +82,20 @@ t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
 	cmd = NULL;
 	while (lexer)
 	{
-		if (lexer->token == PIPE_LINE)
-			lexer = lexer->next;
 		cur = ft_cmdnew();
-		lexer = fill_cmd(lst, lexer, cur);
-		ft_cmdaddback(&cmd, ft_cmdnew());
+		if (lexer->token == PIPE_LINE)
+		{
+			fill_cmd(lst, lexer->next, cur);
+			lexer = lexer->next;
+		}
+		else
+		{
+			fill_cmd(lst, lexer, cur);
+			lexer = *lst;
+		}
+		lexer = fill_cmd_args(lexer, cur, args_size(lexer));
+		ft_cmdaddback(&cmd, cur);
 	}
-	ft_lexclean(lst);
 	return (cmd);
 }
 

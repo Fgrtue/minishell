@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/13 16:37:35 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/14 16:18:06 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,6 @@ void	ft_cmddel(t_cmd* node);
 void    ft_cmdclean(t_cmd** cmd);
 
 void print_lex(t_lexer* lexer);
+void print_cmd(t_cmd* cmd);
 
 #endif

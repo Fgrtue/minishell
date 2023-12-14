@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 10:28:30 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/13 15:41:33 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/14 18:54:02 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,15 +69,8 @@ t_cmd*	ft_cmdlast(t_cmd* cmd)
 
 void	ft_cmddel(t_cmd* node)
 {
-    int i;
-
-    i = -1;
-    if (node->args)
-    {
-        while((node->args)[++i])
-            free((node->args)[i]);
-    }
-    free(node->args);   
+    ft_lexclean(&(node->redir));
+    free_arr(node->args);   
 	free(node);
 }
 

@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 12:48:29 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/13 13:47:54 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/14 20:02:25 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include "../include/minishell.h"
 
+t_lexer* ft_lexer(char* str);
 int word_len(char* str);
 t_lexer*    lexer_tokenizer(t_lexer** lexer, char* str);
 char* handle_sntx(char* str, t_lexer** lexer, int token);

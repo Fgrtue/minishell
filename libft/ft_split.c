@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/09 11:05:17 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/11/23 14:01:57 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/14 18:54:51 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ char	**free_arr(char	**str_arr)
 	int	i;
 
 	i = 0;
+	if (!str_arr)
+		return (NULL);
 	while (str_arr[i] != NULL)
 	{
 		free(str_arr[i]);

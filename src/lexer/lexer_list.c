@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 12:50:39 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/13 16:58:43 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/14 16:58:59 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,35 +48,22 @@ void	ft_lexaddback(t_lexer **lexer, t_lexer *new)
 
     last = NULL;
 	if ((*lexer) == NULL)
-    {
 		ft_lexaddfront(lexer, new);
-    }
     else
     {
-        printf("We get here 3\n");
         last = ft_lexlast(*lexer);
 		last->next = new;
         new->prev = last; 
         new->next = NULL;
-        printf("We get here 4\n");
     }
 }
 
 t_lexer*	ft_lexlast(t_lexer* lexer)
 {
-    printf("We get here 5\n");
 	if (lexer == NULL)
-    {
 		return (NULL);
-    }
-    print_lex(lexer);
-    printf("We get here 6\n");
     while (lexer->next != NULL)
-    {
-    	printf("We get here 7\n");
         lexer = lexer->next;
-    }
-        printf("We get here 8\n");
     return (lexer);
 }
 
@@ -126,13 +113,15 @@ t_lexer* ft_lexretract(t_lexer** lexer, t_lexer* node)
        (node->prev)->next = node->next;
        (node->next)->prev = node->prev;
     }
-    else if (node->next == NULL)
+    else if (node->next == NULL && node->prev != NULL)
         (node->prev)->next = NULL;
-    else if (node->prev == NULL)
+    else if (node->prev == NULL && node->next != NULL)
     {
         (node->next)->prev = NULL;
         *lexer = node->next;
     }
+    else
+        *lexer = NULL;
     node->prev = NULL;
     node->next = NULL;
     return(node);
