@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 14:48:02 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/15 19:39:18 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 19:43:59 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ void add_empty(t_lexer** lexer)
             if (tmp && lex_ptr->next == tmp)
                 ft_lexinsert(lexer, lex_ptr, tmp, ft_lexnew(ft_strdup("\0"), WORD));
             lex_ptr = tmp;
+            if (lex_ptr)
+                lex_ptr = lex_ptr->next;
         } 
         else
             lex_ptr = lex_ptr->next;
