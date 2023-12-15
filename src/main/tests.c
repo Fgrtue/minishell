@@ -41,7 +41,7 @@ void print_cmd(t_cmd* cmd)
         print_args(cmd->args);
         printf("The num of redir: %d\n", cmd->num_redir);
         printf("\nRedir: %p\n", cmd->redir);
-		// print_lex(cmd->redir);
+		print_lex(cmd->redir);
         printf("\nprev: %p\n", cmd->prev);
         printf("next: %p\n", cmd->next);
         printf("************************************\n");
@@ -169,7 +169,7 @@ char *line113="< in wc -l | wc>out -l";
 	t_cmd	*cmds;
 	// char* line = "command1 \" command2 \" \' command3 \'";
 
-    lst = ft_lexer(line10);
+    lst = ft_lexer(line88);
 	expand_env(&lst, env, 0);
 	// print_lex(lst);
 	polish_lex(&lst);

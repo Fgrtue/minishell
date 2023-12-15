@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 11:09:00 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/14 19:48:40 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 12:34:22 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,15 @@ void add_empty(t_lexer** lexer)
     lex_ptr = *lexer;
     while(lex_ptr)
     {
+        if (!lex_ptr->next)
+            return ;
         if ((lex_ptr->token == QUOTE 
             && (lex_ptr)->next->token == QUOTE)
             || (lex_ptr->token == DOUBLE_QUOTE 
             && (lex_ptr)->next->token == DOUBLE_QUOTE))
         {
             ft_lexinsert(lexer, lex_ptr, lex_ptr->next, ft_lexnew(ft_strdup("\0"), WORD));
-            lex_ptr = lex_ptr->next->next;
+            lex_ptr = ((lex_ptr->next)->next)->next;
         }
         else
             lex_ptr = lex_ptr->next;
