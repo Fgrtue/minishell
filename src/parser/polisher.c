@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/11 12:35:21 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/14 19:09:00 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 15:42:41 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ t_lexer	*ft_lexjoin(t_lexer **lst, t_lexer *lexer)
 	return (node);
 }
 
-void	polish_lex(t_lexer **lst)
+
+void	join_quotes(t_lexer **lst)
 {
 	t_lexer	*lex;
 	t_lexer	*tmp;
@@ -39,8 +40,7 @@ void	polish_lex(t_lexer **lst)
 	{
 		if (lex->state != GENERAL)
 			lex = ft_lexjoin(lst, lex);
-		if (lex->token == WHITE_SPACE || lex->token == QUOTE || \
-			lex->token == DOUBLE_QUOTE || (lex->token == ENV && lex->len == 0))
+		if (lex->token == ENV && lex->len == 0)
 		{
 			tmp = lex;
 			lex = lex->next;
@@ -49,8 +49,6 @@ void	polish_lex(t_lexer **lst)
 		else
 			lex = lex->next;
 	}
-	if ((*lst)->token == PIPE_LINE || ft_lexlast(*lst)->token == PIPE_LINE)
-		exit(1); // TO DO: error("syntax error");
 }
 
 /**

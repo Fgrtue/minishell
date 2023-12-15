@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 11:45:07 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/12 14:47:58 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 14:29:48 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,21 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	}
 	sjoin[i] = '\0';
 	free(s1);
+	return (sjoin);
+}
+
+/* free s1 and s2 */
+char	*ft_strjoin_free_d(char *s1, char *s2)
+{
+	char *sjoin;
+
+	sjoin = ft_strjoin_free(s1, s2);
+	if (!sjoin)
+	{
+		free(s2);
+		return (NULL);
+	}
+	if (s2)
+		free(s2);
 	return (sjoin);
 }

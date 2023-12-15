@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 16:39:12 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/14 19:17:59 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 15:45:29 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,20 @@ char	*find_variable(char *var, char **env)
 {
 	int		i;
 	char	*content;
-	char	*var_new;
 
 	i = 0;
-	var_new = ft_strjoin(var, "=");
-	while (env[i] && ft_strncmp(env[i], var_new, ft_strlen(var_new)) != 0)
+	var = ft_strjoin_free(var, "=");
+	while (env[i] && ft_strncmp(env[i], var, ft_strlen(var)) != 0)
 		i++;
 	if (env[i])
-		content = ft_strdup(env[i] + ft_strlen(var_new));
+		content = ft_strdup(env[i] + ft_strlen(var));
 	else
 		content = ft_calloc(sizeof(char), 1);
 	if (!content)
 		perror("malloc"); // todo: write another error() to exit(0)
 	if (!env[i])
 		content[0] = '\0';
-	free(var_new);
+	free(var);
 	return (content);
 }
 
@@ -55,85 +54,128 @@ t_lexer	*ft_lexsplit(t_lexer **lst, t_lexer *lexer, char *str)
 	return (node);
 }
 
-/* return 1 if prev lexer is '<<' and not in the dquotes*/
-int	is_dredir(t_lexer *lexer)
+char	*get_minivar(char *vars)
 {
-	t_lexer	*tmp;
-	
-	tmp = lexer->prev;
-	if (tmp->state != GENERAL)
-		return (0);
-	if (tmp)
-	{
-		if (tmp->token == DREDIR_OUT)
-			return (1);
-		if (tmp->token != WHITE_SPACE)
-			return (0);
-		tmp = tmp->prev;
-		if (tmp && tmp->token == DREDIR_OUT)
-			return (1);
-	}
-	return (0);
+	int		i;
+	char	*str;
+
+	i = 0;
+	while (vars[i] == '$')
+		i++;
+	while (vars[i] && vars[i] != '$')
+		i++;
+	str = ft_calloc(sizeof(char), i + 1);
+	if (!str)
+		perror("malloc"); // todo: write another error() to exit(0)
+	ft_strlcpy(str, vars , i + 1);
+	return (str);
 }
 
 char	*ft_expand_env(char *vars, char **env, int exit_c)
 {
-	char	**tabs;
-	char	*contents;
+	char	*str;
 	char	*tmp;
-	int		i;
-
-	tabs = ft_split(vars, '$');
-	i = -1;
-	contents = NULL;
-	while (tabs[++i])
+	
+	str = NULL;
+	if (*vars != '$')
 	{
-		if (tabs[i][0] == '?')
-		{
-			tmp = ft_itoa(exit_c);
-			contents = ft_strjoin_free(contents, tmp);
-			contents = ft_strjoin_free(contents, tabs[i] + 1);
-		}
-		else
-		{
-			tmp = find_variable(tabs[i], env);
-			contents = ft_strjoin_free(contents, tmp);
-		}
-		free(tmp);
+		str = ft_strjoin_free_d(str, get_minivar(vars));
+		vars += ft_strlen(str);
 	}
-	free_arr(tabs);
-	return (contents);
+	while (vars)
+	{
+		if (++vars == '?')
+		{
+			str = ft_strjoin_free_d(str, ft_itoa(exit_c));
+			vars++;
+		}
+		if (vars)
+		{
+			tmp = get_minivar(vars); //free in find_variable
+			vars += ft_strlen(tmp);
+			str = ft_strjoin_free_d(str, find_variable(tmp, env));
+		}
+	}
+	return (str);
 }
 
 /* echo $?123$USER -- 0123jiajchen*/
 void	expand_env(t_lexer **lst, char **env, int exit_c)
 {
 	char	*tmp;
-	t_lexer	*lexer;
+	t_lexer	*lex;
 	
-	lexer = *lst;
-	while (lexer)
+	lex = *lst;
+	while (lex)
 	{
-		if (lexer->token == ENV && lexer->state != IN_QUOTE && !is_dredir(lexer))
+		if (lex->token == ENV)
 		{
-			tmp = ft_expand_env(lexer->content, env, exit_c);
-			if (ft_strchr(tmp, ' ') && lexer->state == GENERAL)
-				lexer = ft_lexsplit(lst, lexer, tmp);
+			tmp = ft_expand_env(lex->content, env, exit_c);
+			if (ft_strchr(tmp, ' ') && lex->prev && lex->prev->token == '>')
+				exit(1); // error("ambiguous redirect");
+			if (ft_strchr(tmp, ' ') && lex->state == GENERAL)
+				lex = ft_lexsplit(lst, lex, tmp);
 			else
 			{
-				free(lexer->content);
-				lexer->content = tmp;
-				lexer->len = ft_strlen(tmp);
+				free(lex->content);
+				lex->content = tmp;
+				lex->len = ft_strlen(tmp);
 			}
 		}
-		// if (lexer->token == ENV)
-		// 	lexer->token = WORD;
-		lexer = lexer->next;
+		lex = lex->next;
 	}
 }
 
+		// if (lexer->token == ENV)
+		// 	lexer->token = WORD;
 
 
+
+// char	*ft_expand_env(char *vars, char **env, int exit_c)
+// {
+// 	char	**tabs;
+// 	char	*str;
+// 	int		i;
+
+// 	tabs = ft_split(vars, '$');
+// 	i = -1;
+// 	str = NULL;
+// 	while (tabs[++i])
+// 	{
+// 		if (tabs[i][0] == '?')
+// 		{
+// 			str = ft_strjoin_free_d(str, ft_itoa(exit_c));
+// 			str = ft_strjoin_free(str, tabs[i] + 1);
+// 		}
+// 		else
+// 			str = ft_strjoin_free_d(str, find_variable(tabs[i], env));
+// 	}
+// 	free_arr(tabs);
+// 	return (str);
+// }
+
+// /* return 1 if prev lexer is '<<' and not in the dquotes*/
+// int	is_dredir(t_lexer *lexer)
+// {
+// 	t_lexer	*tmp;
+	
+// 	tmp = lexer->prev;
+// 	if (!tmp)
+// 		return (0);
+// 	if (tmp->state != GENERAL)
+// 		return (0);
+// 	if (tmp)
+// 	{
+// 		if (tmp->token == DREDIR_OUT)
+// 			return (1);
+// 		if (tmp->token != WHITE_SPACE)
+// 			return (0);
+// 		tmp = tmp->prev;
+// 		if (tmp && tmp->token == DREDIR_OUT)
+// 			return (1);
+// 	}
+// 	return (0);
+// }
 
 
 /**

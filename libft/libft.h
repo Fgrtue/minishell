@@ -6,7 +6,7 @@
 /*   By: jessie <jessie@student.42.fr>                +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/05 12:11:48 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/12 11:46:50 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 14:27:04 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ char	*ft_strdup(const char *s);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strjoin_free(char *s1, char *s2);
+char	*ft_strjoin_free_d(char *s1, char *s2);
 char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split(char const *s, char c);
 char	**free_arr(char	**str_arr);
