@@ -6,36 +6,11 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 11:09:00 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/15 12:34:22 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 16:12:29 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-void add_empty(t_lexer** lexer)
-{
-    t_lexer*    lex_ptr;
-    
-
-    if (!*lexer)
-        return ;
-    lex_ptr = *lexer;
-    while(lex_ptr)
-    {
-        if (!lex_ptr->next)
-            return ;
-        if ((lex_ptr->token == QUOTE 
-            && (lex_ptr)->next->token == QUOTE)
-            || (lex_ptr->token == DOUBLE_QUOTE 
-            && (lex_ptr)->next->token == DOUBLE_QUOTE))
-        {
-            ft_lexinsert(lexer, lex_ptr, lex_ptr->next, ft_lexnew(ft_strdup("\0"), WORD));
-            lex_ptr = ((lex_ptr->next)->next)->next;
-        }
-        else
-            lex_ptr = lex_ptr->next;
-    }
-}
 
 void lexer_setstate(t_lexer* lexer)
 {
@@ -59,7 +34,8 @@ void lexer_setstate(t_lexer* lexer)
 				lexer = lexer->next;
 			}
 		}
-		lexer = lexer->next;
+		if (lexer)
+			lexer = lexer->next;
 	}
 }
 
@@ -78,8 +54,6 @@ t_lexer*    lexer_tokenizer(t_lexer** lexer, char* str)
 			str = handle_redir(str, lexer, REDIR_OUT);
 		else if (*str == REDIR_IN)
 			str = handle_redir(str, lexer, REDIR_IN);
-		else if (*str == ENV)
-			str = handle_word(str, lexer, ENV);
 		else
 			str = handle_word(str, lexer, WORD);
 	}
@@ -97,11 +71,11 @@ t_lexer* ft_lexer(char* str)
 	lexer = lexer_tokenizer(&lexer, str);
 	add_empty(&lexer);
 	lexer_setstate(lexer);
+	set_env(lexer);
+	polish_lexer(&lexer);
+	check_lexer(&lexer);
 	return (lexer);
 }
 
-
-
 // Test the tokenizer
 // Test set the state
-

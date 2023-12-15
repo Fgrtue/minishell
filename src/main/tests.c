@@ -1,4 +1,5 @@
 #include "../../include/minishell.h"
+
 void print_lex(t_lexer* lexer);
 
 void print_lex(t_lexer* lexer)
@@ -8,7 +9,7 @@ void print_lex(t_lexer* lexer)
     {
         printf("LEXER: %p\n", lexer);
         printf("################################\n");
-        printf("content: %s\n", lexer->content);
+        printf("content:%s\n", lexer->content);
         printf("len: %i\n", lexer->len);
         printf("token: %i\n", lexer->token);
         printf("state: %i\n", lexer->state);
@@ -51,7 +52,8 @@ void print_cmd(t_cmd* cmd)
 
 int main(int argc, char **argv, char **env)
 {
-    char *line1="";
+    char *line1="\"\" $a ab$USER \" \"\"hh$USER\"\'$USER\'";
+
 char *line2="cd ../../../../../..";
 char *line3="cd ~";
 char *line4="cd";
@@ -137,7 +139,7 @@ char *line83="export test=\" foo   bar \" ; echo \"\"$test\"\"";
 char *line84="export test=\" foo   bar \" ; echo \"\"\"$test\"\"\"";
 char *line85="export var= s\\ -la ; l$var";
 char *line86="export var=at ; c$var Makefile";
-char *line87="export loop='bonjour$loop' ; echo $loop";
+char *line87="export loop=\'bonjour$loop\' ; echo $loop";
 char *line88="export test=\"file1 file2\" ; >$test";
 char *line89="export test=\"file1 file2\" ; >\"$test\"";
 char *line90="export test=\"file1 file2\" ; >$test >hey";
@@ -169,15 +171,17 @@ char *line113="< in wc -l | wc>out -l";
 	t_cmd	*cmds;
 	// char* line = "command1 \" command2 \" \' command3 \'";
 
-    lst = ft_lexer(line88);
+
+    lst = ft_lexer(line1);
+    print_lex(lst);
 	expand_env(&lst, env, 0);
 	// print_lex(lst);
-	polish_lex(&lst);
+	join_quotes(&lst);
 	// print_lex(lst);
-	cmds = get_cmds(&lst, lst);
-	print_cmd(cmds);
+	// cmds = get_cmds(&lst, lst);
+	// print_cmd(cmds);
 	ft_lexclean(&lst);
-	ft_cmdclean(&cmds);
+	// ft_cmdclean(&cmds);
 	return (0);
 }
 /* 

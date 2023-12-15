@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/11 12:35:21 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/15 15:42:41 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 18:36:16 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,21 @@
 
 t_lexer	*ft_lexjoin(t_lexer **lst, t_lexer *lexer)
 {
-	t_lexer	*node;
-	char	*str;
+	t_lexer			*node;
+	t_lexer			*track;
+	char			*str;
 
 	str = NULL;
-	while (lexer->state != GENERAL)
+	track = lexer;
+	while (lexer && lexer->state != GENERAL)
 	{
 		str = ft_strjoin_free(str, lexer->content);
 		lexer = lexer->next;
-		ft_lexdel(ft_lexretract(lst, lexer->prev));
 	}
 	node = ft_lexnew(str, WORD);
-	ft_lexinsert(lst, lexer->prev, lexer, node);
+	ft_lexinsert(lst, track->prev, track, node);
+	while (node->next && node->next->state != GENERAL)
+		ft_lexdel(ft_lexretract(lst, node->next));
 	return (node);
 }
 
@@ -40,7 +43,8 @@ void	join_quotes(t_lexer **lst)
 	{
 		if (lex->state != GENERAL)
 			lex = ft_lexjoin(lst, lex);
-		if (lex->token == ENV && lex->len == 0)
+		if ((lex->token == WHITE_SPACE && lex->state == GENERAL) \
+			|| (lex->token == ENV && lex->len == 0))
 		{
 			tmp = lex;
 			lex = lex->next;

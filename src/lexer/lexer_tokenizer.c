@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 12:27:46 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/13 15:20:43 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 16:10:11 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ char* handle_word(char* str, t_lexer** lexer, int token)
     size_t  len;
 
     len = word_len(str);
+	// if (is_env(str))
+	// 	token = ENV;
 	content = ft_calloc(len + 1, sizeof(char));
 	if (content == NULL)
 		perror("calloc");

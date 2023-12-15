@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/15 13:01:15 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 18:28:19 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ void	fill_cmd(t_lexer **lst, t_lexer *lexer, t_cmd *cmd)
 		if (lexer->token == REDIR_IN || lexer->token == REDIR_OUT \
 			|| lexer->token == HERE_DOC || lexer->token == DREDIR_OUT)
 		{
-			if (lexer->next->token != WORD && lexer->next->token != ENV)
-				exit(EXIT_FAILURE); // TO DO: error("syntax error near unexpected token");
 			if (lexer->prev != NULL)
 			{
 				lexer = lexer->prev;
@@ -98,6 +96,9 @@ t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
 	}
 	return (cmd);
 }
+
+			// if (lexer->next->token != WORD && lexer->next->token != ENV)
+			// 	exit(EXIT_FAILURE); // TO DO: error("syntax error near unexpected token");
 
 /**
  * There will be two functions:

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 16:39:12 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/15 15:45:29 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 17:01:01 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ char	*ft_expand_env(char *vars, char **env, int exit_c)
 		str = ft_strjoin_free_d(str, get_minivar(vars));
 		vars += ft_strlen(str);
 	}
-	while (vars)
+	while (*vars)
 	{
-		if (++vars == '?')
+		if (*(++vars) == '?')
 		{
 			str = ft_strjoin_free_d(str, ft_itoa(exit_c));
 			vars++;

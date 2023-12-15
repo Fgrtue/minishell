@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/14 20:05:23 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 17:48:07 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@
  * TO CHECK: When you provide an env var that doesn't exist, what happens?
  * When it is empty string? 
  * TO DO: write our own error function and change the error in the get_cmd
+ * TO CHECK: for export how should we parse the command? Sometimes we have that var=xxx
+ * is the whole word, sometimes we have that assignment is done throgh "" and ''
+ * TO DO: HANDLE THE CASE OF ECHO 'hh'$USER "hh""$USER" hh$USER 'hh'"jj"
+ * 
+ * 
+>>>>>>> main
  * 
 */
 int	main(int argc, char **argv, char **env)
@@ -36,7 +42,6 @@ int	main(int argc, char **argv, char **env)
 	char	*line;
 	int		exit_status;
 	t_lexer*	lexer;
-	t_parser*	parser;
 	
 	exit_status = 0;
 	while (1)

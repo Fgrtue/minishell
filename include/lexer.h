@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 12:48:29 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/14 20:02:25 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/15 16:08:54 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,12 @@ t_lexer*	ft_lexlast(t_lexer* lexer);
 void	ft_lexdel(t_lexer* node);
 void    ft_lexclean(t_lexer** lexer);
 void    ft_lexinsert(t_lexer** lexer, t_lexer* prev, t_lexer* next, t_lexer* node);
-t_lexer* ft_lexretract(t_lexer** lexer, t_lexer* node);
 
+t_lexer*    ft_lexretract(t_lexer** lexer, t_lexer* node);
+void    add_empty(t_lexer** lexer);
+int is_env(t_lexer*	node);
+void    set_env(t_lexer* lexer);
+void polish_lexer(t_lexer** lexer);
+void check_lexer(t_lexer** lexer);
 
 #endif
