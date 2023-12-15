@@ -6,13 +6,11 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 11:09:00 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/13 11:45:24 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/15 15:03:21 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-
 
 void lexer_setstate(t_lexer* lexer)
 {
@@ -21,7 +19,7 @@ void lexer_setstate(t_lexer* lexer)
 		if (lexer->token == DOUBLE_QUOTE)
 		{
 			lexer = lexer->next;
-			while (lexer->token != DOUBLE_QUOTE)
+			while (lexer && lexer->token != DOUBLE_QUOTE)
 			{
 				lexer->state = IN_DQUOTE;
 				lexer = lexer->next;
@@ -30,14 +28,14 @@ void lexer_setstate(t_lexer* lexer)
 		else if (lexer->token == QUOTE)
 		{
 			lexer = lexer->next;
-			while (lexer->token != QUOTE)
+			while (lexer && lexer->token != QUOTE)
 			{
 				lexer->state = IN_QUOTE;
 				lexer = lexer->next;
 			}
 		}
-		lexer->state = GENERAL;
-		lexer = lexer->next;
+		if (lexer)
+			lexer = lexer->next;
 	}
 }
 
@@ -56,8 +54,6 @@ t_lexer*    lexer_tokenizer(t_lexer** lexer, char* str)
 			str = handle_redir(str, lexer, REDIR_OUT);
 		else if (*str == REDIR_IN)
 			str = handle_redir(str, lexer, REDIR_IN);
-		else if (*str == ENV)
-			str = handle_word(str, lexer, ENV);
 		else
 			str = handle_word(str, lexer, WORD);
 	}
@@ -65,7 +61,7 @@ t_lexer*    lexer_tokenizer(t_lexer** lexer, char* str)
 }
 
 
-t_lexer* lexer(char* str)
+t_lexer* ft_lexer(char* str)
 {
 	t_lexer*	lexer;
 	
@@ -73,44 +69,13 @@ t_lexer* lexer(char* str)
 	if (!str || !*str)
 		return(NULL);
 	lexer = lexer_tokenizer(&lexer, str);
+	add_empty(&lexer);
 	lexer_setstate(lexer);
-	print_list(lexer);
+	set_env(lexer);
+	polish_lexer(&lexer);
+	check_lexer(&lexer);
 	return (lexer);
 }
 
-/*
-
-Test the tokenizer
-Test set the state
-
-void print_list(t_lexer* lexer);
-
-void print_list(t_lexer* lexer)
-{
-    printf("************************************\n");
-    while(lexer)
-    {
-        printf("NAME: %p\n", lexer);
-        printf("************************************\n");
-        printf("content: %s\n", lexer->content);
-        printf("len: %i\n", lexer->len);
-        printf("token: %i\n", lexer->token);
-        printf("state: %i\n", lexer->state);
-        printf("prev: %p\n", lexer->prev);
-        printf("next: %p\n", lexer->next);
-        printf("************************************\n");
-        lexer = lexer->next;
-    }
-}
-
-int main(void)
-{
-    // char* line = "The >> <<  $is < \" command \" \' NULL \' ^ & () ";
-
-	char* line = "command1 \" command2 \" \' command3 \'";
-
-    lexer(line);
-	return 0;
-}
-
-*/
+// Test the tokenizer
+// Test set the state

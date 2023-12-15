@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 12:27:46 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/13 17:54:13 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/15 13:44:21 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int word_len(char* str)
 	if (!str)
 		return (0);
 	while (*str && (*str != ' ' && *str != '\'' && *str != '\"' \
-					&& *str != '>' && *str != '<' && *str != '|'))
+			&& *str != '>' && *str != '<' && *str != '|'))
 	{
 		str++;
 		i++;
@@ -83,6 +83,8 @@ char* handle_word(char* str, t_lexer** lexer, int token)
     size_t  len;
 
     len = word_len(str);
+	// if (is_env(str))
+	// 	token = ENV;
 	content = ft_calloc(len + 1, sizeof(char));
 	if (content == NULL)
 		perror("calloc");

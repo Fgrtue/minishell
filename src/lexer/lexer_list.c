@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 12:50:39 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/12 18:33:51 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/14 21:15:15 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	ft_lexaddback(t_lexer **lexer, t_lexer *new)
     last = NULL;
 	if ((*lexer) == NULL)
 		ft_lexaddfront(lexer, new);
-	else
+    else
     {
         last = ft_lexlast(*lexer);
 		last->next = new;
@@ -62,9 +62,9 @@ t_lexer*	ft_lexlast(t_lexer* lexer)
 {
 	if (lexer == NULL)
 		return (NULL);
-	while (lexer->next != NULL)
-		lexer = lexer->next;
-	return (lexer);
+    while (lexer->next != NULL)
+        lexer = lexer->next;
+    return (lexer);
 }
 
 void	ft_lexdel(t_lexer* node)
@@ -113,13 +113,15 @@ t_lexer* ft_lexretract(t_lexer** lexer, t_lexer* node)
        (node->prev)->next = node->next;
        (node->next)->prev = node->prev;
     }
-    else if (node->next == NULL)
+    else if (node->next == NULL && node->prev != NULL)
         (node->prev)->next = NULL;
-    else if (node->prev == NULL)
+    else if (node->prev == NULL && node->next != NULL)
     {
         (node->next)->prev = NULL;
         *lexer = node->next;
     }
+    else
+        *lexer = NULL;
     node->prev = NULL;
     node->next = NULL;
     return(node);
