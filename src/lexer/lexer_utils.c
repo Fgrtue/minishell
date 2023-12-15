@@ -1,0 +1,111 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   lexer_utils.c                                      :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/12/15 14:48:02 by kkopnev       #+#    #+#                 */
+/*   Updated: 2023/12/15 15:20:53 by kkopnev       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../include/minishell.h"
+
+void check_lexer(t_lexer** lexer)
+{
+    t_lexer*    lex;
+
+    lex = *lexer;
+    if(!lex || lex->token == PIPE_LINE || ft_lexlast(lex)->token == PIPE_LINE)
+        exit(1); //TO DO: clean lexer and go to next line;
+
+    while(lex)
+    {
+        if (lex->token == REDIR_IN ||lex->token == REDIR_OUT
+            || lex->token == HERE_DOC || lex->token == DREDIR_OUT)
+        {
+            if (!lex->next || (lex->next->token != WORD && lex->next->token != ENV))
+                exit (1);
+        }
+        lex = lex->next;
+    }
+}
+
+void polish_lexer(t_lexer** lexer)
+{
+    t_lexer*    lex;
+    t_lexer*    tmp;
+
+    lex = *lexer;
+    while (lex)
+    {
+        if ((lex->token == QUOTE ||lex->token == DOUBLE_QUOTE 
+            || lex->token == WHITE_SPACE) && lex->state == GENERAL)
+        {
+            tmp = lex;
+            lex = lex->next;
+            ft_lexdel(ft_lexretract(lexer, tmp));
+        }
+        else
+            lex = lex->next;
+    }
+}
+
+void add_empty(t_lexer** lexer)
+{
+    t_lexer*    lex_ptr;
+    
+
+    if (!*lexer)
+        return ;
+    lex_ptr = *lexer;
+    while(lex_ptr)
+    {
+		if (!lex_ptr->next)
+			return ;
+        if ((lex_ptr->token == QUOTE 
+            && (lex_ptr)->next->token == QUOTE)
+            || (lex_ptr->token == DOUBLE_QUOTE 
+            && (lex_ptr)->next->token == DOUBLE_QUOTE))
+        {
+            ft_lexinsert(lexer, lex_ptr, lex_ptr->next, ft_lexnew(ft_strdup("\0"), WORD));
+			lex_ptr = ((lex_ptr->next)->next)->next;
+        }
+        else
+            lex_ptr = lex_ptr->next;
+    }
+}
+
+int is_env(t_lexer*	node)
+{
+	char*	content;
+
+	content = node->content;
+	if (content && ft_strlen(content) == 1)
+		return (WORD);
+	while (*content)
+	{
+		if (*content == ENV)
+			return (ENV);
+		content++;
+	}
+	return (WORD);
+}
+
+void	set_env(t_lexer* lexer)
+{
+	int	flag;
+
+	flag = 0;
+	while (lexer)
+	{
+		if (lexer->token == WORD && lexer->state != IN_QUOTE && flag == 0)
+			lexer->token = is_env(lexer);
+		if (lexer->token != WHITE_SPACE)
+			flag = 0;	
+		if (lexer->token == HERE_DOC)
+			flag = 1;
+		lexer = lexer->next;
+	}
+}
