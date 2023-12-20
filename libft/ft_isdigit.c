@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   signal.c                                           :+:    :+:            */
+/*   ft_isdigit.c                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/17 16:20:14 by jiajchen      ########   odam.nl         */
+/*   Created: 2023/10/05 14:30:36 by jiajchen      #+#    #+#                 */
+/*   Updated: 2023/10/05 14:31:31 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "libft.h"
 
-void	signals_handler()
+int	ft_isdigit(int c)
 {
-	signal(SIGINT, )
+	if (c >= '0' && c <= '9')
+		return (1);
+	return (0);
 }

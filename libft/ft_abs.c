@@ -1,18 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   signal.c                                           :+:    :+:            */
+/*   ft_abs.c                                           :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/17 16:20:14 by jiajchen      ########   odam.nl         */
+/*   Created: 2023/11/24 15:08:36 by jiajchen      #+#    #+#                 */
+/*   Updated: 2023/11/30 14:38:52 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "libft.h"
 
-void	signals_handler()
+int	ft_abs(int x)
 {
-	signal(SIGINT, )
+	if (x >= 0)
+		return (x);
+	return (-1 * x);
+}
+
+int	ft_max(int x, int y)
+{
+	if (x >= y)
+		return (x);
+	return (y);
+}
+
+int	ft_min(int x, int y)
+{
+	if (x <= y)
+		return (x);
+	return (y);
 }

@@ -1,18 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   signal.c                                           :+:    :+:            */
+/*   ft_putchar_fd.c                                    :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/17 16:20:14 by jiajchen      ########   odam.nl         */
+/*   Created: 2023/10/09 18:41:59 by jiajchen      #+#    #+#                 */
+/*   Updated: 2023/10/10 10:26:37 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "libft.h"
 
-void	signals_handler()
+/*
+** outputs the 'c' to the given file descriptor 'fd'
+*/
+
+void	ft_putchar_fd(char c, int fd)
 {
-	signal(SIGINT, )
+	write(fd, &c, 1);
 }
+
+// int	main(void)
+// {
+// 	ft_putchar_fd('4', 0);
+// 	return (0);
+// }
