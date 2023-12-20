@@ -6,11 +6,17 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 20:21:47 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/20 15:15:12 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/20 16:22:52 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <readline/readline.h> 
+
 
 void print_lex(t_lexer* lexer);
 
@@ -185,29 +191,42 @@ char *line113="< in wc -l | wc>out -l";
 	// // char* line = "command1 \" command2 \" \' command3 \'";
 
 
-<<<<<<< HEAD
-    lst = ft_lexer(line1);
+    // lst = ft_lexer(line0);
+	// // print_lex(lst);
+	// expand_env(&lst, env, 127);
+	// print_lex(lst);
+    // printf("\n\n\n");
+	// polish_lex(&lst);
+	// print_lex(lst);
+	// // cmds = get_cmds(&lst, lst);
+	// // print_cmd(cmds);
+	// ft_lexclean(&lst);
+	// // ft_cmdclean(&cmds);
 
+
+// THE HERE_DOC part
+
+    // int fd = open("file1", O_RDWR| O_CREAT, 0644);
+    // char* line;
     
-    print_lex(lst);
-	// expand_env(&lst, env, 0);
-	// print_lex(lst);
-	// join_quotes(&lst);
-=======
-    lst = ft_lexer(line0);
->>>>>>> upstream/main
-	// print_lex(lst);
-	expand_env(&lst, env, 127);
-	print_lex(lst);
-    printf("\n\n\n");
-	polish_lex(&lst);
-	print_lex(lst);
-	// cmds = get_cmds(&lst, lst);
-	// print_cmd(cmds);
-	ft_lexclean(&lst);
-	// ft_cmdclean(&cmds);
+    // unlink("file1");
+    // line = readline("minishell: ");
+    // write(fd, line, ft_strlen(line));
+    // close(fd);
+    // fd = open("file1", O_RDWR| O_CREAT, 0644);
+    // unlink("file1");
+    // read(fd, line, 3);
+    // line[3] = '\0';
+    // close(fd);
+    // printf("%s", line);
+  
+// change dir
 
-
+    printf("%d", chdir("/home/kkopnev/Documents/minishell/src"));
+    
+    chdir("/home/kkopnev/Documents/minishell/src");
+    while(1)
+        continue;
 	// expand_env(&lst, env, 0);
 	// // print_lex(lst);
 	// join_quotes(&lst);

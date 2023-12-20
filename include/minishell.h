@@ -6,11 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-<<<<<<< HEAD
-/*   Updated: 2023/12/15 20:23:09 by kkopnev       ########   odam.nl         */
-=======
-/*   Updated: 2023/12/20 14:56:39 by jiajchen      ########   odam.nl         */
->>>>>>> upstream/main
+/*   Updated: 2023/12/20 15:29:15 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +46,5 @@ void    ft_cmdclean(t_cmd** cmd);
 void	print_lex(t_lexer* lexer);
 void	print_cmd(t_cmd* cmd);
 int		check_quotes(char *str);
->>>>>>> upstream/main
 
 #endif

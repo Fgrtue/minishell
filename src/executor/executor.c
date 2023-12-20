@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 14:55:23 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/20 16:08:23 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,44 @@ how the redirection func should work?
 		check the order or redir
 
 how the builtins should work?
+
+	echo 
+	
+	cd -- cd with only a relative or absolute path
+
+		Change the current working directory to directory. 
+		
+		If directory is not supplied, the value of the HOME shell 
+		
+		variable is used. If the shell variable CDPATH exists, it 
+		
+		is used as a search path: each directory name in CDPATH is 
+		
+		searched for directory, with alternative directory names in 
+		
+		CDPATH separated by a colon (‘:’). If directory begins with 
+		
+		a slash, CDPATH is not used. 
+
+	void ft_cd(char* directory);
+	{
+		home = get_home();
+		if (directory starts with home)
+			chdir(home)
+		else 
+			append home to dir
+			
+	}
+
+	pwd
+
+	export
+
+	unset
+
+	env
+
+	exit
 
 how the wait function should wait?
 */	
