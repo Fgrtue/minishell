@@ -1,18 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   signal.c                                           :+:    :+:            */
+/*   ft_putendl_fd.c                                    :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/17 16:20:14 by jiajchen      ########   odam.nl         */
+/*   Created: 2023/10/10 10:35:54 by jiajchen      #+#    #+#                 */
+/*   Updated: 2023/10/10 10:39:23 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "libft.h"
 
-void	signals_handler()
+/*
+** outputs the 's' to the given fd followed by a newline
+*/
+
+void	ft_putendl_fd(char *s, int fd)
 {
-	signal(SIGINT, )
+	if (!s)
+		return ;
+	write(fd, s, ft_strlen(s));
+	write(fd, "\n", 1);
 }

@@ -6,11 +6,11 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/15 15:38:55 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/18 12:42:00 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../include/minishell.h"
 
 /**
  * to read: <termio.h>
@@ -31,8 +31,11 @@
  * TO DO: write our own error function and change the error in the get_cmd
  * TO CHECK: for export how should we parse the command? Sometimes we have that var=xxx
  * is the whole word, sometimes we have that assignment is done throgh "" and ''
+ * TO DO: HANDLE THE CASE OF ECHO 'hh'$USER "hh""$USER" hh$USER 'hh'"jj"
+ * TO CHECK: DO WE HAVE TO SEPARATE ARGUMENTS IN THE CASE ab" ""$USER". but not in the case ab"$USER" ? (ATM: NO)
  * 
  * 
+>>>>>>> main
  * 
 */
 int	main(int argc, char **argv, char **env)

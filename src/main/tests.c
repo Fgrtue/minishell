@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 20:21:47 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/18 11:39:25 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/20 15:15:12 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void print_lex(t_lexer* lexer)
     {
         printf("LEXER: %p\n", lexer);
         printf("################################\n");
-        printf("content: %s\n", lexer->content);
+        printf("content:%s\n", lexer->content);
         printf("len: %i\n", lexer->len);
         printf("token: %i\n", lexer->token);
         printf("state: %i\n", lexer->state);
@@ -64,7 +64,8 @@ void print_cmd(t_cmd* cmd)
 
 int main(int argc, char **argv, char **env)
 {
-    char *line1="$USER$LOSER Jaja $? Arbuzer$ABUSER$Oran|gutuzer $REDIRECTION>$FOGAZER";
+    char *line0="echo ab$LS$LS   \"$abc\"";
+    char *line1="\"\" $a $?ab$LS$loop ab\" \"\" 'hh$USER\"\'$USER\'$LS";
 
 char *line2="cd ../../../../../..";
 char *line3="cd ~";
@@ -149,7 +150,7 @@ char *line81="export test=\"  foo    bar  \" ; echo ab$test";
 char *line82="export test=\"  foo    bar  \" ; echo \"ab\"\"$test\"";
 char *line83="export test=\" foo   bar \" ; echo \"\"$test\"\"";
 char *line84="export test=\" foo   bar \" ; echo \"\"\"$test\"\"\"";
-char *line85="export var= s\\ -la ; l$var";
+char *line85="export var=\"s -la\" ; l$var"; // \ is not allowed
 char *line86="export var=at ; c$var Makefile";
 char *line87="export loop=\"bonjour$loop\" ; echo $loop";
 char *line88="export test=\"file1 file2\" ; >$test";
@@ -179,11 +180,12 @@ char *line111="unset $(env | cut -d= -f1)";
 char *line112="exit -12";
 char *line113="< in wc -l | wc>out -l";
 
-	t_lexer	*lst;
-	t_cmd	*cmds;
-	// char* line = "command1 \" command2 \" \' command3 \'";
+	// t_lexer	*lst;
+	// t_cmd	*cmds;
+	// // char* line = "command1 \" command2 \" \' command3 \'";
 
 
+<<<<<<< HEAD
     lst = ft_lexer(line1);
 
     
@@ -191,7 +193,15 @@ char *line113="< in wc -l | wc>out -l";
 	// expand_env(&lst, env, 0);
 	// print_lex(lst);
 	// join_quotes(&lst);
+=======
+    lst = ft_lexer(line0);
+>>>>>>> upstream/main
 	// print_lex(lst);
+	expand_env(&lst, env, 127);
+	print_lex(lst);
+    printf("\n\n\n");
+	polish_lex(&lst);
+	print_lex(lst);
 	// cmds = get_cmds(&lst, lst);
 	// print_cmd(cmds);
 	ft_lexclean(&lst);

@@ -1,18 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   signal.c                                           :+:    :+:            */
+/*   ft_lstdelone.c                                     :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/17 16:20:14 by jiajchen      ########   odam.nl         */
+/*   Created: 2023/10/12 12:10:42 by jiajchen      #+#    #+#                 */
+/*   Updated: 2023/10/12 12:44:33 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "libft.h"
 
-void	signals_handler()
+/*
+** takes as a parameter a node and frees the memory
+** 
+*/
+
+void	ft_lstdelone(t_list *lst, void (*del)(void *))
 {
-	signal(SIGINT, )
+	if (!lst)
+		return ;
+	(*del)(lst -> content);
+	free(lst);
 }
+
+// void	delete_content(void *content)
+// {
+// 	free(content);
+// }
+
+// int	main(void)
+// {
+// 	t_list	*lst;
+
+// 	lst = ft_lstnew(ft_strdup("abd"));
+// 	ft_lstdelone(lst, delete_content);
+// 	return (0);
+// }
