@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 14:48:02 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/15 15:20:53 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/15 20:00:26 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,19 @@ void polish_lexer(t_lexer** lexer)
     lex = *lexer;
     while (lex)
     {
-        if ((lex->token == QUOTE ||lex->token == DOUBLE_QUOTE 
-            || lex->token == WHITE_SPACE) && lex->state == GENERAL)
+        if ((lex->token == QUOTE ||lex->token == DOUBLE_QUOTE) 
+            && lex->state == GENERAL)
         {
             tmp = lex;
             lex = lex->next;
+            ft_lexdel(ft_lexretract(lexer, tmp));
+        }
+        else if ((lex->token == REDIR_IN || lex->token == REDIR_OUT
+                || lex->token == DREDIR_OUT || lex->token == HERE_DOC)
+                && lex->next && lex->next->token == WHITE_SPACE
+                && lex->next->state == GENERAL)
+        {
+            tmp = lex->next;
             ft_lexdel(ft_lexretract(lexer, tmp));
         }
         else
@@ -52,30 +60,42 @@ void polish_lexer(t_lexer** lexer)
     }
 }
 
+t_lexer* find_next_quote(t_lexer* node)
+{
+    t_lexer*    next_quote;
+
+    if (!node)
+        return (NULL);
+    next_quote = node->next;
+    while(next_quote && next_quote->token != node->token)
+        next_quote = next_quote->next;
+    return (next_quote);
+}
+
 void add_empty(t_lexer** lexer)
 {
     t_lexer*    lex_ptr;
+    t_lexer*    tmp;
     
-
     if (!*lexer)
         return ;
     lex_ptr = *lexer;
     while(lex_ptr)
     {
-		if (!lex_ptr->next)
-			return ;
-        if ((lex_ptr->token == QUOTE 
-            && (lex_ptr)->next->token == QUOTE)
-            || (lex_ptr->token == DOUBLE_QUOTE 
-            && (lex_ptr)->next->token == DOUBLE_QUOTE))
+        if (lex_ptr->token == QUOTE || lex_ptr->token == DOUBLE_QUOTE)
         {
-            ft_lexinsert(lexer, lex_ptr, lex_ptr->next, ft_lexnew(ft_strdup("\0"), WORD));
-			lex_ptr = ((lex_ptr->next)->next)->next;
-        }
+            tmp = find_next_quote(lex_ptr);
+            if (tmp && lex_ptr->next == tmp)
+                ft_lexinsert(lexer, lex_ptr, tmp, ft_lexnew(ft_strdup("\0"), WORD));
+            lex_ptr = tmp;
+            if (lex_ptr)
+                lex_ptr = lex_ptr->next;
+        } 
         else
             lex_ptr = lex_ptr->next;
     }
 }
+
 
 int is_env(t_lexer*	node)
 {

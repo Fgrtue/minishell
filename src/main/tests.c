@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   tests.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/12/15 20:21:47 by kkopnev       #+#    #+#                 */
+/*   Updated: 2023/12/18 11:39:25 by kkopnev       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 void print_lex(t_lexer* lexer);
@@ -52,7 +64,8 @@ void print_cmd(t_cmd* cmd)
 
 int main(int argc, char **argv, char **env)
 {
-    char *line1="ab >> eojpej $ alkf $a >       ";
+    char *line1="$USER$LOSER Jaja $? Arbuzer$ABUSER$Oran|gutuzer $REDIRECTION>$FOGAZER";
+
 char *line2="cd ../../../../../..";
 char *line3="cd ~";
 char *line4="cd";
@@ -99,7 +112,7 @@ char *line44="echo bonjour \\; ls";
 char *line45="$";
 char *line46="$LESS$VAR";
 char *line47="..";
-char *line48="echo '\"abc\"'";
+char *line48="echo \'\"abc\"\'";
 char *line49="echo \"\" bonjour";
 char *line50="cat | cat | cat | ls";
 char *line51="cat Makefile | grep pr | head -n 5 | cd file_not_exi";
@@ -133,12 +146,12 @@ char *line78="echo \"$tests\" \"Makefile\"";
 char *line79="export $var ($var does not exists)";
 char *line80="export test=\"  foo    bar  \" ; echo $test";
 char *line81="export test=\"  foo    bar  \" ; echo ab$test";
-char *line82="export test=\"  foo    bar  \" ; echo \"ab\"$test";
+char *line82="export test=\"  foo    bar  \" ; echo \"ab\"\"$test\"";
 char *line83="export test=\" foo   bar \" ; echo \"\"$test\"\"";
 char *line84="export test=\" foo   bar \" ; echo \"\"\"$test\"\"\"";
 char *line85="export var= s\\ -la ; l$var";
 char *line86="export var=at ; c$var Makefile";
-char *line87="export loop=\'bonjour$loop\' ; echo $loop";
+char *line87="export loop=\"bonjour$loop\" ; echo $loop";
 char *line88="export test=\"file1 file2\" ; >$test";
 char *line89="export test=\"file1 file2\" ; >\"$test\"";
 char *line90="export test=\"file1 file2\" ; >$test >hey";
@@ -170,18 +183,32 @@ char *line113="< in wc -l | wc>out -l";
 	t_cmd	*cmds;
 	// char* line = "command1 \" command2 \" \' command3 \'";
 
-    lst = ft_lexer(line89);
+
+    lst = ft_lexer(line1);
+
+    
     print_lex(lst);
 	// expand_env(&lst, env, 0);
 	// print_lex(lst);
-	// polish_lex(&lst);
+	// join_quotes(&lst);
 	// print_lex(lst);
 	// cmds = get_cmds(&lst, lst);
 	// print_cmd(cmds);
 	ft_lexclean(&lst);
 	// ft_cmdclean(&cmds);
+
+
+	// expand_env(&lst, env, 0);
+	// // print_lex(lst);
+	// join_quotes(&lst);
+	// // print_lex(lst);
+	// cmds = get_cmds(&lst, lst);
+	// print_cmd(cmds);
+	// ft_lexclean(&lst);
+	// ft_cmdclean(&cmds);
 	return (0);
 }
+
 /* 
 char *line1="";
 char *line2="cd ../../../../../..";
