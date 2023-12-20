@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 11:09:00 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 15:15:03 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/20 21:40:10 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,7 @@ t_lexer*    lexer_tokenizer(t_lexer** lexer, char* str)
 		else if (*str == REDIR_IN)
 			str = handle_redir(str, lexer, REDIR_IN);
 		else
-		{
 			str = handle_word(str, lexer, WORD);
-			printf("%s", str);
-		}
 	}
     return (*lexer);
 }

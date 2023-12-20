@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 10:28:30 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/14 18:54:02 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/20 22:12:05 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,13 @@ t_cmd*	ft_cmdnew(void)
 	if (cmd == NULL)
 		return (NULL);
 	cmd->args = NULL;
-    // int				(*builtin)(t_tools *, struct s_cmd *);
+    cmd->builtin = NULL;
     cmd->num_redir = 0;
+    (cmd->fd_io)[0] = 0;
+    (cmd->fd_io)[1] = 1;
+    cmd->hd_bool = 0;
+    cmd->dr_bool = 0;
+    cmd->here_doc = -1;
 	cmd->redir= NULL;
     cmd->prev = NULL;
     cmd->next = NULL;
