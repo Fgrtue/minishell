@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 14:55:23 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/20 17:15:07 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,26 @@ how the builtins should work?
 
 how the wait function should wait?
 */	
+
+
+void	process_cmd(t_cmd *cmd, char **env)
+{
+	int	exit_c;
+	int	inf;
+	
+	cmd->pid = fork();
+	if (cmd->pid == -1)
+		error("Fork"); // exit
+	if (cmd->pid == 0)
+	{
+		check_redirection(cmd); // dup2nf, STDIN_FILENO) dup2(outf, STDIN_FILENO)
+		if (cmd->builtin != NULL)
+			exit_c = cmd->builtin(cmd);
+		run_cmd(cmd, env);
+	}
+	else
+		close_fd(cmd->fd_io);
+}
 		
 	
 void	executor(t_cmd *cmd, char **env)
@@ -65,13 +85,19 @@ void	executor(t_cmd *cmd, char **env)
 	if (!cmd->next)
 		simple_exe(cmd, env);
 	else
-		pipe_exe(cmd, env);
+		pipe_exe(cmd, env, fd);
 	while (cmd)
 	{
 
-		if (cmd->next && pipe(fd) != -1)
-			process_cmd(cmd, env, fd);
-			
+		// if (cmd->next && pipe(fd) != -1)
+		// 	process_cmd(cmd, env, fd);
+		if (pipe(fd) == -1)
+			error("Pipe");
+		cmd->fd_io[1] = fd[1];
+		process_cmd(cmd, env);
+		if (cmd->next)
+			cmd->next->fd_io[0] = fd[0];
+		cmd = cmd->next;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/18 12:42:00 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/20 16:43:57 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
  * is the whole word, sometimes we have that assignment is done throgh "" and ''
  * TO DO: HANDLE THE CASE OF ECHO 'hh'$USER "hh""$USER" hh$USER 'hh'"jj"
  * TO CHECK: DO WE HAVE TO SEPARATE ARGUMENTS IN THE CASE ab" ""$USER". but not in the case ab"$USER" ? (ATM: NO)
+ * TO DO: SET I/O IN THE CREATIONS OF THE COMMAND NODE
  * 
  * 
 >>>>>>> main

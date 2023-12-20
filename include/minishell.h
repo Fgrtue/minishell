@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 14:56:39 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/20 15:57:15 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,7 @@ void    ft_cmdclean(t_cmd** cmd);
 void	print_lex(t_lexer* lexer);
 void	print_cmd(t_cmd* cmd);
 int		check_quotes(char *str);
+void	check_redirection(t_cmd *cmd);
+
 
 #endif

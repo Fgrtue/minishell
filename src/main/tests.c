@@ -173,17 +173,40 @@ char *line113="< in wc -l | wc>out -l";
 	// // char* line = "command1 \" command2 \" \' command3 \'";
 
 
-    lst = ft_lexer(line0);
+    // lst = ft_lexer(line0);
+	// // print_lex(lst);
+	// expand_env(&lst, env, 127);
 	// print_lex(lst);
-	expand_env(&lst, env, 127);
-	print_lex(lst);
-    printf("\n\n\n");
-	polish_lex(&lst);
-	print_lex(lst);
-	// cmds = get_cmds(&lst, lst);
-	// print_cmd(cmds);
-	ft_lexclean(&lst);
-	// ft_cmdclean(&cmds);
+    // printf("\n\n\n");
+	// polish_lex(&lst);
+	// print_lex(lst);
+	// // cmds = get_cmds(&lst, lst);
+	// // print_cmd(cmds);
+	// ft_lexclean(&lst);
+	// // ft_cmdclean(&cmds);
+
+
+    int fd = open("file1", O_RDWR| O_CREAT, 0644);
+    char* line;
+    unlink("file1");
+    while(line != delim)
+    {
+        line = readline("minishell: ");
+        write(fd, line, ft_strlen(line));
+    }
+    // close(fd);
+    // fd = open("file1", O_RDWR| O_CREAT | O_TRUNC, 0644);
+    // unlink("file1");
+    read(fd, line, 3);
+    line[3] = '\n';
+    close(fd);
+    printf("%s", line);
+
+
+
+
+
+
 	return (0);
 }
 /* 
