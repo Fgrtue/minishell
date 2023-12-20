@@ -6,45 +6,78 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/11 12:35:21 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/15 18:36:16 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/20 14:54:31 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-t_lexer	*ft_lexjoin(t_lexer **lst, t_lexer *lexer)
+void	ft_lexjoin_quotes(t_lexer **lst, t_lexer *lexer)
 {
 	t_lexer			*node;
 	t_lexer			*track;
 	char			*str;
 
-	str = NULL;
-	track = lexer;
-	while (lexer && lexer->state != GENERAL)
+	while (lexer)
 	{
-		str = ft_strjoin_free(str, lexer->content);
+		str = NULL;
+		if (lexer->state != GENERAL)
+		{	
+			track = lexer;
+			while (track && track->state != GENERAL)
+			{
+				str = ft_strjoin_free(str, track->content);
+				track = track->next;
+			}
+			node = ft_lexnew(str, WORD);
+			ft_lexinsert(lst, lexer->prev, lexer, node);
+			while (node->next && node->next->state != GENERAL)
+				ft_lexdel(ft_lexretract(lst, node->next));
+			lexer = node;
+		}
 		lexer = lexer->next;
 	}
-	node = ft_lexnew(str, WORD);
-	ft_lexinsert(lst, track->prev, track, node);
-	while (node->next && node->next->state != GENERAL)
-		ft_lexdel(ft_lexretract(lst, node->next));
-	return (node);
 }
 
+void	ft_lexjoin_word(t_lexer **lst, t_lexer *lexer)
+{
+	t_lexer			*node;
+	t_lexer			*track;
+	char			*str;
 
-void	join_quotes(t_lexer **lst)
+	while (lexer)
+	{
+		str = NULL;
+		if (lexer->token == WORD && lexer->next && \
+			 lexer->next->token == WORD)
+		{	
+			track = lexer;
+			while (track && track->token == WORD)
+			{
+				str = ft_strjoin_free(str, track->content);
+				track = track->next;
+			}
+			node = ft_lexnew(str, WORD);
+			ft_lexinsert(lst, lexer->prev, lexer, node);
+			while (node->next && node->next->token == WORD)
+				ft_lexdel(ft_lexretract(lst, node->next));
+			lexer = node;
+		}
+		lexer = lexer->next;
+	}
+}
+
+void	polish_lex(t_lexer **lst)
 {
 	t_lexer	*lex;
 	t_lexer	*tmp;
 
+	ft_lexjoin_quotes(lst, *lst);
+	ft_lexjoin_word(lst, *lst);
 	lex = *lst;
 	while (lex)
 	{
-		if (lex->state != GENERAL)
-			lex = ft_lexjoin(lst, lex);
-		if ((lex->token == WHITE_SPACE && lex->state == GENERAL) \
-			|| (lex->token == ENV && lex->len == 0))
+		if (lex->token == WHITE_SPACE)
 		{
 			tmp = lex;
 			lex = lex->next;

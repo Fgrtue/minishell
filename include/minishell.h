@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/15 16:09:45 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/20 14:56:39 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # include "../libft/libft.h"
 
 void	expand_env(t_lexer **lst, char **env, int exit_c);
-void	join_quotes(t_lexer **lst);
+void	polish_lex(t_lexer **lst);
 t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer);
 
 t_cmd*	ft_cmdnew(void);
@@ -43,7 +43,8 @@ t_cmd*	ft_cmdlast(t_cmd* cmd);
 void	ft_cmddel(t_cmd* node);
 void    ft_cmdclean(t_cmd** cmd);
 
-void print_lex(t_lexer* lexer);
-void print_cmd(t_cmd* cmd);
+void	print_lex(t_lexer* lexer);
+void	print_cmd(t_cmd* cmd);
+int		check_quotes(char *str);
 
 #endif

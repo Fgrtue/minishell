@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/15 18:28:19 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/20 14:54:43 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_lexer	*fill_cmd_args(t_lexer *lexer, t_cmd *cmd, int size)
 	return (lexer);
 }
 
-void	fill_cmd(t_lexer **lst, t_lexer *lexer, t_cmd *cmd)
+void	fill_redir(t_lexer **lst, t_lexer *lexer, t_cmd *cmd)
 {
 	while (lexer && lexer->token != PIPE_LINE)
 	{
@@ -83,12 +83,12 @@ t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
 		cur = ft_cmdnew();
 		if (lexer->token == PIPE_LINE)
 		{
-			fill_cmd(lst, lexer->next, cur);
+			fill_redir(lst, lexer->next, cur);
 			lexer = lexer->next;
 		}
 		else
 		{
-			fill_cmd(lst, lexer, cur);
+			fill_redir(lst, lexer, cur);
 			lexer = *lst;
 		}
 		lexer = fill_cmd_args(lexer, cur, args_size(lexer));
@@ -96,9 +96,6 @@ t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
 	}
 	return (cmd);
 }
-
-			// if (lexer->next->token != WORD && lexer->next->token != ENV)
-			// 	exit(EXIT_FAILURE); // TO DO: error("syntax error near unexpected token");
 
 /**
  * There will be two functions:
