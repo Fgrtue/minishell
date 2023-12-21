@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 22:44:46 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/21 15:40:12 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,16 @@ int here_doc(t_cmd*	cmd, char* inf)
 {
 	char*	line;
 	
-	line = NULL;
 	if (cmd->here_doc != -1)
 		close(cmd->here_doc);
 	cmd->here_doc = open(inf, O_RDWR| O_CREAT | O_TRUNC, 0644);
+	line = readline("heredoc: ");
 	while (ft_strncmp(line, inf, ft_strlen(inf)) != 0)
 	{
+		write(cmd->here_doc, line, ft_strlen(line));
+		write(cmd->here_doc, "\n", 1);
 		// free(line);
 		line = readline("heredoc: ");
-		write(cmd->here_doc, line, ft_strlen(line));
 	}
 	// free(line);
 	return (1);
@@ -96,6 +97,11 @@ void set_redir(t_cmd* cmd, char* inf, char* outf)
 		(cmd->fd_io)[0] = cmd->here_doc;
 	else if (inf && cmd->hd_bool == 0)
 		(cmd->fd_io)[0] = open(inf, O_RDONLY);
+	// check open error
+	if ((cmd->fd_io)[1] == -1)
+		error(outf);
+	if ((cmd->fd_io)[0] == -1)
+		error(inf);
 }
 
 void	check_redirection(t_cmd *cmd)
