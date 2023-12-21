@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/11 12:35:21 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 14:54:31 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/20 18:20:41 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,22 +87,3 @@ void	polish_lex(t_lexer **lst)
 			lex = lex->next;
 	}
 }
-
-/**
- * 
-
-INPUT: Expanded t_lexer 
-OUTPUT: Polished t_lexer (with all the useful parts)
-ALGORITHM:
-
-	We go through the t_lexer until the end. 
-
-	If we see token DOUBLE_Q/QOUTE/WHITE_SPACE in GENERAL state, then it
-	should delete it from the linked list.
-
-	If it sees something in the state IN_[D]QUOTE, then it changes the linked list:
-
-		updates the content, length and the stat of the first one, str_joining
-		with the second one if it is IN_QUOTE, and deletes the following node
-		(Clearning everything)
-*/

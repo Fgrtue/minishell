@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 12:27:46 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/18 11:56:44 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/20 15:14:05 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char* handle_word(char* str, t_lexer** lexer, int token);
 int word_len(char* str)
 {
     int i;
-
+    
     i = 0;
     if (!str[i])
         return (i);
