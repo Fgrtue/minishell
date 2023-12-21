@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 21:24:42 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/21 16:41:45 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
 			lexer = *lst;
 		}
 		lexer = fill_cmd_args(lexer, cur, args_size(lexer));
-		// fill builtins
+		// fill_builtin();
 		ft_cmdaddback(&cmd, cur);
 	}
 	return (cmd);

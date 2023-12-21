@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 22:13:22 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/21 16:47:10 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ void	check_redirection(t_cmd *cmd);
 
 void	executor(t_cmd *cmd, char **env);
 void    pipe_exe(t_cmd* cmd, char** env);
-void    simple_exe(t_cmd*	cmd, char** env);
 void    process_cmd(t_cmd *cmd, char **env);
 
 void	check_redirection(t_cmd *cmd);

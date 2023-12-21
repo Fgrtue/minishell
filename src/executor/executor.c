@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/21 16:11:37 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/21 17:53:08 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,25 +87,14 @@ void	process_cmd(t_cmd *cmd, char **env)
 	{
 		check_redirection(cmd); // inside command we have fd_io[2] where we write the input and output of the command. This function changes these values if needed.
 		printf("Redirections are %d %d\n", (cmd->fd_io)[0], (cmd->fd_io)[1]);
-		execute_cmd(cmd, env);
+		char line2[11];
+		read(cmd->here_doc, line2, 10);
+		printf("%s\n", line2);
+		// execute_cmd(cmd, env);
 	}
 	else
 		close_fd(cmd->fd_io); // in case of the parent process close all the files.
 }
-/*
-int	simple_exe(t_cmd *cmd, char **env)
-{
-	int	exit_c;
-	
-	printf("We got here!\n");
-	check_redirection(cmd);
-	printf("Redirections are %d %d\n", (cmd->fd_io)[0], (cmd->fd_io)[1]);
-	printf("We didn't get here\n");
-	execute_cmd(cmd, env);
-	//	3. execute the command
-	return (exit_c);
-}
-*/
 
 void pipe_exe(t_cmd* cmd, char** env)
 {
@@ -114,7 +103,7 @@ void pipe_exe(t_cmd* cmd, char** env)
 	while (cmd)
 	{
 		if (cmd->next && pipe(fd) == -1) //do we need pipe if it is the last command
-			error("Pipe");
+			perror("Pipe");
 		if (!cmd->next)
 			(cmd->fd_io)[1] = fd[1];
 		process_cmd(cmd, env);
@@ -135,6 +124,7 @@ void	executor(t_cmd *cmd, char **env)
 		pipe_exe(cmd, env);
 		exit_c = ft_wait(cmd);
 	}
+	printf("%d\n", exit_c);
 }
 
 
