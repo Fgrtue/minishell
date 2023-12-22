@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <unistd.h>
 
 int check_quotes(char*  str)
 {
@@ -32,6 +33,9 @@ int main (void)
 {
     char    str[] = "the quotes \" are \" not \' \' closed \" \' \" right";
 
-    printf("%d\n", check_quotes(str));
+    // "/usr/bin/echo" and "/bin/echo" can execute 
+    if (access("/usr/bin/echo", F_OK) == 0)
+        printf("%d\n", check_quotes(str));
+
     return (0);
 }

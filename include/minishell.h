@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 22:13:22 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/22 12:29:17 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,13 @@ void	check_redirection(t_cmd *cmd);
 
 void	executor(t_cmd *cmd, char **env);
 void    pipe_exe(t_cmd* cmd, char** env);
-void    simple_exe(t_cmd*	cmd, char** env);
 void    process_cmd(t_cmd *cmd, char **env);
 
 void	check_redirection(t_cmd *cmd);
 void    set_redir(t_cmd* cmd, char* inf, char* outf);
 char*	redir_out(t_cmd*	cmd, t_lexer* redir);
 char*	redir_in(t_cmd*	cmd, t_lexer* redir);
-int     here_doc(t_cmd*	cmd, char* inf);
-
+char	*here_doc(t_cmd *cmd, char *inf);
 
 
 

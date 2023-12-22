@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        ::::::::            */
-/*   executor.c                                         :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 09:58:35 by kkopnev       ########   odam.nl         */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../include/minishell.h"
 
 int	ft_wait(t_cmd* cmd)
@@ -51,6 +39,7 @@ char	*get_path(char *cmd, char **env)
 		}
 		free(path);
 	}
+	printf("%s", path);
 	return (NULL);
 }
 
@@ -61,15 +50,11 @@ void	execute_cmd(t_cmd *cmd, char **env)
 	dup2((cmd->fd_io)[0], STDIN_FILENO);
 	dup2((cmd->fd_io)[1], STDOUT_FILENO);
 	close_fd(cmd->fd_io);
+	if (!cmd->args)
+		exit(EXIT_SUCCESS);
 	if (cmd->builtin != NULL) // check whether the command is builtin.
-		exit(cmd->builtin(cmd));
-	if (cmd->args)
-		path = get_path((cmd->args)[0], env);
-	// else
-	// {
-	// 	// TO DO: WHAT IF THERE ARE NO ARGS?
-	// 	return ;	
-	// }
+		exit(cmd->builtin(cmd, env));
+	path = get_path((cmd->args)[0], env);
 	if (path)
 		execve(cmd->args[0], cmd->args, env);
 	else
@@ -91,10 +76,8 @@ void	process_cmd(t_cmd *cmd, char **env)
 		perror("Fork"); // exit
 	if (cmd->pid == 0) // part for the child proccess
 	{
-		check_redirection(cmd); // inside command we have fd_io[2] where we write the input and output of the command. This function changes these values if needed.
-		printf("Redirections are %d %d\n", (cmd->fd_io)[0], (cmd->fd_io)[1]);
 		char line2[11];
-		read(cmd->here_doc, line2, 10);
+		read((cmd->fd_io)[0], line2, 10);
 		printf("%s\n", line2);
 		// execute_cmd(cmd, env);
 	}
@@ -110,12 +93,14 @@ void pipe_exe(t_cmd* cmd, char** env)
 	{
 		if (cmd->next && pipe(fd) == -1) //do we need pipe if it is the last command
 			perror("Pipe");
-		if (!cmd->next)
+		if (cmd->next)
 			(cmd->fd_io)[1] = fd[1];
+		check_redirection(cmd); // inside command we have fd_io[2] where we write the input and output of the command. This function changes these values if needed.
 		process_cmd(cmd, env);
 		if (cmd->next) 
 			(cmd->next->fd_io)[0] = fd[0];
 		cmd = cmd->next;
+		// close(fd[1]);
 	}
 }
 	
@@ -124,19 +109,10 @@ void	executor(t_cmd *cmd, char **env)
 	int	exit_c;
 	
 	if (!cmd->next && cmd->builtin)
-		exit_c = cmd->builtin(cmd);
+		exit_c = cmd->builtin(cmd, env);
 	else
 	{
 		pipe_exe(cmd, env);
 		exit_c = ft_wait(cmd);
 	}
-	printf("%d\n", exit_c);
 }
-
-
-
-/**
- * 
- * 1. if the command name contains no slashes, we locate it
- * 2. if 
-*/

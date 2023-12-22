@@ -1,21 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   signal.c                                           :+:    :+:            */
+/*   env.c                                              :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
+/*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/21 12:58:14 by jiajchen      ########   odam.nl         */
+/*   Created: 2023/12/22 16:36:50 by kkopnev       #+#    #+#                 */
+/*   Updated: 2023/12/22 16:43:50 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	
-
-void	signals_handler()
+int ft_env(t_cmd* cmd, char** env)
 {
-	signal(SIGINT, );
-	signal(SIGCONT, SIGINT);
+    int i;
+
+    i = 0;
+    while(env[i])
+    {
+        write((cmd->fd_io)[1], env[i], ft_strlen(env[i]));
+        write((cmd->fd_io)[1], "\n", 1);
+        i++;
+    }
+    return (0);
 }

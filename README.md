@@ -24,6 +24,24 @@
  * TO DO: SET I/O IN THE CREATIONS OF THE COMMAND NODE
  * TO DO: delete all the printf's
  * TO CHECK: when we create new nodes and something goes wrong -- do we handle it?
+ * TO DO: protect the open() function
+ * 
+ * COMMENT:
+ * ./program absolute |cat| didnt split tokens from strings 
+ * correctly cat | cat | cat | cat didnt link the pipes correctly 
+ * for redirects you need to check if you can access all of the redirects 
+ * before you continue with the rest of your execution 
+ * << stop cat | cat | cat << stop2 << stop < infile cat cat infile | cat > outfile | ls 
+ * --- if i chmod -w outfile it just silently ignores that 
+ * i dont have access to outfile megashell> unset PATH megashell> cat 
+ * You guys will need to rewrite the way you interpet redirects. 
+ * Tokens should be allowed next to strings ie. cat|cat & <infile.
+ * Absolute path check should be improved 
+ * Access checks for program and files should also be improved 
+ * Goodluck with improving your minishell.
+ * 
+ * 
+
 
 
 ### LEXER
