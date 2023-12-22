@@ -6,11 +6,17 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 21:24:42 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/22 10:45:48 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+void*	fill_builtins(t_cmd* cmd)
+{
+	if (!cmd->args)
+		return ;
+}
 
 t_lexer	*fill_cmd_args(t_lexer *lexer, t_cmd *cmd, int size)
 {
@@ -81,6 +87,8 @@ t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
 	while (lexer)
 	{
 		cur = ft_cmdnew();
+		if (cur == NULL)
+			perror("cmdnew: ");
 		if (lexer->token == PIPE_LINE)
 		{
 			fill_redir(lst, lexer->next, cur);
@@ -92,7 +100,7 @@ t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
 			lexer = *lst;
 		}
 		lexer = fill_cmd_args(lexer, cur, args_size(lexer));
-		// fill builtins
+		fill_builtins(cur);
 		ft_cmdaddback(&cmd, cur);
 	}
 	return (cmd);

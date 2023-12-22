@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 20:21:47 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/20 22:37:28 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/22 10:22:59 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,18 @@ char *line113="< in wc -l | wc>out -l";
 	// print_cmd(cmds);
 	ft_lexclean(&lst);
 	ft_cmdclean(&cmds);
+
+    // int fd = open("file1", O_RDWR| O_CREAT, 0644);
+    // char* line;
+    // unlink("file1");
+    // line = readline("minishell: ");
+    // write(fd, line, ft_strlen(line));
+    // sleep(3);
+    // char* line2;
+    // read(fd, line2, 3);
+    // line[3] = '\n';
+    // printf("%s", line2);
+    // close(fd);
     
 	// expand_env(&lst, env, 0);
 	// // print_lex(lst);

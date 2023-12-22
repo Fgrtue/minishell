@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 21:08:21 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/20 22:13:32 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/22 09:42:49 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 void close_fd(int fd[])
 {
-    close(fd[0]);
-    close(fd[1]);
+    if (fd[0] != 0)
+        close(fd[0]);
+    if (fd[1] != 1)
+        close(fd[1]);
 }
