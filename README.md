@@ -22,7 +22,7 @@
  * TO DO: HANDLE THE CASE OF ECHO 'hh'$USER "hh""$USER" hh$USER 'hh'"jj"
  * TO CHECK: DO WE HAVE TO SEPARATE ARGUMENTS IN THE CASE ab" ""$USER". but not in the case ab"$USER" ? (ATM: NO)
  * TO DO: SET I/O IN THE CREATIONS OF THE COMMAND NODE
- * 
+ * TO DO: protect the open() function
  * 
 
 

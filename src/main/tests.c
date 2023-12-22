@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 20:21:47 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/21 17:46:50 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/22 14:17:41 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void print_cmd(t_cmd* cmd)
 
 int main(int argc, char **argv, char **env)
 {
-    char *line0="> file1 >file2 cmd1  < file4 << abd | <file5 cmd2 >file6 << abc";
+    char *line0="<< kk ls -l | cat  -e | cat > file8";
     char *line1="\"\" $a $?ab$LS$loop ab\" \"\" 'hh$USER\"\'$USER\'$LS";
 
 // char *line2="cd ../../../../../..";
@@ -198,8 +198,8 @@ char *line113="< in wc -l | wc>out -l";
 	polish_lex(&lst);
 	// print_lex(lst);
 	cmds = get_cmds(&lst, lst);
-    executor(cmds, env);
 	// print_cmd(cmds);
+    executor(cmds, env);
 	ft_lexclean(&lst);
 	ft_cmdclean(&cmds);
 

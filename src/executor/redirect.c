@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/21 17:52:03 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/22 14:18:39 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,43 +29,44 @@
 
 */
 
-int here_doc(t_cmd*	cmd, char* inf)
+char	*here_doc(t_cmd *cmd, char *inf)
 {
 	char*	line;
-	
-	if (cmd->here_doc != -1)
-		close(cmd->here_doc);
-	cmd->here_doc = open(inf, O_RDWR| O_CREAT | O_TRUNC, 0644);
-	// unlink(inf);
+	int		hd;
+
+	hd = open("2", O_RDWR | O_CREAT | O_TRUNC, 0644);
+	printf("Im %d from %s\n", hd, cmd->heredoc);
+	if (hd == -1)
+		perror("heredoc");
 	line = readline("heredoc: ");
 	while (ft_strncmp(line, inf, ft_strlen(inf)) != 0)
 	{
-		write(cmd->here_doc, line, ft_strlen(line));
-		write(cmd->here_doc, "\n", 1);
+		ft_putendl_fd(line, hd);
 		free(line);
 		line = readline("heredoc: ");
 	}
 	free(line);
-	return (1);
+	close(hd);
+	return (cmd->heredoc);
 }
 
-char*	redir_in(t_cmd*	cmd, t_lexer* redir)
-{
-	if (redir->token == REDIR_IN)
-	{
-		cmd->hd_bool = 0;
-		return(redir->next->content);
-	}
-	else if (redir->token == HERE_DOC)
-	{
-		cmd->hd_bool = here_doc(cmd, redir->next->content);
-		return(redir->next->content);
-	}
-	else
-		return (NULL);
-}
+// char*	redir_in(t_cmd*	cmd, t_lexer* redir)
+// {
+// 	if (redir->token == REDIR_IN)
+// 	{
+// 		cmd->hd_bool = 0;
+// 		return(redir->next->content);
+// 	}
+// 	else if (redir->token == HERE_DOC)
+// 	{
+// 		cmd->hd_bool = here_doc(cmd, redir->next->content);
+// 		return(cmd->heredoc);
+// 	}
+// 	else
+// 		return (NULL);
+// }
 
-char*	redir_out(t_cmd*	cmd, t_lexer* redir)
+char*	redir_out(t_cmd *cmd, t_lexer *redir)
 {
 	if (redir->token == REDIR_OUT)
 	{ 
@@ -81,29 +82,22 @@ char*	redir_out(t_cmd*	cmd, t_lexer* redir)
 		return (NULL);
 }
 
-void set_redir(t_cmd* cmd, char* inf, char* outf)
+void set_redir(t_cmd *cmd, char *inf, char *outf)
 {
-	// close the pipe if needed
 	if (inf && (cmd->fd_io)[0] != 0)
 		close((cmd->fd_io)[0]);
 	if (outf && (cmd->fd_io)[1] != 1)
-		close((cmd->fd_io)[0]);
-	printf("inf: %s\noutf: %s\n", inf, outf);
-	//set new fd
+		close((cmd->fd_io)[1]);
+	// printf("inf: %s\noutf: %s\n", inf, outf);
 	if (outf && cmd->dr_bool == 1)
 		(cmd->fd_io)[1] = open(outf, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else if (outf && cmd->dr_bool == 0)
 		(cmd->fd_io)[1] = open(outf, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (inf && cmd->hd_bool == 1)
-	{
-		close(cmd->here_doc);
-		cmd->here_doc = open(inf, O_RDONLY);
-		unlink(inf);
-		(cmd->fd_io)[0] = cmd->here_doc;
-	}
-	else if (inf && cmd->hd_bool == 0)
+	if (inf)
 		(cmd->fd_io)[0] = open(inf, O_RDONLY);
-	// check open error
+	if (access(cmd->heredoc, F_OK) == 0)
+		unlink(cmd->heredoc);
+	// printf("Redirections are %d %d\n", (cmd->fd_io)[0], (cmd->fd_io)[1]);
 	if ((cmd->fd_io)[1] == -1)
 		perror(outf); //To DO
 	if ((cmd->fd_io)[0] == -1)
@@ -115,14 +109,18 @@ void	check_redirection(t_cmd *cmd)
 	t_lexer	*redir;
 	char	*inf;
 	char	*outf;
+	static int	hd;
 
 	inf = NULL;
 	outf = NULL;
 	redir = cmd->redir;
+	cmd->heredoc = ft_itoa(++hd);
 	while (redir)
 	{
-		if (redir->token == REDIR_IN || redir->token == HERE_DOC)
-			inf = redir_in(cmd, redir);
+		if (redir->token == REDIR_IN)
+			inf = redir->next->content;
+		if (redir->token == HERE_DOC)
+			inf = here_doc(cmd, redir->next->content);
 		if (redir->token == REDIR_OUT || redir->token == DREDIR_OUT)
 			outf = redir_out(cmd, redir);
 		redir = redir->next->next;
