@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 14:14:20 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/22 15:11:06 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ char	*get_path(char *cmd, char **env)
 		}
 		free(path);
 	}
-	printf("%s", path);
 	return (NULL);
 }
 
@@ -68,7 +67,7 @@ void	execute_cmd(t_cmd *cmd, char **env)
 		exit(cmd->builtin(cmd, env));
 	path = get_path((cmd->args)[0], env);
 	if (path)
-		execve(cmd->args[0], cmd->args, env);
+		execve(path, cmd->args, env);
 	else
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
@@ -88,11 +87,7 @@ void	process_cmd(t_cmd *cmd, char **env)
 		perror("Fork"); // exit
 	if (cmd->pid == 0) // part for the child proccess
 	{
-		check_redirection(cmd); // inside command we have fd_io[2] where we write the input and output of the command. This function changes these values if needed.
-		char line2[11];
-		read((cmd->fd_io)[0], line2, 10);
-		printf("%s\n", line2);
-		// execute_cmd(cmd, env);
+		execute_cmd(cmd, env);
 	}
 	else
 		close_fd(cmd->fd_io); // in case of the parent process close all the files.
@@ -108,11 +103,11 @@ void pipe_exe(t_cmd* cmd, char** env)
 			perror("Pipe");
 		if (cmd->next)
 			(cmd->fd_io)[1] = fd[1];
+		check_redirection(cmd); // inside command we have fd_io[2] where we write the input and output of the command. This function changes these values if needed.
 		process_cmd(cmd, env);
 		if (cmd->next) 
 			(cmd->next->fd_io)[0] = fd[0];
 		cmd = cmd->next;
-		// close(fd[1]);
 	}
 }
 	
@@ -121,7 +116,10 @@ void	executor(t_cmd *cmd, char **env)
 	int	exit_c;
 	
 	if (!cmd->next && cmd->builtin)
+	{
+		check_redirection(cmd); 
 		exit_c = cmd->builtin(cmd, env);
+	}
 	else
 	{
 		pipe_exe(cmd, env);

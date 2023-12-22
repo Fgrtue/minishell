@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 14:18:39 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/22 15:11:32 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,7 @@ char	*here_doc(t_cmd *cmd, char *inf)
 	char*	line;
 	int		hd;
 
-	hd = open("2", O_RDWR | O_CREAT | O_TRUNC, 0644);
-	printf("Im %d from %s\n", hd, cmd->heredoc);
+	hd = open(cmd->heredoc, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (hd == -1)
 		perror("heredoc");
 	line = readline("heredoc: ");
@@ -88,7 +87,6 @@ void set_redir(t_cmd *cmd, char *inf, char *outf)
 		close((cmd->fd_io)[0]);
 	if (outf && (cmd->fd_io)[1] != 1)
 		close((cmd->fd_io)[1]);
-	// printf("inf: %s\noutf: %s\n", inf, outf);
 	if (outf && cmd->dr_bool == 1)
 		(cmd->fd_io)[1] = open(outf, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else if (outf && cmd->dr_bool == 0)
@@ -97,7 +95,6 @@ void set_redir(t_cmd *cmd, char *inf, char *outf)
 		(cmd->fd_io)[0] = open(inf, O_RDONLY);
 	if (access(cmd->heredoc, F_OK) == 0)
 		unlink(cmd->heredoc);
-	// printf("Redirections are %d %d\n", (cmd->fd_io)[0], (cmd->fd_io)[1]);
 	if ((cmd->fd_io)[1] == -1)
 		perror(outf); //To DO
 	if ((cmd->fd_io)[0] == -1)
