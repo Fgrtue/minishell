@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 10:28:30 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 22:12:05 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/22 11:33:02 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ t_cmd*	ft_cmdnew(void)
     (cmd->fd_io)[1] = 1;
     cmd->hd_bool = 0;
     cmd->dr_bool = 0;
-    cmd->here_doc = -1;
+    cmd->heredoc = NULL;
 	cmd->redir= NULL;
     cmd->prev = NULL;
     cmd->next = NULL;
@@ -75,7 +75,8 @@ t_cmd*	ft_cmdlast(t_cmd* cmd)
 void	ft_cmddel(t_cmd* node)
 {
     ft_lexclean(&(node->redir));
-    free_arr(node->args);   
+    free_arr(node->args); 
+    free(node->heredoc);  
 	free(node);
 }
 
