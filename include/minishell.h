@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 11:06:39 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 11:50:52 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void	check_redirection(t_cmd *cmd);
 void	executor(t_cmd *cmd, char **env);
 void    pipe_exe(t_cmd* cmd, char** env);
 void    process_cmd(t_cmd *cmd, char **env);
+char	*find_variable(char *var, char **env, int exit_c);
 
 void	check_redirection(t_cmd *cmd);
 void    set_redir(t_cmd* cmd, char* inf, char* outf);
@@ -68,6 +69,6 @@ int     ft_exit(t_cmd* cmd);
 
 void close_fd(int fd[]);
 
-
+int	ft_pwd(t_cmd *cmd, char **env);
 
 #endif
