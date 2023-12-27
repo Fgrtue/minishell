@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   tests.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/12/15 20:21:47 by kkopnev       #+#    #+#                 */
+/*   Updated: 2023/12/27 13:15:23 by kkopnev       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 #include <stdio.h>
@@ -72,9 +83,9 @@ int check_equal(char*   str)
     return (eq);
 }
 
-int main(int argc, char **argv, char **env)
+int main(int argc, char **argv, char **envp)
 {
-    char *line0="key=val=ue";
+    char *line0="export key1=value1 key2=value2 key3 key4=";
     char *line1="\"\" $a $?ab$LS$loop ab\" \"\" 'hh$USER\"\'$USER\'$LS";
 
 // char *line2="cd ../../../../../..";
@@ -190,24 +201,24 @@ char *line111="unset $(env | cut -d= -f1)";
 char *line112="exit -12";
 char *line113="< in wc -l | wc>out -l";
 
-	// t_lexer	*lst;
-	// t_cmd	*cmds;
+	t_lexer	*lst;
+	t_cmd	*cmds;
+    char**  env;
 
-    printf("The number of equal signs is %d\n", check_eq(line0));
-
-    // lst = ft_lexer(line0);
-	// // print_lex(lst);
-	// expand_env(&lst, env, 127);
-	// // print_lex(lst);
-    // printf("\n\n\n");
-	// polish_lex(&lst);
-	// // print_lex(lst);
-	// cmds = get_cmds(&lst, lst);
-    // ft_exit(cmds);
-	// // print_cmd(cmds);
-    // // executor(cmds, env);
-	// ft_lexclean(&lst);
-	// ft_cmdclean(&cmds);
+    env = create_env(envp);
+    lst = ft_lexer(line0);
+	// print_lex(lst);
+	expand_env(&lst, env, 127);
+	// print_lex(lst);
+    printf("\n\n\n");
+	polish_lex(&lst);
+	// print_lex(lst);
+	cmds = get_cmds(&lst, lst);
+    ft_export(cmds, env);
+	// print_cmd(cmds);
+    // executor(cmds, env);
+	ft_lexclean(&lst);
+	ft_cmdclean(&cmds);
 
     // int fd = open("file1", O_RDWR| O_CREAT, 0644);
     // char* line;

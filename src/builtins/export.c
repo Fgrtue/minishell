@@ -6,9 +6,56 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/23 14:37:22 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/23 16:48:39 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 13:26:38 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "../../include/minishell.h"
+
+int ft_print_exp(t_cmd* cmd, char** env)
+{
+    int i;
+
+    i = -1;
+    while(env[++i])
+    {
+            write((cmd->fd_io)[1], env[i], ft_strlen(env[i]));
+            write((cmd->fd_io)[1], "\n", 1);
+    }
+    return (0);
+}
+
+int ft_export(t_cmd* cmd, char** env)
+{
+    int i;
+    long int len;
+    char*   ptr_eq;
+    char*   key;
+    char**  tmp_env;
+
+    i = 0;
+    tmp_env = env;
+    if (!(cmd->args)[++i])
+        return (ft_print_exp(cmd ,env));
+    else
+    {
+        while((cmd->args)[i])
+        {
+            len = ft_strchr((cmd->args)[i], '=') - (cmd->args)[i];
+            key = ft_calloc(len + 1, sizeof(char));
+            if (key == NULL)
+                return (127); // PROTECT
+            ft_memcpy(key, (cmd->args)[i], len);
+            env = ft_change_env(key, ft_strdup((cmd->args)[i]), tmp_env);
+            if (env == NULL)
+                return (127); // PROTECT
+            // free_env(tmp_env)  ADD FUNCTION;
+            free(key);
+            key = NULL;
+        }
+    }
+    return (0);    
+}
 
 /*
 

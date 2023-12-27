@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   env.c                                              :+:    :+:            */
+/*   pwd.c                                              :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
+/*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/12/22 16:36:50 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/27 12:29:42 by kkopnev       ########   odam.nl         */
+/*   Created: 2023/12/22 15:31:20 by jiajchen      #+#    #+#                 */
+/*   Updated: 2023/12/22 16:00:04 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+#include <linux/limits.h>
 
-int ft_env(t_cmd* cmd, char** env)
+int	ft_pwd(t_cmd *cmd, char **env)
 {
-    int i;
+	char	dir[PATH_MAX];
 
-    i = -1;
-    while(env[++i])
-    {
-        if (ft_strchr(env[i], '=') != NULL)
-        {
-            write((cmd->fd_io)[1], env[i], ft_strlen(env[i]));
-            write((cmd->fd_io)[1], "\n", 1);
-        }
-    }
-    return (0);
+	(void) env;
+	if (getcwd(dir, sizeof(dir)) == NULL)
+	{
+		perror("minishell: pwd: ");
+		return (EXIT_FAILURE);
+	}
+	ft_putendl_fd(dir, (cmd->fd_io)[1]);
+	return (EXIT_FAILURE);
 }

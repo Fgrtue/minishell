@@ -6,25 +6,20 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 14:53:03 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 11:06:33 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 13:47:59 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int check_eq(char*   str)
+int	get_env_size(char **env)
 {
-    int i;
-    int eq;
+	int	i;
 
-    i = -1;
-    eq = 0;
-    while(str[++i])
-    {
-        if (str[i] == '=')
-           eq++; 
-    }
-    return (eq);
+	i = 0;
+	while (env[i])
+		i++;
+	return (i);
 }
 
 char** create_env(char** envp)
@@ -33,14 +28,13 @@ char** create_env(char** envp)
     int j;
     char** env;
 
-    i = -1;
+    i = get_env_size(envp);
+    printf("The size of env %d\n", i);
     j = -1;
     if (!envp)
         return (NULL);
-    while(envp[++i])
-        continue;
-    env = malloc(sizeof(char *) * (i + 2));
-    while(++j < i)    
+    env = malloc(sizeof(char *) * (i + 1));
+    while(++j < (i - 1))    
         env[j] = ft_strdup(envp[j]);
     env[j] = NULL;
     return (env); 

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 11:06:39 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 13:26:07 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 char**  create_env(char** envp);
 int     check_eq(char*   str);
 int     check_quotes(char *str);
+int     get_env_size(char **env);
 
 void	expand_env(t_lexer **lst, char **env, int exit_c);
 void	polish_lex(t_lexer **lst);
@@ -55,6 +56,7 @@ void	check_redirection(t_cmd *cmd);
 void	executor(t_cmd *cmd, char **env);
 void    pipe_exe(t_cmd* cmd, char** env);
 void    process_cmd(t_cmd *cmd, char **env);
+char	*find_variable(char *var, char **env, int exit_c);
 
 void	check_redirection(t_cmd *cmd);
 void    set_redir(t_cmd* cmd, char* inf, char* outf);
@@ -65,9 +67,18 @@ char	*here_doc(t_cmd *cmd, char *inf);
 int     ft_echo(t_cmd* cmd);
 int     ft_env(t_cmd* cmd, char** env);
 int     ft_exit(t_cmd* cmd);
+int     ft_export(t_cmd* cmd, char** env);
+int     ft_print_exp(t_cmd* cmd, char** env);
+char	**ft_change_env(char *var, char *str, char **env);
+char	**ft_del_env(char *var, char **env);
+void	ft_move_env(char **env, char **tmp, int pos);
+int     ft_find_key(char *var, char **env);
+char	*expand_dir(t_cmd *cmd, char *dir, char **env);
+int     ft_cd(t_cmd *cmd, char **env);
+
 
 void close_fd(int fd[]);
 
-
+int	ft_pwd(t_cmd *cmd, char **env);
 
 #endif
