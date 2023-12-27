@@ -1,22 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   exec_utils.c                                       :+:    :+:            */
+/*   env.c                                              :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/12/20 21:08:21 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/22 09:42:49 by kkopnev       ########   odam.nl         */
+/*   Created: 2023/12/22 16:36:50 by kkopnev       #+#    #+#                 */
+/*   Updated: 2023/12/23 13:46:59 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../../include/minishell.h"
 
-void close_fd(int fd[])
+int ft_env(t_cmd* cmd, char** env)
 {
-    if (fd[0] != 0)
-        close(fd[0]);
-    if (fd[1] != 1)
-        close(fd[1]);
+    int i;
+
+    i = -1;
+    while(env[++i])
+    {
+        write((cmd->fd_io)[1], env[i], ft_strlen(env[i]));
+        write((cmd->fd_io)[1], "\n", 1);
+    }
+    return (0);
 }

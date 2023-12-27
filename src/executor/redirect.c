@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 14:18:39 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/22 14:36:06 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ char	*here_doc(t_cmd *cmd, char *inf)
 	char*	line;
 	int		hd;
 
-	hd = open("2", O_RDWR | O_CREAT | O_TRUNC, 0644);
-	printf("Im %d from %s\n", hd, cmd->heredoc);
+	hd = open(cmd->heredoc, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	printf("Im fd %d from %s\n", hd, cmd->heredoc);
 	if (hd == -1)
 		perror("heredoc");
 	line = readline("heredoc: ");

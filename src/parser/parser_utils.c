@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 10:28:30 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 11:33:02 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/22 14:44:40 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_cmd*	ft_cmdnew(void)
     cmd->num_redir = 0;
     (cmd->fd_io)[0] = 0;
     (cmd->fd_io)[1] = 1;
-    cmd->hd_bool = 0;
+    // cmd->hd_bool = 0;
     cmd->dr_bool = 0;
     cmd->heredoc = NULL;
 	cmd->redir= NULL;

@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        ::::::::            */
-/*   executor.c                                         :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 14:14:20 by jiajchen      ########   odam.nl         */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../include/minishell.h"
 
 int	ft_wait(t_cmd* cmd)
@@ -88,7 +76,6 @@ void	process_cmd(t_cmd *cmd, char **env)
 		perror("Fork"); // exit
 	if (cmd->pid == 0) // part for the child proccess
 	{
-		check_redirection(cmd); // inside command we have fd_io[2] where we write the input and output of the command. This function changes these values if needed.
 		char line2[11];
 		read((cmd->fd_io)[0], line2, 10);
 		printf("%s\n", line2);
@@ -108,6 +95,7 @@ void pipe_exe(t_cmd* cmd, char** env)
 			perror("Pipe");
 		if (cmd->next)
 			(cmd->fd_io)[1] = fd[1];
+		check_redirection(cmd); // inside command we have fd_io[2] where we write the input and output of the command. This function changes these values if needed.
 		process_cmd(cmd, env);
 		if (cmd->next) 
 			(cmd->next->fd_io)[0] = fd[0];
@@ -128,11 +116,3 @@ void	executor(t_cmd *cmd, char **env)
 		exit_c = ft_wait(cmd);
 	}
 }
-
-
-
-/**
- * 
- * 1. if the command name contains no slashes, we locate it
- * 2. if 
-*/
