@@ -301,6 +301,31 @@ how the builtins should work?
 how the wait function should wait?
 */	
 
+
+### BUILTINS
+
+FT_FIND_KEY:
+
+INPUT: env, key=
+OUTPUT: ptr
+
+	For cd and export we need functions that will take env with a string (key=)
+	and will check whether there is an element in the env w/ the same key
+	if it finds a key, then return a key. If not -- return NULL
+
+FT_CHANGE_ENV
+
+INPUT: env, string
+OUTPUT: updated env
+
+	It changes an element in the env, if it has the same pointer as FT_FIND_KEY found
+	If FT_FIND_KEY found nothing, then we realloc the env and add string in the end
+
+FT_DEL_ENV
+
+	It either does nothing, either deletes a node from env, depending on the answer of
+	FT_FIND_KEY.
+
 ### PROTECTION OF FUNCTION
 
 
