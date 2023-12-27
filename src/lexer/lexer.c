@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 11:09:00 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 21:40:10 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/22 10:43:16 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ t_lexer* ft_lexer(char* str)
 	if (!str || !*str)
 		return(NULL);
 	lexer = lexer_tokenizer(&lexer, str);
+	if (!lexer)
+		perror("failed lexer: ");
 	add_empty(&lexer);
 	lexer_setstate(lexer);
 	set_env(lexer);

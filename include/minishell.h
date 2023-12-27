@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 16:40:23 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/27 11:50:52 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@
 # include "struct.h"
 # include "lexer.h"
 # include "../libft/libft.h"
+
+char**  create_env(char** envp);
+int     check_eq(char*   str);
+int     check_quotes(char *str);
 
 void	expand_env(t_lexer **lst, char **env, int exit_c);
 void	polish_lex(t_lexer **lst);
@@ -59,7 +63,9 @@ char*	redir_out(t_cmd*	cmd, t_lexer* redir);
 char*	redir_in(t_cmd*	cmd, t_lexer* redir);
 char	*here_doc(t_cmd *cmd, char *inf);
 
-
+int     ft_echo(t_cmd* cmd);
+int     ft_env(t_cmd* cmd, char** env);
+int     ft_exit(t_cmd* cmd);
 
 void close_fd(int fd[]);
 

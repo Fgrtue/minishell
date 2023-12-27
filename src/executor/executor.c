@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 15:11:06 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/27 11:48:43 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,11 +126,3 @@ void	executor(t_cmd *cmd, char **env)
 		exit_c = ft_wait(cmd);
 	}
 }
-
-
-
-/**
- * 
- * 1. if the command name contains no slashes, we locate it
- * 2. if 
-*/
