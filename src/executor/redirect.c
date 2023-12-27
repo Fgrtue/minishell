@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 11:49:36 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/27 20:55:35 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,16 @@ char	*here_doc(t_cmd *cmd, char *inf)
 	hd = open(cmd->heredoc, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (hd == -1)
 		perror("heredoc");
+	sign = 2; //try to handle heredoc special exit
 	line = readline("heredoc: ");
+	sign = 0;
 	while (ft_strncmp(line, inf, ft_strlen(inf)) != 0)
 	{
 		ft_putendl_fd(line, hd);
 		free(line);
+		sign = 2;
 		line = readline("heredoc: ");
+		sign = 0;
 	}
 	free(line);
 	close(hd);

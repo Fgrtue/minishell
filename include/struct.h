@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 12:41:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 17:16:40 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 19:41:29 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 # define STRUCT_H
 
 //ARE THESE ALL THE TOKENS THAT WE NEED?
-
-int sig;
 
 enum e_token
 {
@@ -53,7 +51,7 @@ typedef struct s_lexer
 typedef struct s_cmd
 {
 	char			**args;
-	int				(*builtin)(struct s_cmd *, char **);
+	int				(*builtin)(struct s_cmd *, char ***);
 	int				num_redir;
 	int				pid;
 	int				fd_io[2]; //input and output for the current command

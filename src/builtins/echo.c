@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 10:36:14 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/22 16:34:19 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 18:32:15 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,13 @@
 
 */
 
-int ft_echo(t_cmd* cmd)
+int ft_echo(t_cmd* cmd, char ***env)
 {
     int     mode;
     int     i;
     char*   line;
-    
+
+    (void) env;
     i = 1;
     mode = 0;
     line = NULL;

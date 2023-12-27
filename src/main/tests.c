@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 20:21:47 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/27 13:15:23 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 18:55:01 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,12 @@ int check_equal(char*   str)
 
 int main(int argc, char **argv, char **envp)
 {
-    char *line0="export key1=value1 key2=value2 key3 key4=";
-    char *line1="\"\" $a $?ab$LS$loop ab\" \"\" 'hh$USER\"\'$USER\'$LS";
+    char *line0="cd -";
+    // char *line0="export key1=value1 key2=value2 key3 key4=";
+    char *line1="export";
+    // char *line1="\"\" $a $?ab$LS$loop ab\" \"\" 'hh$USER\"\'$USER\'$LS";
 
-// char *line2="cd ../../../../../..";
+char *line2="cd ../../../../../..";
 char *line3="cd ~";
 char *line4="cd";
 char *line5="cd ~/Desktop";
@@ -206,7 +208,9 @@ char *line113="< in wc -l | wc>out -l";
     char**  env;
 
     env = create_env(envp);
-    lst = ft_lexer(line0);
+
+    
+    lst = ft_lexer(line2);
 	// print_lex(lst);
 	expand_env(&lst, env, 127);
 	// print_lex(lst);
@@ -214,35 +218,18 @@ char *line113="< in wc -l | wc>out -l";
 	polish_lex(&lst);
 	// print_lex(lst);
 	cmds = get_cmds(&lst, lst);
-    ft_export(cmds, env);
+    // print_cmd(cmds);
+    // ft_export(cmds, &env);
+    
+    ft_cd(cmds, &env);
+    ft_pwd(cmds, &env);
 	// print_cmd(cmds);
     // executor(cmds, env);
+
 	ft_lexclean(&lst);
 	ft_cmdclean(&cmds);
-
-    // int fd = open("file1", O_RDWR| O_CREAT, 0644);
-    // char* line;
-    // unlink("file1");
-    // line = readline("minishell: ");
-    // write(fd, line, ft_strlen(line));
-    // sleep(3);
-    // char* line2;
-    // read(fd, line2, 3);
-    // line[3] = '\n';
-    // printf("%s", line2);
-    // close(fd);
     
-	// expand_env(&lst, env, 0);
-	// // print_lex(lst);
-	// join_quotes(&lst);
-	// // print_lex(lst);
-	// cmds = get_cmds(&lst, lst);
-	// print_cmd(cmds);
-	// ft_lexclean(&lst);
-	// ft_cmdclean(&cmds);
-    // close(fd);
-    // fd = open("file1", O_RDWR| O_CREAT | O_TRUNC, 0644);
-    // unlink("file1");
-
+    free_arr(env);
+ 
 	return (0);
 }
