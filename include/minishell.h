@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/23 13:56:25 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 11:06:39 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # include "../libft/libft.h"
 
 char**  create_env(char** envp);
+int     check_eq(char*   str);
 int     check_quotes(char *str);
 
 void	expand_env(t_lexer **lst, char **env, int exit_c);

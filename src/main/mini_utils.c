@@ -6,11 +6,26 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 14:53:03 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/23 13:57:31 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 11:06:33 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+int check_eq(char*   str)
+{
+    int i;
+    int eq;
+
+    i = -1;
+    eq = 0;
+    while(str[++i])
+    {
+        if (str[i] == '=')
+           eq++; 
+    }
+    return (eq);
+}
 
 char** create_env(char** envp)
 {
