@@ -3,19 +3,32 @@
 /*                                                        ::::::::            */
 /*   signal.c                                           :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
+/*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/21 12:58:14 by jiajchen      ########   odam.nl         */
+/*   Created: 2023/12/27 17:18:21 by kkopnev       #+#    #+#                 */
+/*   Updated: 2023/12/27 18:29:06 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	
-
-void	signals_handler()
+void handleCtrlC(int signum)
 {
-	signal(SIGINT, );
-	signal(SIGCONT, SIGINT);
+    if (sig == 1)
+       write(1,"\nminishell: ", 12);
+	else if (sig == 2)
+		write(1, "\nheredoc: ", 10);
+	else
+        exit(signum);
 }
+
+// Function to handle Ctrl+D (EOF) signal
+void handleCtrlD(void) 
+{
+    if (sig == 1 || sig == 2)
+        exit(0);
+    else
+		return ;
+}
+
+

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 14:53:03 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 13:47:59 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 14:12:03 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ char** create_env(char** envp)
     char** env;
 
     i = get_env_size(envp);
-    printf("The size of env %d\n", i);
     j = -1;
     if (!envp)
         return (NULL);

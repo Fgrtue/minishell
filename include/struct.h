@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 12:41:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 14:23:49 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/27 17:16:40 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 # define STRUCT_H
 
 //ARE THESE ALL THE TOKENS THAT WE NEED?
+
+int sig;
+
 enum e_token
 {
 	WORD = -1,

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/23 13:53:54 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 19:01:07 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,45 @@
 int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
-	int		exit_status;
+	int		exit_c;
 	t_lexer*	lexer;
 	char**		env;
-	t_cmd		cmd;
+	t_cmd	*cmds;
 	
-	exit_status = 0;
+    if (signal(SIGINT, handleCtrlC) == SIG_ERR)
+	{
+        perror("Cntr+C: ");
+        return 1;
+    }
+    if (signal(SIGQUIT, handleCtrlD) == SIG_ERR)
+	{
+        perror("Ctrl+D: ");
+        return 1;
+    }
 	env = create_env(envp);
-	(cmd.fd_io)[1] = 1;
-	ft_env(&cmd, env);
-	// while (1)
-	// {
-	// 	line = readline("minishell:");
-	// 	if (!line || !*line)
-	// 		continue;
-	// 	// TO DO: error control
-	// 	if (line && *line )
-	// 		add_history(line);
-	// 	if (!check_quotes(line)) // TO Do: check if the quotes are closed
-	// 	//	write(:didn't clode the quotes);
-	// 	//	continue;						
-	// 	// LEXER PART
-	// 	// lexer = ft_lexer(line);
-	// 	// protection
-	// 	// expander(lexer, env, exit status);
-	// 	// parser = ft_parser(lexer, env);
-	// 	// executor(parser, env, exit_status);
-	// 	// cleaner(lexer, parser);
-	// }
+	while (1)
+	{
+		sig = 1;
+		line = readline("minishell: ");
+		if (!line) 
+            exit(0);
+		sig = 0;
+		if (line && !*line)
+			continue;
+		if (line && *line )
+			add_history(line);
+		if (!check_quotes(line))
+		{
+			perror("Wrong quotes\n");
+			continue;
+		} 				
+		lexer = ft_lexer(line);
+		expand_env(&lexer, env, exit_c);
+		polish_lex(&lexer);
+		cmds = get_cmds(&lexer, lexer);
+    	ft_export(cmds, env);
+		ft_lexclean(&lexer);
+		ft_cmdclean(&cmds);
+	}
 	return (0);
 }
