@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 11:48:43 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/27 18:09:57 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	execute_cmd(t_cmd *cmd, char **env)
 	if (!cmd->args)
 		exit(EXIT_SUCCESS);
 	if (cmd->builtin != NULL) // check whether the command is builtin.
-		exit(cmd->builtin(cmd, env));
+		exit(cmd->builtin(cmd, &env));
 	path = get_path((cmd->args)[0], env);
 	if (path)
 		execve(path, cmd->args, env);
@@ -118,7 +118,7 @@ void	executor(t_cmd *cmd, char **env)
 	if (!cmd->next && cmd->builtin)
 	{
 		check_redirection(cmd); 
-		exit_c = cmd->builtin(cmd, env);
+		exit_c = cmd->builtin(cmd, &env);
 	}
 	else
 	{

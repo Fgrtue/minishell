@@ -6,33 +6,32 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 16:12:52 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 18:44:33 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-// void*	fill_builtins(t_cmd* cmd)
-// {
-// 	if (!cmd->args)
-// 		return (NULL);
-// 	if (ft_strncmp((cmd->args)[0], "echo", ft_strlen((cmd->args)[0])))
-// 		return (*ft_echo);
-// 	if (ft_strncmp((cmd->args)[0], "cd", ft_strlen((cmd->args)[0])))
-// 		return (*ft_cd);
-// 	if (ft_strncmp((cmd->args)[0], "pwd", ft_strlen((cmd->args)[0])))
-// 		return (*ft_pwd);
-// 	if (ft_strncmp((cmd->args)[0], "export", ft_strlen((cmd->args)[0])))
-// 		return (*ft_export);
-// 	if (ft_strncmp((cmd->args)[0], "unset", ft_strlen((cmd->args)[0])))
-// 		return (*ft_unset);
-// 	if (ft_strncmp((cmd->args)[0], "env", ft_strlen((cmd->args)[0])))
-// 		return (*ft_env);
-// 	if (ft_strncmp((cmd->args)[0], "exit", ft_strlen((cmd->args)[0])))
-// 		return (*ft_exit);
-// 	else
-// 		return (NULL);
-// }
+int	(*fill_builtin(t_cmd *cmd))(t_cmd *cmd, char ***env)
+{
+	if (!cmd->args || !(cmd->args)[0])
+		return (NULL);
+	if (!ft_strncmp((cmd->args)[0], "echo", ft_strlen((cmd->args)[0])))
+		return (&ft_echo);
+	if (!ft_strncmp((cmd->args)[0], "cd", ft_strlen((cmd->args)[0])))
+		return (&ft_cd);
+	if (!ft_strncmp((cmd->args)[0], "pwd", ft_strlen((cmd->args)[0])))
+		return (&ft_pwd);
+	if (!ft_strncmp((cmd->args)[0], "export", ft_strlen((cmd->args)[0])))
+		return (&ft_export);
+	if (!ft_strncmp((cmd->args)[0], "unset", ft_strlen((cmd->args)[0])))
+		return (&ft_unset);
+	if (!ft_strncmp((cmd->args)[0], "env", ft_strlen((cmd->args)[0])))
+		return (&ft_env);
+	if (!ft_strncmp((cmd->args)[0], "exit", ft_strlen((cmd->args)[0])))
+		return (&ft_exit);
+	return (NULL);
+}
 
 t_lexer	*fill_cmd_args(t_lexer *lexer, t_cmd *cmd, int size)
 {
@@ -116,7 +115,7 @@ t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
 			lexer = *lst;
 		}
 		lexer = fill_cmd_args(lexer, cur, args_size(lexer));
-		// cmd->builtin = fill_builtin(cmd);
+		cur->builtin = fill_builtin(cur);
 		ft_cmdaddback(&cmd, cur);
 	}
 	return (cmd);

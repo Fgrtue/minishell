@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 15:30:29 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 12:45:35 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/27 18:53:45 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,13 @@
 int	ft_find_key(char *var, char **env)
 {
 	int	i;
+	char* new_var;
 
 	i = 0;
-	var = ft_strjoin(var, "="); //not free original var
-	while (env[i] && ft_strncmp(env[i], var, ft_strlen(var)) != 0)
+	new_var = ft_strjoin(var, "="); //not free original var
+	while (env[i] && ft_strncmp(env[i], new_var, ft_strlen(new_var)) != 0)
 		i++;
-	free(var);
+	free(new_var);
 	if (env[i])
 		return (i);
 	return (-1);
@@ -59,16 +60,6 @@ void	ft_move_env(char **env, char **tmp, int pos)
 	}
 }
 
-int	get_env_size(char **env)
-{
-	int	i;
-
-	i = 0;
-	while (env[i])
-		i++;
-	return (i);
-}
-
 /* str is malloced for env, should not be freed */
 char	**ft_change_env(char *var, char *str, char **env)
 {
@@ -78,10 +69,10 @@ char	**ft_change_env(char *var, char *str, char **env)
 	int		size;
 
 	i = ft_find_key(var, env);
-	tmp_str = env[i];
 	if (i != -1)
 	{
-		env[i] = str; //env[i] = ft_strdup(str);
+		tmp_str = env[i];
+		env[i] = str;
 		free(tmp_str);
 		return (env);
 	}
@@ -89,7 +80,7 @@ char	**ft_change_env(char *var, char *str, char **env)
 	size = get_env_size(env) + 1;
 	env = ft_calloc(size + 1, sizeof(char *));
 	if (!env)
-		error("malloc");
+		perror("malloc"); // DO ERROR
 	ft_move_env(env, tmp, size);
 	env[size - 1] = str;
 	env[size] = NULL;
@@ -116,7 +107,7 @@ char	*expand_dir(t_cmd *cmd, char *dir, char **env)
 	return (new);
 }
 
-int	ft_cd(t_cmd *cmd, char **env)
+int	ft_cd(t_cmd *cmd, char ***env)
 {
 	char	*dir;
 	char	*ptr;
@@ -127,31 +118,17 @@ int	ft_cd(t_cmd *cmd, char **env)
 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
-	dir = expand_dir(cmd, (cmd->args)[1], env);
+	dir = expand_dir(cmd, (cmd->args)[1], *env);
+	ft_print_exp(cmd, *env);
 	if (chdir(dir) == -1)
 	{
 		free(dir);
 		perror((cmd->args)[1]); // TO DO: error() (cmd->args)[1] could be NULL !protection!
 		return (EXIT_FAILURE);
 	}
-	ptr = env[ft_find_key("PWD", env)] + 4;
-	ft_change_env("OLDPWD", ft_strjoin("OLDPWD=", ptr), env);
-	ft_change_env("PWD", ft_strjoin("PWD=", getcwd(pwd, sizeof(pwd))), env);
+	ptr = (*env)[ft_find_key("PWD", *env)] + 4;
+	*env = ft_change_env("OLDPWD", ft_strjoin("OLDPWD=", ptr), *env);
+	*env = ft_change_env("PWD", ft_strjoin("PWD=", getcwd(pwd, sizeof(pwd))), *env);
 	free(dir);
 	return (EXIT_SUCCESS);
 }
-
-// int	main(int argc, char **argv, char **env)
-// {
-// 	char	pwd[1024];
-// 	char	*ptr;
-
-// 	getcwd(pwd, sizeof(pwd));
-// 	printf("%s %zu\n", pwd, strlen(pwd));
-// 	char *dir = "./Documents/."; //only minishell/ not /minishell
-// 	chdir(dir);
-// 	perror(dir);
-// 	// chdir("/");
-// 	ptr = getcwd(pwd, sizeof(pwd));
-// 	printf("%s %zu\n", ptr, strlen(pwd));
-// }

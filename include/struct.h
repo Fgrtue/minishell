@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 12:41:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 14:23:49 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/27 18:10:26 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct s_lexer
 typedef struct s_cmd
 {
 	char			**args;
-	int				(*builtin)(struct s_cmd *, char **);
+	int				(*builtin)(struct s_cmd *, char ***);
 	int				num_redir;
 	int				pid;
 	int				fd_io[2]; //input and output for the current command

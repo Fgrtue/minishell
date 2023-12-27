@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 16:44:19 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/22 18:43:25 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/27 17:33:35 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,9 @@ static int	ft_isnumb(char *str)
 	return (answ);
 }
 
-int ft_exit(t_cmd* cmd)
+int ft_exit(t_cmd* cmd, char ***env)
 {
+	(void) env;
     if (!ft_isnumb((cmd->args)[1]))
         perror("(cmd->args)[1])): ");
     if ((cmd->args)[1] && cmd->args[2])

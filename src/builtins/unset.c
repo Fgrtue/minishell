@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/27 12:25:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 12:46:40 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/27 17:32:50 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	**ft_del_env(char *var, char **env)
 	size = get_env_size(env) - 1;
 	env = ft_calloc(size + 1, sizeof(char *));
 	if (!env)
-		error("malloc");
+		perror("malloc");
 	ft_move_env(env, tmp, i);
 	env[size] = NULL;
 	free(tmp[i]);
@@ -33,8 +33,8 @@ char	**ft_del_env(char *var, char **env)
 	return (env);
 }
 
-int	ft_unset(t_cmd *cmd, char **env)
+int	ft_unset(t_cmd *cmd, char ***env)
 {
-	env = ft_del_env((cmd->args)[1], env);
+	*env = ft_del_env((cmd->args)[1], *env);
 	return (EXIT_SUCCESS);
 }
