@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 11:50:52 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/27 12:46:20 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,11 @@ int     ft_exit(t_cmd* cmd);
 void close_fd(int fd[]);
 
 int	ft_pwd(t_cmd *cmd, char **env);
+
+char	**ft_del_env(char *var, char **env);
+char	**ft_change_env(char *var, char *str, char **env);
+int		get_env_size(char **env);
+void	ft_move_env(char **env, char **tmp, int pos);
+int		ft_find_key(char *var, char **env);
 
 #endif

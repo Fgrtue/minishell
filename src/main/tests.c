@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 20:21:47 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/27 11:50:19 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/27 13:52:51 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void print_cmd(t_cmd* cmd)
 
 int main(int argc, char **argv, char **env)
 {
-    char *line0="<< kk ls -l | cat  -e << kk | cat ";
+    char *line0="cd ~\/Documents/"";
     char *line1="\"\" $a $?ab$LS$loop ab\" \"\" 'hh$USER\"\'$USER\'$LS";
 
 // char *line2="cd ../../../../../..";

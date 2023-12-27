@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 15:30:29 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 11:39:30 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/27 12:45:35 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,16 @@ void	ft_move_env(char **env, char **tmp, int pos)
 	}
 }
 
+int	get_env_size(char **env)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+		i++;
+	return (i);
+}
+
 /* str is malloced for env, should not be freed */
 char	**ft_change_env(char *var, char *str, char **env)
 {
@@ -77,7 +87,7 @@ char	**ft_change_env(char *var, char *str, char **env)
 	}
 	tmp = env;
 	size = get_env_size(env) + 1;
-	env = ft_calloc(sizeof(char *), size + 1);
+	env = ft_calloc(size + 1, sizeof(char *));
 	if (!env)
 		error("malloc");
 	ft_move_env(env, tmp, size);
@@ -86,39 +96,6 @@ char	**ft_change_env(char *var, char *str, char **env)
 	free(tmp);
 	return (env);
 }
-
-
-int	get_env_size(char **env)
-{
-	int	i;
-
-	i = 0;
-	while (env[i])
-		i++;
-	return (i);
-}
-
-char	**ft_del_env(char *var, char **env)
-{
-	int		i;
-	int		size;
-	char	**tmp;
-
-	i = ft_find_key(var, env);
-	if (i == -1)
-		return (env);
-	tmp = env;
-	size = get_env_size(env) - 1;
-	env = ft_calloc(sizeof(char *), size + 1);
-	if (!env)
-		error("malloc");
-	ft_move_env(env, tmp, i);
-	env[size] = NULL;
-	free(tmp[i]);
-	free(tmp);
-	return (env);
-}
-
 
 /* dir is not malloced */
 char	*expand_dir(t_cmd *cmd, char *dir, char **env)
