@@ -1,5 +1,44 @@
 # minishell
 
+### Dec31 Notes
+- Modified <ft_cmdclean> and <ft_lexclean>
+	1. send the pointer of any node 
+	2. move pointer to the front the 
+	3. clean all the nodes from beginning
+- Added <ft_readline> function
+	1. give prompt of pwd
+	2. check line 
+- Fixed <ft_exit>
+	different error msg of different arguments
+	1. exit 1 2
+	2. exit abc 1
+	3. exit abc
+- TO FIX: <ft_echo> (So much error!)
+	1. echo -n has segfault
+	2. echo without argument should print "\n"
+- Added free_cmd_exit() function free_lex_exit() function
+	In cases of any (fatal) error happening, five error message, free lex/cmd/env and exit(code). If there is no such variable yet, set to NULL. And always exit the program.
+	1. malloc failed
+	2. ctrl-d (in read command and heredoc)
+	3. where we used exit() to stop the program in expander and lexer
+- Added signal_handlers() for three modes <t_mode>
+	TODO: change the exit code when using signals using global variable (131 and 130)
+- Fixed cases when readline has empty string or NULL string in 
+	1. readline command 
+	2. readline heredoc
+- Error Contrl for every parts
+	- builtins - Done
+	- executor
+	- parser
+	- lexer
+	- main
+- Added error control for open file in redirect.c
+	1. changed return type of <check_redirection()>, <set_redir()> and <pipe_exe> to return 1 as error but not end the program. so it is different situation from malloc/fork/pipe error
+	2. when error happens in check_redirection, (1) cmd wont be executed or (2) all the fd_io should be closed? or set to default (stdin and stdout)?: the latter
+	If fd_io has error, wont be executed - but what about the pid when ft_wait?
+	3. deleted cmd->num_redir variable in struct. we don't use it at all!
+
+
 /**
  * to read: <termio.h>
  * 			metacharacters(what are they how to interpret them)
