@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 16:39:12 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 18:20:04 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/28 13:55:52 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,4 +92,5 @@ void	expand_env(t_lexer **lst, char **env, int exit_c)
 		}
 		lex = lex->next;
 	}
+	polish_lex(lst);
 }

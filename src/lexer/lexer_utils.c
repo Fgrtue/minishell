@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 14:48:02 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/20 15:14:13 by kkopnev       ########   odam.nl         */
+/*   Updated: 2023/12/29 15:38:31 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void check_lexer(t_lexer** lexer)
     lex = *lexer;
     if(!lex || lex->token == PIPE_LINE || ft_lexlast(lex)->token == PIPE_LINE)
         exit(1); //TO DO: clean lexer and go to next line;
-
     while(lex)
     {
         if (lex->token == REDIR_IN ||lex->token == REDIR_OUT

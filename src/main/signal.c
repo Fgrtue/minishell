@@ -5,30 +5,105 @@
 /*                                                     +:+                    */
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/12/27 17:18:21 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/27 20:40:12 by kkopnev       ########   odam.nl         */
+/*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
+/*   Updated: 2024/01/16 12:38:10 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void handl_ctrlc(int signum)
+/**
+ * Ctrl+C sends SIGINT, Ctrl+\ sends SIGQUIT, and Ctrl+Q sends SIGCONT.
+ * 
+ * ctrl-c: interrupt child process and continue to next iteration of while loop. 
+ * 			exit_code = 130
+ * ctrl-d: interrupt all child processes and exit shell
+ * ctrl-\: interrupt child process if ther is any. if it is in child process exit_c=131
+*/
+
+static volatile sig_atomic_t	g_sig;
+
+void	interrupt_exe(int sig)
 {
-    if (sign == 1)
-       write(1,"\nminishell: ", 12);
-	else if (sign == 2)
-		write(1, "\nheredoc: ", 10);
-	else
-        exit(signum);
+	if (sig == SIGINT)
+	{
+		kill(0, sig);
+	}
+	if (sig == SIGQUIT)
+	{
+		write(STDOUT_FILENO, "Quit\n", 5);
+	}
+	g_sig = sig;
 }
 
-// Function to handle Ctrl+D (EOF) signal
-void handl_ctrld(int signum) 
+void	interrupt_read(int sig)
 {
-    if (sign == 1)
-        exit(0);
-    else if (sign == 2)
-        exit(3);
-    else
-		return ;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
+
+void	interrupt_heredoc(int sig)
+{
+	ioctl(0, TIOCSTI, "\n");
+}
+
+void	signals_handler(t_mode mode)
+{
+	if (mode == INTERACTIVE) //in readline
+	{
+		signal(SIGINT, interrupt_read);
+		signal(SIGQUIT, SIG_IGN);
+	}
+	if (mode == NON_INTERACTIVE) // in executor
+	{
+		signal(SIGINT, interrupt_exe);
+		signal(SIGQUIT, interrupt_exe);
+	}
+	if (mode == HEREDOC) //sigquit wont affect
+	{
+		signal(SIGINT, interrupt_heredoc);
+		signal(SIGQUIT, SIG_IGN);
+	}
+}
+
+/* do not use mode*/
+
+// volatile sig_atomic_t g_sig;
+
+// void	interrupt_interactive(int sig)
+// {
+// 	if (sig == SIGINT)
+// 	{
+// 		write(STDOUT_FILENO, "\n", 1);
+// 		rl_on_new_line();
+// 		rl_replace_line("", 0);
+// 		rl_redisplay();
+// 	}
+// 	g_sig = sig;
+// }
+
+// void	interrupt_execute(int sig)
+// {
+// 	if (sig == SIGINT)
+// 		kill(0, sig);
+// 	g_sig = sig;
+// }
+
+// void	interrupt_heredoc(int sig)
+// {
+// 	if (sig == SIGINT)
+// 	{
+// 		ioctl(0, TIOCSTI, "\n");
+// 		exit(130);
+// 	}
+// 	g_sig = sig;
+// }
+
+// void	signals_handler(__sighandler_t sighandle)
+// {
+// 	g_sig = 0;
+// 	signal(SIGINT, sighandle);
+// 	signal(SIGQUIT, sighandle);
+// }

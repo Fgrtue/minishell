@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 20:55:35 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/16 12:36:58 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,13 @@ char	*here_doc(t_cmd *cmd, char *inf)
 
 	hd = open(cmd->heredoc, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (hd == -1)
+	{
 		perror("heredoc");
-	sign = 2; //try to handle heredoc special exit
+		return (NULL);
+	}
+	signals_handler(interrupt_heredoc);
 	line = readline("heredoc: ");
-	sign = 0;
-	while (ft_strncmp(line, inf, ft_strlen(inf)) != 0)
+	while (line && (!*line || ft_strncmp(line, inf, ft_strlen(line)) != 0))
 	{
 		ft_putendl_fd(line, hd);
 		free(line);
@@ -48,26 +50,13 @@ char	*here_doc(t_cmd *cmd, char *inf)
 		line = readline("heredoc: ");
 		sign = 0;
 	}
-	free(line);
+	if (line == NULL)
+		ft_putendl_fd("minishell: warning: delimited by EOF", 2);
+	else
+		free(line);
 	close(hd);
 	return (cmd->heredoc);
 }
-
-// char*	redir_in(t_cmd*	cmd, t_lexer* redir)
-// {
-// 	if (redir->token == REDIR_IN)
-// 	{
-// 		cmd->hd_bool = 0;
-// 		return(redir->next->content);
-// 	}
-// 	else if (redir->token == HERE_DOC)
-// 	{
-// 		cmd->hd_bool = here_doc(cmd, redir->next->content);
-// 		return(cmd->heredoc);
-// 	}
-// 	else
-// 		return (NULL);
-// }
 
 char*	redir_out(t_cmd *cmd, t_lexer *redir)
 {
@@ -85,7 +74,8 @@ char*	redir_out(t_cmd *cmd, t_lexer *redir)
 		return (NULL);
 }
 
-void set_redir(t_cmd *cmd, char *inf, char *outf)
+/* return 1 if there is error */
+int set_redir(t_cmd *cmd, char *inf, char *outf)
 {
 	if (inf && (cmd->fd_io)[0] != 0)
 		close((cmd->fd_io)[0]);
@@ -97,15 +87,19 @@ void set_redir(t_cmd *cmd, char *inf, char *outf)
 		(cmd->fd_io)[1] = open(outf, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (inf)
 		(cmd->fd_io)[0] = open(inf, O_RDONLY);
+	if ((cmd->fd_io)[1] == -1)
+		perror(outf);
+	if ((cmd->fd_io)[0] == -1)
+		perror(inf);
 	if (access(cmd->heredoc, F_OK) == 0)
 		unlink(cmd->heredoc);
-	if ((cmd->fd_io)[1] == -1)
-		perror(outf); //To DO
-	if ((cmd->fd_io)[0] == -1)
-		perror(inf); //To DO
+	if ((cmd->fd_io)[0] == -1 || (cmd->fd_io)[1] == -1)
+		return (1);
+	return (0);
 }
 
-void	check_redirection(t_cmd *cmd)
+/* if error return 1 */
+int	check_redirection(t_cmd *cmd)
 {
 	t_lexer	*redir;
 	char	*inf;
@@ -118,13 +112,15 @@ void	check_redirection(t_cmd *cmd)
 	cmd->heredoc = ft_itoa(++hd);
 	while (redir)
 	{
-		if (redir->token == REDIR_IN)
+		errno = 0;
+		if (redir->token == REDIR_IN && !access(redir->next->content, R_OK))
 			inf = redir->next->content;
-		if (redir->token == HERE_DOC)
+		if (redir->token == HERE_DOC) //&& !access(cmd->heredoc, R_OK)
 			inf = here_doc(cmd, redir->next->content);
+			// inf = cmd->heredoc;
 		if (redir->token == REDIR_OUT || redir->token == DREDIR_OUT)
 			outf = redir_out(cmd, redir);
 		redir = redir->next->next;
 	}
-	set_redir(cmd, inf, outf);
+	return (set_redir(cmd, inf, outf));
 }

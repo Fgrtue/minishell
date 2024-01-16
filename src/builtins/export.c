@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/23 14:37:22 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/27 20:24:50 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/16 12:35:57 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,23 @@
 
 int ft_print_exp(t_cmd* cmd, char** env)
 {
-    int i;
+	int	i;
 
-    i = -1;
-    while(env[++i])
-    {
-            write((cmd->fd_io)[1], env[i], ft_strlen(env[i]));
-            write((cmd->fd_io)[1], "\n", 1);
-    }
-    return (0);
+	i = -1;
+	while(env[++i])
+	{
+		write((cmd->fd_io)[1], env[i], ft_strlen(env[i]));
+		write((cmd->fd_io)[1], "\n", 1);
+	}
+	return (0);
 }
 
 int ft_export(t_cmd* cmd, char*** env)
 {
-    int i;
-    int len;
-    char*   ptr_eq;
-    char*   key;
+	int		i;
+	int		len;
+	char	*ptr_eq;
+	char	*key;
 
     i = 0;
     if (!(cmd->args)[1])
