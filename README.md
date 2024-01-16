@@ -1,6 +1,6 @@
 # minishell
 
-### Dec31 Notes
+### Notes
 - Modified <ft_cmdclean> and <ft_lexclean>
 	1. send the pointer of any node 
 	2. move pointer to the front the 
@@ -9,7 +9,7 @@
 	1. give prompt of pwd
 	2. check line 
 - Fixed <ft_exit>
-	different error msg of different arguments
+different error msg of different arguments
 	1. exit 1 2
 	2. exit abc 1
 	3. exit abc
@@ -17,7 +17,7 @@
 	1. echo -n has segfault
 	2. echo without argument should print "\n"
 - Added free_cmd_exit() function free_lex_exit() function
-	In cases of any (fatal) error happening, five error message, free lex/cmd/env and exit(code). If there is no such variable yet, set to NULL. And always exit the program.
+In cases of any (fatal) error happening, five error message, free lex/cmd/env and exit(code). If there is no such variable yet, set to NULL. And always exit the program.
 	1. malloc failed
 	2. ctrl-d (in read command and heredoc)
 	3. where we used exit() to stop the program in expander and lexer
@@ -36,7 +36,12 @@
 	1. changed return type of <check_redirection()>, <set_redir()> and <pipe_exe> to return 1 as error but not end the program. so it is different situation from malloc/fork/pipe error
 	2. when error happens in check_redirection, (1) cmd wont be executed or (2) all the fd_io should be closed? or set to default (stdin and stdout)?: the latter
 	If fd_io has error, wont be executed - but what about the pid when ft_wait?
-	3. deleted cmd->num_redir variable in struct. we don't use it at all!
+	3. TODO: deleted cmd->num_redir variable in struct. we don't use it at all!
+	4. how can we use signals in heredoc? only in child process so that we can exit(130)
+	5. which contradicts....
+- REDO heredoc!
+	before execution we need to create all the heredoc IN CHILD PROCESS 
+
 
 
 /**

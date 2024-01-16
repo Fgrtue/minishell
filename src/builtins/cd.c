@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 15:30:29 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 18:53:45 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/31 13:29:08 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,10 @@ char	**ft_change_env(char *var, char *str, char **env)
 	size = get_env_size(env) + 1;
 	env = ft_calloc(size + 1, sizeof(char *));
 	if (!env)
-		perror("malloc"); // DO ERROR
+	{
+		perror("malloc");
+		return (NULL);
+	}
 	ft_move_env(env, tmp, size);
 	env[size - 1] = str;
 	env[size] = NULL;
@@ -113,22 +116,23 @@ int	ft_cd(t_cmd *cmd, char ***env)
 	char	*ptr;
 	char	pwd[1024];
 
-	if ((cmd->args)[2])
+	if ((cmd->args)[1] && (cmd->args)[2])
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
 	dir = expand_dir(cmd, (cmd->args)[1], *env);
-	ft_print_exp(cmd, *env);
 	if (chdir(dir) == -1)
 	{
 		free(dir);
-		perror((cmd->args)[1]); // TO DO: error() (cmd->args)[1] could be NULL !protection!
-		return (EXIT_FAILURE);
+		if (cmd->args[1])
+			free_cmd_exit(cmd->args[1], cmd, *env, 1);
 	}
 	ptr = (*env)[ft_find_key("PWD", *env)] + 4;
 	*env = ft_change_env("OLDPWD", ft_strjoin("OLDPWD=", ptr), *env);
 	*env = ft_change_env("PWD", ft_strjoin("PWD=", getcwd(pwd, sizeof(pwd))), *env);
 	free(dir);
+	if (!*env)
+		free_cmd_exit(NULL, cmd, *env, 1);
 	return (EXIT_SUCCESS);
 }

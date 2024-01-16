@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 20:21:47 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/27 18:55:01 by jiajchen      ########   odam.nl         */
+/*   Updated: 2023/12/28 17:49:55 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int check_equal(char*   str)
 
 int main(int argc, char **argv, char **envp)
 {
-    char *line0="cd -";
+    char *line0="<< i";
     // char *line0="export key1=value1 key2=value2 key3 key4=";
     char *line1="export";
     // char *line1="\"\" $a $?ab$LS$loop ab\" \"\" 'hh$USER\"\'$USER\'$LS";
@@ -210,7 +210,7 @@ char *line113="< in wc -l | wc>out -l";
     env = create_env(envp);
 
     
-    lst = ft_lexer(line2);
+    lst = ft_lexer(line0);
 	// print_lex(lst);
 	expand_env(&lst, env, 127);
 	// print_lex(lst);
@@ -221,10 +221,10 @@ char *line113="< in wc -l | wc>out -l";
     // print_cmd(cmds);
     // ft_export(cmds, &env);
     
-    ft_cd(cmds, &env);
-    ft_pwd(cmds, &env);
+    // ft_cd(cmds, &env);
+    // ft_pwd(cmds, &env);
 	// print_cmd(cmds);
-    // executor(cmds, env);
+    executor(cmds, env);
 
 	ft_lexclean(&lst);
 	ft_cmdclean(&cmds);
