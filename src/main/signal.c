@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/16 12:26:30 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/16 18:03:28 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,23 @@
  * ctrl-\: interrupt child process if ther is any. if it is in child process exit_c=131
 */
 
-static volatile sig_atomic_t	g_sig;
+volatile sig_atomic_t	g_sig;
 
 void	interrupt_exe(int sig)
 {
-	if (sig == SIGINT)
-	{
-		kill(0, sig);
-	}
-	if (sig == SIGQUIT)
-	{
-		write(STDOUT_FILENO, "Quit\n", 5);
-	}
 	g_sig = sig;
+	if (sig == SIGINT) //exit_code = 130
+	{
+		write(STDERR_FILENO, "\n", 1);
+		// kill(0, sig);
+		// rl_redisplay();
+	}
+	if (sig == SIGQUIT) //exit_code = 131
+	{
+		write(STDERR_FILENO, "Quit\n", 5);
+		// kill(0, sig);
+		// rl_redisplay();
+	}
 }
 
 void	interrupt_read(int sig)
@@ -46,17 +50,24 @@ void	interrupt_read(int sig)
 
 void	interrupt_heredoc(int sig)
 {
-	ioctl(0, TIOCSTI, "\n");
+	g_sig = sig;
+	if (sig == SIGINT)
+	{
+		write(STDERR_FILENO, "\n", 1);
+		// ioctl(0, TIOCSTI, "\n");
+		exit(130);
+	}
 }
 
 void	signals_handler(t_mode mode)
 {
+	g_sig = 0;
 	if (mode == INTERACTIVE) //in readline
 	{
 		signal(SIGINT, interrupt_read);
 		signal(SIGQUIT, SIG_IGN);
 	}
-	if (mode == NON_INTERACTIVE) // in executor
+	if (mode == EXECUTE) // in executor
 	{
 		signal(SIGINT, interrupt_exe);
 		signal(SIGQUIT, interrupt_exe);

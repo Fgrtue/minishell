@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/02 18:17:34 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/16 14:07:54 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int pipe_exe(t_cmd* cmd, char** env)
 			free_cmd_exit("Pipe", cmd, env, 1);
 		if (cmd->next)
 			(cmd->fd_io)[1] = fd[1];
-		check_redirection(cmd);
+		// check_redirection(cmd);
 		process_cmd(cmd, env);
 		if (cmd->next) 
 			(cmd->next->fd_io)[0] = fd[0];
@@ -110,7 +110,8 @@ int	executor(t_cmd *cmd, char **env)
 	// create_heredoc(cmd);
 	if (g_sig != 0)
 		return (130);
-	signals_handler(interrupt_execute);
+	// signals_handler(interrupt_execute);
+	signals_handler(EXECUTE);
 	if (!cmd->next && cmd->builtin)
 	{
 		if (check_redirection(cmd))

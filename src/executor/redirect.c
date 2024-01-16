@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/16 11:38:47 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/16 17:56:36 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*here_doc(t_cmd *cmd, char *inf)
 		perror("heredoc");
 		return (NULL);
 	}
-	signals_handler(interrupt_heredoc);
+	signals_handler(HEREDOC);
 	line = readline("heredoc: ");
 	while (line && (!*line || ft_strncmp(line, inf, ft_strlen(line)) != 0))
 	{
@@ -53,6 +53,7 @@ char	*here_doc(t_cmd *cmd, char *inf)
 	else
 		free(line);
 	close(hd);
+	signals_handler(EXECUTE);
 	return (cmd->heredoc);
 }
 
@@ -83,10 +84,10 @@ int set_redir(t_cmd *cmd, char *inf, char *outf)
 		(cmd->fd_io)[1] = open(outf, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else if (outf && cmd->dr_bool == 0)
 		(cmd->fd_io)[1] = open(outf, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (inf)
-		(cmd->fd_io)[0] = open(inf, O_RDONLY);
 	if ((cmd->fd_io)[1] == -1)
 		perror(outf);
+	if (inf)
+		(cmd->fd_io)[0] = open(inf, O_RDONLY);
 	if ((cmd->fd_io)[0] == -1)
 		perror(inf);
 	if (access(cmd->heredoc, F_OK) == 0)
@@ -111,7 +112,7 @@ int	check_redirection(t_cmd *cmd)
 	while (redir)
 	{
 		errno = 0;
-		if (redir->token == REDIR_IN && !access(redir->next->content, R_OK))
+		if (redir->token == REDIR_IN) //&& !access(redir->next->content, R_OK)
 			inf = redir->next->content;
 		if (redir->token == HERE_DOC) //&& !access(cmd->heredoc, R_OK)
 			inf = here_doc(cmd, redir->next->content);
