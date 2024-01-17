@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 12:41:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 11:21:29 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/17 18:13:16 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ enum e_state
 typedef enum e_mode
 {
 	INTERACTIVE,
-	NON_INTERACTIVE,
+	EXECUTE,
 	HEREDOC,
 }	t_mode;
 

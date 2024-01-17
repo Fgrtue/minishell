@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 21:08:21 by kkopnev       #+#    #+#                 */
-/*   Updated: 2024/01/02 14:13:21 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/16 16:38:44 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	ft_wait(t_cmd* cmd)
 			errno = 0;
 		cmd = cmd->next;
 	}
+	errno = 0;
 	while (waitpid(cmd->pid, &status, 0) == -1 && errno == EINTR)
 			errno = 0;;
 	if (WIFEXITED(status))

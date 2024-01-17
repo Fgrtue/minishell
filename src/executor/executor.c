@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 13:09:34 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/17 18:12:48 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,9 +110,10 @@ int	executor(t_global *global)
 		return (0);
 	cmd = global->cmds;
 	// create_heredoc(cmd);
-	// if (g_sig != 0)
-	// 	return (130);
-	signals_handler(NON_INTERACTIVE);
+	if (g_sig != 0)
+		return (130);
+	// signals_handler(interrupt_execute);
+	signals_handler(EXECUTE);
 	if (!cmd->next && cmd->builtin)
 	{
 		if (check_redirection(cmd))

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 13:14:01 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/17 18:10:58 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,16 @@ char	*ft_readline(t_global *global)
 		line = ft_readline(global->env);
 	}
 	return (line);
+}
+
+/* when execute */
+int	check_signal(int exit_c)
+{
+	if (g_sig == SIGINT)
+		return (130);
+	if (g_sig == SIGQUIT)
+		return (131);
+	return (exit_c);
 }
 
 int	main(int argc, char **argv, char **envp)
