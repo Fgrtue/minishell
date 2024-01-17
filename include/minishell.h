@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 18:13:28 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/17 20:58:01 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,7 @@ int     check_eq(char*   str);
 int     check_quotes(char *str);
 int     get_env_size(char **env);
 int		check_quotes(char *str);
-void	ft_error_void(t_global* global, char*	error_msg);
-t_cmd*	ft_error_nv(t_global* global, char*	error_msg);
-void	free_cmd_exit(char *msg, t_cmd *cmd, char **env, int ec);
+void	free_global(char *msg, t_global *global, int clean_env);
 
 void	signals_handler(t_mode mode);
 void	interrupt_interactive(int sig);
@@ -71,26 +69,27 @@ void    ft_cmdclean(t_cmd* cmd); //edited
 
 /* executor */
 int     executor(t_global *global);
-int		pipe_exe(t_cmd* cmd, char** env);
-void    process_cmd(t_cmd *cmd, char **env);
+int     pipe_exe(t_global* global);
+void	process_cmd(t_cmd *cmd, t_global* global);
 char	*find_variable(char *var, char **env, int exit_c);
 int		check_redirection(t_cmd *cmd);
 int		set_redir(t_cmd* cmd, char* inf, char* outf);
 char*	redir_out(t_cmd*	cmd, t_lexer* redir);
 char*	redir_in(t_cmd*	cmd, t_lexer* redir);
 char	*here_doc(t_cmd *cmd, char *inf);
+int     create_heredoc(t_global* global);
 void 	close_fd(int fd[]);
 int		ft_wait(t_cmd* cmd);
 int		specify_builtins(t_cmd* cmd, char ***env);
 
 /* builtins */
-int     ft_echo(t_cmd* cmd, char ***env);
-int     ft_env(t_cmd* cmd, char ***env);
-int     ft_exit(t_global*	global);
-int     ft_export(t_cmd* cmd, char*** env);
-int		ft_unset(t_cmd *cmd, char ***env);
-int		ft_pwd(t_cmd *cmd, char ***env);
-int		ft_cd(t_cmd *cmd, char ***env);
+int     ft_echo(t_cmd* cmd, char ***env, t_global* global);
+int     ft_env(t_cmd* cmd, char ***env, t_global* global);
+int     ft_exit(t_cmd* cmd, char ***env, t_global* global);
+int     ft_export(t_cmd* cmd, char ***env, t_global* global);
+int     ft_unset(t_cmd* cmd, char ***env, t_global* global);
+int     ft_pwd(t_cmd* cmd, char ***env, t_global* global);
+int     ft_cd(t_cmd *cmd, char ***env, t_global *global);
 
 int     ft_print_exp(t_cmd* cmd, char **env);
 char	**ft_change_env(char *var, char *str, char **env);
@@ -108,5 +107,8 @@ int		ft_find_key(char *var, char **env);
 void    print_args(char** args);
 void	print_lex(t_lexer* lexer);
 void	print_cmd(t_cmd* cmd);
+
+void	ft_error_void(t_global* global, char*	error_msg);
+void*	ft_error_nvoid(t_global* global, char*	error_msg);
 
 #endif

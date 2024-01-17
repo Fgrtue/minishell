@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 18:11:42 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/17 21:14:49 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@
 
 */
 
+int create_heredoc(t_global* global)
+{
+	return (global->exit_c);
+}
+
 char	*here_doc(t_cmd *cmd, char *inf)
 {
 	char*	line;
@@ -46,9 +51,9 @@ char	*here_doc(t_cmd *cmd, char *inf)
 	{
 		ft_putendl_fd(line, hd);
 		free(line);
-		sign = 2;
+		// sign = 2;
 		line = readline("heredoc: ");
-		sign = 0;
+		// sign = 0;
 	}
 	if (line == NULL)
 		ft_putendl_fd("minishell: warning: delimited by EOF", 2);

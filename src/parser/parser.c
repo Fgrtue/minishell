@@ -6,20 +6,20 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 14:55:45 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/17 20:57:10 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	(*fill_builtin(t_cmd *cmd))(t_cmd *cmd, char ***env)
+int	(*fill_builtin(t_cmd *cmd))(t_cmd* cmd, char ***env, t_global* global)
 {
 	if (!cmd->args || !(cmd->args)[0])
 		return (NULL);
 	if (!ft_strncmp((cmd->args)[0], "echo", ft_strlen((cmd->args)[0])))
-		return (&ft_echo);
+		return (*ft_echo);
 	if (!ft_strncmp((cmd->args)[0], "cd", ft_strlen((cmd->args)[0])))
-		return (&ft_cd);
+		return (*ft_cd);
 	if (!ft_strncmp((cmd->args)[0], "pwd", ft_strlen((cmd->args)[0])))
 		return (&ft_pwd);
 	if (!ft_strncmp((cmd->args)[0], "export", ft_strlen((cmd->args)[0])))
@@ -106,7 +106,7 @@ t_cmd	*get_cmds(t_global* global)
 	{
 		cur = ft_cmdnew();
 		if (cur == NULL)
-			return(ft_error_nv(global, "malloc"));// our error function   //ambig_redir(global));
+			return((t_cmd *)ft_error_nvoid(global, "malloc"));// our error function   //ambig_redir(global));
 		if (lexer->token == PIPE_LINE)
 		{
 			fill_redir(&(global->lexer), lexer->next, cur);

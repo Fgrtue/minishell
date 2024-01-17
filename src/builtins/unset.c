@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/27 12:25:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/31 13:14:54 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/17 21:13:42 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,11 @@ char	**ft_del_env(char *var, char **env)
 	return (env);
 }
 
-int	ft_unset(t_cmd *cmd, char ***env)
+int	ft_unset(t_cmd* cmd, char ***env, t_global* global)
 {
+	global = NULL;
 	*env = ft_del_env((cmd->args)[1], *env);
 	if (!*env)
-		free_cmd_exit("malloc", cmd, *env, 0);
+		free_global("malloc", global, 0);
 	return (EXIT_SUCCESS);
 }
