@@ -6,27 +6,27 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/16 12:37:56 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/17 13:14:01 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	*ft_readline(char **env)
+char	*ft_readline(t_global *global)
 {
 	char	*prompt;
 	char	*line;
 
 	prompt = ft_strdup("minishell:");
-	prompt = ft_strjoin_free_d(prompt, find_variable("PWD", env, 0));
+	prompt = ft_strjoin_free_d(prompt, find_variable("PWD", global->env, 0));
 	prompt = ft_strjoin_free(prompt, "$ ");
-	signals_handler(interrupt_interactive);
+	signals_handler(INTERACTIVE);
 	line = readline(prompt);
 	free(prompt);
 	if (line == NULL)
 	{
 		rl_clear_history();
-		ft_exit(NULL, &env);
+		ft_exit(global);
 	}
 	if (line && *line)
 		add_history(line);
@@ -34,7 +34,7 @@ char	*ft_readline(char **env)
 	{
 		ft_putendl_fd("minishell: wrong quotes!", STDERR_FILENO);
 		free(line);
-		line = ft_readline(env);
+		line = ft_readline(global->env);
 	}
 	return (line);
 }
@@ -42,24 +42,37 @@ char	*ft_readline(char **env)
 int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
-	int			exit_c;
-	char		**env;
-	t_lexer		*lex;
-	t_cmd		*cmds;
+	t_global	*global;
+	// int			exit_c; // GS
+	// char		**env; // GS
+	// t_lexer		*lex;  // GS
+	// t_cmd		*cmds;  // GS
 	
-	exit_c = 0;
-	env = create_env(envp);
+	global = malloc(sizeof(t_global));
+	// exit_c = 0; // GS->exit_c = 0;
+	global->exit_c = 0;
+	// env = create_env(envp); // GS->env = create_env(envp);
+	global->env = create_env(envp);
 	while (1)
 	{
-		line = ft_readline(env);
-		lex = ft_lexer(line);
-		expand_env(&lex, env, exit_c);
-		cmds = get_cmds(&lex, lex);
-		ft_lexclean(lex);
-		exit_c = executor(cmds, env);
-		ft_cmdclean(cmds);
+		ft_clean_glob(global); // clean it if it's non empty;
+		// line = ft_readline(env);
+		line = ft_readline(global);
+		// lex = ft_lexer(line); // GS->lex = ft_lexer(line);
+		global->lexer = ft_lexer(line);
+		// expand_env(&lex, env, exit_c); // expand_env(&(GS->lex), GS->env, GS->exit_c);
+		expand_env(global);
+		if (global->err == 1)
+			continue ; 
+		global->cmds = get_cmds(global); // GS->cmds = get_cmds(&(GS->lex), lex);
+		if (global->err == 1)
+			continue ; 
+		// ft_lexclean(lex); // WHY LEX CLEAN IS HERE??
+		global->exit_c = executor(global); // GS->exit_c = executor(GS->cmds, GS->env);
+		// ft_cmdclean(cmds); // ft_GSclean(GS);
 		free(line);
 	}
-    free_arr(env);
+    free_arr(global->env); //free_arr(GS->env);
+	free(global);
 	return (0);
 }

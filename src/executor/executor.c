@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/16 12:36:31 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/17 13:09:34 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,10 @@ int pipe_exe(t_cmd* cmd, char** env)
 	while (cmd)
 	{
 		if (cmd->next && pipe(fd) == -1)
-			free_cmd_exit("Pipe", cmd, env, 1);
+			free_cmd_exit("Pipe", cmd, env, 1); // free global struct
 		if (cmd->next)
 			(cmd->fd_io)[1] = fd[1];
-		check_redirection(cmd);
+		// check_redirection(cmd); -- put it in the child process so that we can have id once its executed
 		process_cmd(cmd, env);
 		if (cmd->next) 
 			(cmd->next->fd_io)[0] = fd[0];
@@ -101,26 +101,30 @@ int pipe_exe(t_cmd* cmd, char** env)
 	return (0);
 }
 	
-int	executor(t_cmd *cmd, char **env)
+// int	executor(t_cmd *cmd, char **env)
+int	executor(t_global *global)
 {
-	int	exit_c;
-	
-	if (!cmd)
+	t_cmd *cmd;
+
+	if (!global->cmds)
 		return (0);
+	cmd = global->cmds;
 	// create_heredoc(cmd);
-	if (g_sig != 0)
-		return (130);
-	signals_handler(interrupt_execute);
+	// if (g_sig != 0)
+	// 	return (130);
+	signals_handler(NON_INTERACTIVE);
 	if (!cmd->next && cmd->builtin)
 	{
 		if (check_redirection(cmd))
 			return (EXIT_FAILURE);
-		exit_c = cmd->builtin(cmd, &env);
+		global->exit_c = cmd->builtin(cmd, &(global->env));
 	}
 	else
 	{
-		pipe_exe(cmd, env);
-		exit_c = ft_wait(cmd);
+		// create all the heredocs
+		// if signal return (130);
+		pipe_exe(cmd, global->env);
+		global->exit_c = ft_wait(cmd);
 	}
-	return exit_c;
+	return (global->exit_c);
 }

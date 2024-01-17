@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/16 12:40:17 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/17 14:56:50 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ int     check_eq(char*   str);
 int     check_quotes(char *str);
 int     get_env_size(char **env);
 int		check_quotes(char *str);
-void	error_msg(char *cmd, char *msg);
+void	ft_error_void(t_global* global, char*	error_msg);
+t_cmd*	ft_error_nv(t_global* global, char*	error_msg);
 void	free_cmd_exit(char *msg, t_cmd *cmd, char **env, int ec);
 
 void	signals_handler(t_mode mode);
@@ -53,9 +54,9 @@ void	interrupt_execute(int sig);
 void	interrupt_heredoc(int sig);
 
 /* paser and polisher */
-void	expand_env(t_lexer **lst, char **env, int exit_c);
+void	expand_env(t_global *global);
 void	polish_lex(t_lexer **lst);
-t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer);
+t_cmd   *get_cmds(t_global* global);
 
 void	print_lex(t_lexer* lexer);
 void	print_cmd(t_cmd* cmd);
@@ -69,7 +70,7 @@ void	ft_cmddel(t_cmd* node);
 void    ft_cmdclean(t_cmd* cmd); //edited
 
 /* executor */
-int		executor(t_cmd *cmd, char **env);
+int     executor(t_global *global);
 int		pipe_exe(t_cmd* cmd, char** env);
 void    process_cmd(t_cmd *cmd, char **env);
 char	*find_variable(char *var, char **env, int exit_c);
@@ -85,7 +86,7 @@ int		specify_builtins(t_cmd* cmd, char ***env);
 /* builtins */
 int     ft_echo(t_cmd* cmd, char ***env);
 int     ft_env(t_cmd* cmd, char ***env);
-int     ft_exit(t_cmd* cmd, char ***env);
+int     ft_exit(t_global*	global);
 int     ft_export(t_cmd* cmd, char*** env);
 int		ft_unset(t_cmd *cmd, char ***env);
 int		ft_pwd(t_cmd *cmd, char ***env);

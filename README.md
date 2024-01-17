@@ -7,7 +7,7 @@
 	3. clean all the nodes from beginning
 - Added <ft_readline> function
 	1. give prompt of pwd
-	2. check line 
+	2. check line
 - Fixed <ft_exit>
 different error msg of different arguments
 	1. exit 1 2

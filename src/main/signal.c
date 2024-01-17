@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/16 12:38:10 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/16 20:30:48 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ void	interrupt_read(int sig)
 
 void	interrupt_heredoc(int sig)
 {
-	ioctl(0, TIOCSTI, "\n");
+	ioctl(0, TIOCSTI, "\n"); //still don't quite understand what is does
+	exit(130);
 }
 
 void	signals_handler(t_mode mode)
@@ -54,7 +55,7 @@ void	signals_handler(t_mode mode)
 	if (mode == INTERACTIVE) //in readline
 	{
 		signal(SIGINT, interrupt_read);
-		signal(SIGQUIT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN); // Why here we have an integer? Why do we have two lines here?
 	}
 	if (mode == NON_INTERACTIVE) // in executor
 	{
