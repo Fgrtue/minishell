@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 15:30:29 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/31 13:29:08 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/19 17:25:46 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,7 @@ char	**ft_change_env(char *var, char *str, char **env)
 	ft_move_env(env, tmp, size);
 	env[size - 1] = str;
 	env[size] = NULL;
-	free(tmp);
-	return (env);
+	return (free(tmp), env);
 }
 
 /* dir is not malloced */
@@ -110,7 +109,7 @@ char	*expand_dir(t_cmd *cmd, char *dir, char **env)
 	return (new);
 }
 
-int	ft_cd(t_cmd *cmd, char ***env)
+int	ft_cd(t_cmd *cmd, char ***env, t_global *global)
 {
 	char	*dir;
 	char	*ptr;
@@ -125,14 +124,13 @@ int	ft_cd(t_cmd *cmd, char ***env)
 	if (chdir(dir) == -1)
 	{
 		free(dir);
-		if (cmd->args[1])
-			free_cmd_exit(cmd->args[1], cmd, *env, 1);
+		return (ft_error(global, (cmd->args)[1], 0));
 	}
 	ptr = (*env)[ft_find_key("PWD", *env)] + 4;
-	*env = ft_change_env("OLDPWD", ft_strjoin("OLDPWD=", ptr), *env);
-	*env = ft_change_env("PWD", ft_strjoin("PWD=", getcwd(pwd, sizeof(pwd))), *env);
+	global->env = ft_change_env("OLDPWD", ft_strjoin("OLDPWD=", ptr), *env);
+	global->env = ft_change_env("PWD", ft_strjoin("PWD=", getcwd(pwd, sizeof(pwd))), *env);
 	free(dir);
 	if (!*env)
-		free_cmd_exit(NULL, cmd, *env, 1);
+		return (ft_exit(cmd, env, global)); //do we have to delete env here?
 	return (EXIT_SUCCESS);
 }

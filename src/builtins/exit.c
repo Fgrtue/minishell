@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 16:44:19 by kkopnev       #+#    #+#                 */
-/*   Updated: 2024/01/19 11:04:59 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/19 11:31:22 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,19 +35,20 @@ static int	ft_isnumb(char *str)
 	return (1);
 }
 
-int ft_exit(t_cmd* cmd, char ***env)
+// int ft_exit(t_cmd* cmd, char ***env)
+int ft_exit(t_cmd* cmd, char ***env, t_global* global)
 {
 	int	exit_c;
 	
-	exit_c = 0;
+	global->exit_c = 0;
 	(void) env;
     write(STDOUT_FILENO, "exit\n", 5);
-	if (!cmd || !cmd->args[1])
-		exit_c = 0;
+	if (!cmd || !(cmd->args[1]))
+		global->exit_c = 0; 
 	else if (!ft_isnumb(cmd->args[1]))
 	{
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
-		ft_putstr_fd((cmd->args)[1], STDERR_FILENO);
+		ft_putstr_fd(cmd->args[1], STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
 	}
     else if (cmd->args[2])
@@ -56,9 +57,12 @@ int ft_exit(t_cmd* cmd, char ***env)
 		if (ft_isnumb(cmd->args[1]))
         	return (1);
     }
-	else
-		exit_c = ft_atoi((cmd->args)[1]);
-	free_cmd_exit(NULL, cmd, *env, exit_c);
+    else
+		global->exit_c = ft_atoi(cmd->args[1]);
+	exit_c = global->exit_c;
+	free_global(NULL, global, 1);
+	free(global);
+	exit(exit_c);
     return (exit_c);
 }
 

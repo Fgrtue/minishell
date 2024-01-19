@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/16 17:56:36 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/19 14:12:15 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,30 @@
 
 */
 
-char	*here_doc(t_cmd *cmd, char *inf)
+
+/*
+	Function must: for every command it checks wheather there is a here doc.
+	If there is at least one, it increases the static counter and starts the process
+	of opening here_docs. There will be basicaly one here_doc file for every command.
+	If there are more here_doc redirections, this file will be just truncated and then
+	rewritten again. So once we found a heredoc, we start a child process, where we'll be
+	opening heredocs. This is done in order to be able to track the signal. We'll always wait
+	for all the here_docs to be finished for one command, and then record the exit code. If 
+	exit code is 130, then we finish the function, change the value of here_doc_exit in
+	our struct and leave the building, getting back to readline.  
+*/
+
+void	here_doc(char *heredoc, char *inf)
 {
 	char*	line;
 	int		hd;
 
-	hd = open(cmd->heredoc, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	hd = open(heredoc, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (hd == -1)
 	{
 		perror("heredoc");
-		return (NULL);
+		return ;
 	}
-	signals_handler(HEREDOC);
 	line = readline("heredoc: ");
 	while (line && (!*line || ft_strncmp(line, inf, ft_strlen(line)) != 0))
 	{
@@ -53,8 +65,52 @@ char	*here_doc(t_cmd *cmd, char *inf)
 	else
 		free(line);
 	close(hd);
-	signals_handler(EXECUTE);
-	return (cmd->heredoc);
+}
+
+int process_here_doc(char* count, t_lexer* redir, t_global* global)
+{
+	int	pid;
+	int	status;
+
+	status = 0;
+	if (!redir || !redir->next)
+		return (1);
+	pid = fork();
+	if (pid == -1)
+		free_global("Fork", global, 1);
+	if (pid == 0)
+	{
+		signals_handler(HEREDOC);
+		here_doc(count, redir->next->content);
+	}
+	else
+		waitpid(pid, &status, 0);
+	if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
+			return (130);
+	return (EXIT_SUCCESS);
+}
+
+int create_heredoc(t_global* global)
+{
+	t_cmd*		cmd;
+	t_lexer*	redir;
+	static int	hd;
+
+	cmd = global->cmds;
+	while (cmd)
+	{
+		redir = cmd->redir;
+		if (redir)
+			cmd->heredoc = ft_itoa(++hd);
+		while(redir)
+		{
+			if (redir->token == HERE_DOC && process_here_doc(cmd->heredoc, redir, global))
+				return (130);
+			redir = redir->next;
+		}
+		cmd = cmd->next;
+	}
+	return (0);
 }
 
 char*	redir_out(t_cmd *cmd, t_lexer *redir)
@@ -103,23 +159,23 @@ int	check_redirection(t_cmd *cmd)
 	t_lexer	*redir;
 	char	*inf;
 	char	*outf;
-	static int	hd;
 
 	inf = NULL;
 	outf = NULL;
 	redir = cmd->redir;
-	cmd->heredoc = ft_itoa(++hd);
 	while (redir)
 	{
 		errno = 0;
-		if (redir->token == REDIR_IN) //&& !access(redir->next->content, R_OK)
+		if (redir->token == REDIR_IN)
 			inf = redir->next->content;
-		if (redir->token == HERE_DOC) //&& !access(cmd->heredoc, R_OK)
-			inf = here_doc(cmd, redir->next->content);
-			// inf = cmd->heredoc;
+		if (redir->token == HERE_DOC)
+			inf = cmd->heredoc;
 		if (redir->token == REDIR_OUT || redir->token == DREDIR_OUT)
 			outf = redir_out(cmd, redir);
 		redir = redir->next->next;
 	}
 	return (set_redir(cmd, inf, outf));
 }
+
+// in case when redir token is here_doc use here_doc function in order to
+// open the here_doc ++ un.link it in the end

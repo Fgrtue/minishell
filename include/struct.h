@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 12:41:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/16 14:07:47 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/18 12:04:12 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define STRUCT_H
 
 extern volatile sig_atomic_t	g_sig;
+struct s_global;
 
 enum e_token
 {
@@ -56,7 +57,7 @@ typedef struct s_lexer
 typedef struct s_cmd
 {
 	char			**args;
-	int				(*builtin)(struct s_cmd *, char ***);
+	int				(*builtin)(struct s_cmd* cmd, char ***env, struct s_global* global);
 	int				num_redir;
 	int				pid;
 	int				fd_io[2];
@@ -67,6 +68,13 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
-
+typedef struct s_global
+{
+	t_lexer*	lexer;
+	t_cmd*	cmds;
+	char**	env;
+	int		exit_c;
+	int		here_doc_exit;
+}	t_global;
 
 #endif

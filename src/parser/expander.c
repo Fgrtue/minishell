@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 16:39:12 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/28 13:55:52 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/19 17:20:18 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,35 +62,36 @@ t_lexer	*ft_lexsplit(t_lexer **lst, t_lexer *lexer, char *str)
 		ft_lexinsert(lst, lexer->prev, lexer, node);		
 	}
 	ft_lexdel(ft_lexretract(lst, lexer));
-	free(tabs); //only free the crust? not strings
+	free(tabs);
 	return (node->next);
 }
 
-void	expand_env(t_lexer **lst, char **env, int exit_c)
+// void	expand_env(t_lexer **lst, char **env, int exit_c)
+int	expand_env(t_global *global)
 {
 	char	*tmp;
 	t_lexer	*lex;
 	
-	lex = *lst;
+	lex = global->lexer;
 	while (lex)
 	{
 		if (lex->token == ENV)
 		{
-			tmp = find_variable(lex->content + 1, env, exit_c);
+			tmp = find_variable(lex->content + 1, global->env, global->exit_c);
 			if (arr_len(tmp, ' ') != 1 && lex->prev && (lex->prev->token == '<' \
 				|| lex->prev->token == '>' || lex->prev->token == DREDIR_OUT))
-				exit(1); // error("ambiguous redirect");
-			if (ft_strchr(tmp, ' ') && lex->state == GENERAL)
+				return(ft_error(global, "ambiguous redirect", 1)); 
 			{
-				lex = ft_lexsplit(lst, lex, tmp);
+				lex = ft_lexsplit(&(global->lexer), lex, tmp);
 				free(tmp);
 				continue;
 			}
-			ft_lexinsert(lst, lex->prev, lex, ft_lexnew(tmp, WORD));
+			ft_lexinsert(&(global->lexer), lex->prev, lex, ft_lexnew(tmp, WORD));
 			lex = lex->prev;
-			ft_lexdel(ft_lexretract(lst, lex->next));
+			ft_lexdel(ft_lexretract(&(global->lexer), lex->next));
 		}
 		lex = lex->next;
 	}
-	polish_lex(lst);
+	polish_lex(&(global->lexer));
+	return (0);
 }

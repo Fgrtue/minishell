@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   signal.c                                           :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
+/*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/19 10:54:57 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/19 14:13:20 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	interrupt_exe(int sig)
 
 void	interrupt_read(int sig)
 {
-	(void) sig;
+	g_sig = sig;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -54,8 +54,8 @@ void	interrupt_heredoc(int sig)
 	g_sig = sig;
 	if (sig == SIGINT)
 	{
-		write(STDERR_FILENO, "\n", 1);
-		// ioctl(0, TIOCSTI, "\n");
+		// write(STDERR_FILENO, "\n", 1);
+		ioctl(0, TIOCSTI, "\n");
 		exit(130);
 	}
 }
@@ -66,7 +66,7 @@ void	signals_handler(t_mode mode)
 	if (mode == INTERACTIVE) //in readline
 	{
 		signal(SIGINT, interrupt_read);
-		signal(SIGQUIT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN); // Why here we have an integer? Why do we have two lines here?
 	}
 	if (mode == EXECUTE) // in executor
 	{

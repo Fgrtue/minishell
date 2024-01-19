@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 14:48:02 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/29 15:38:31 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/19 17:22:43 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void check_lexer(t_lexer** lexer)
             || lex->token == HERE_DOC || lex->token == DREDIR_OUT)
         {
             if (!lex->next || (lex->next->token != WORD && lex->next->token != ENV))
-                exit (1);
+                exit(2); //TODO
         }
         lex = lex->next;
     }

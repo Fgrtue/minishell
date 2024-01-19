@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 10:28:30 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/31 11:46:40 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/18 17:52:07 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,19 @@ t_cmd*	ft_cmdlast(t_cmd* cmd)
 
 void	ft_cmddel(t_cmd* node)
 {
-    ft_lexclean(node->redir);
-    free_arr(node->args); 
-    free(node->heredoc);  
-	free(node);
+    if (node->redir)
+    {
+        ft_lexclean(node->redir);
+    }
+    if (node->args)
+    {
+        free_arr(node->args); 
+    }
+    if (node->heredoc)
+    {
+        free(node->heredoc);  
+    }
+    free(node);
 }
 
 /* change to *cmd clean from the beginning */
@@ -91,6 +100,10 @@ void    ft_cmdclean(t_cmd *cmd)
     {   
         temp = cmd;
         cmd = cmd->next;
-        ft_cmddel(temp);
+        if (temp)
+        {
+            ft_cmddel(temp);
+            temp = NULL;
+        }
     }
 }

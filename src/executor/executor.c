@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/19 10:55:32 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/19 14:47:06 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*get_path(char *cmd, char **env)
 	return (NULL);
 }
 
-void	execute_cmd(t_cmd *cmd, char **env)
+void	execute_cmd(t_cmd *cmd, char **env, t_global* global)
 {
 	char	*path;
 	
@@ -53,7 +53,7 @@ void	execute_cmd(t_cmd *cmd, char **env)
 	if (!cmd->args[0])
 		exit(EXIT_SUCCESS);
 	if (cmd->builtin != NULL)
-		exit(cmd->builtin(cmd, &env));
+		exit(cmd->builtin(cmd, &env, global));
 	path = get_path((cmd->args)[0], env);
 	if (path)
 		execve(path, cmd->args, env);
@@ -66,31 +66,33 @@ void	execute_cmd(t_cmd *cmd, char **env)
 	}
 }
 
-void	process_cmd(t_cmd *cmd, char **env)
-{
+void	process_cmd(t_cmd *cmd, t_global* global)
+{	
 	cmd->pid = fork();
 	if (cmd->pid == -1)
-		free_cmd_exit("Fork", cmd, env, 1);
+		free_global("Fork", global, 1); //shouldn't we stop the execution in this case?
 	if (cmd->pid == 0)
 	{
-		execute_cmd(cmd, env);
+		execute_cmd(cmd, global->env, global);
 	}
 	else
 		close_fd(cmd->fd_io);
 }
 
-int pipe_exe(t_cmd* cmd, char** env)
+// int pipe_exe(t_cmd* cmd, char** env)
+int pipe_exe(t_global* global)
 {
 	int	fd[2];
+	t_cmd*	cmd;
 	
+	cmd = global->cmds;
 	while (cmd)
 	{
 		if (cmd->next && pipe(fd) == -1)
-			free_cmd_exit("Pipe", cmd, env, 1);
+			free_global("Pipe", global, 1); // free global struct ???
 		if (cmd->next)
 			(cmd->fd_io)[1] = fd[1];
-		// check_redirection(cmd);
-		process_cmd(cmd, env);
+		process_cmd(cmd, global);
 		if (cmd->next) 
 			(cmd->next->fd_io)[0] = fd[0];
 		cmd = cmd->next;
@@ -98,27 +100,24 @@ int pipe_exe(t_cmd* cmd, char** env)
 	return (0);
 }
 	
-int	executor(t_cmd *cmd, char **env)
+// int	executor(t_cmd *cmd, char **env)
+int	executor(t_global *global)
 {
-	int	exit_c;
-	
-	if (!cmd)
+	if (!global->cmds)
 		return (0);
-	// create_heredoc(cmd);
-	if (g_sig != 0)
+	if (create_heredoc(global))
 		return (130);
-	// signals_handler(interrupt_execute);
 	signals_handler(EXECUTE);
-	if (!cmd->next && cmd->builtin)
+	if (!global->cmds->next && global->cmds->builtin)
 	{
-		if (check_redirection(cmd))
+		if (check_redirection(global->cmds))
 			return (EXIT_FAILURE);
-		exit_c = cmd->builtin(cmd, &env);
+		global->exit_c = global->cmds->builtin(global->cmds, &(global->env), global);
 	}
 	else
 	{
-		pipe_exe(cmd, env);
-		exit_c = ft_wait(cmd);
+		pipe_exe(global);
+		global->exit_c = ft_wait(global->cmds);
 	}
-	return exit_c;
+	return (global->exit_c);
 }

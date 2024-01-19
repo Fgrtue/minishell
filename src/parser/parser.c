@@ -6,20 +6,20 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 18:44:33 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/19 17:25:09 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	(*fill_builtin(t_cmd *cmd))(t_cmd *cmd, char ***env)
+int	(*fill_builtin(t_cmd *cmd))(t_cmd* cmd, char ***env, t_global* global)
 {
 	if (!cmd->args || !(cmd->args)[0])
 		return (NULL);
 	if (!ft_strncmp((cmd->args)[0], "echo", ft_strlen((cmd->args)[0])))
-		return (&ft_echo);
+		return (*ft_echo);
 	if (!ft_strncmp((cmd->args)[0], "cd", ft_strlen((cmd->args)[0])))
-		return (&ft_cd);
+		return (*ft_cd);
 	if (!ft_strncmp((cmd->args)[0], "pwd", ft_strlen((cmd->args)[0])))
 		return (&ft_pwd);
 	if (!ft_strncmp((cmd->args)[0], "export", ft_strlen((cmd->args)[0])))
@@ -92,31 +92,32 @@ int	args_size(t_lexer *lexer)
 	}
 	return (size);
 }
-	
-t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
+
+// t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
+int	get_cmds(t_global* global)
 {
-	t_cmd 	*cmd;
 	t_cmd	*cur;
+	t_lexer *lexer;
 	
-	cmd = NULL;
+	lexer = global->lexer;
 	while (lexer)
 	{
 		cur = ft_cmdnew();
 		if (cur == NULL)
-			perror("cmdnew: ");
+			return(ft_error(global, "malloc failed", 0)); //todo: error handler
 		if (lexer->token == PIPE_LINE)
 		{
-			fill_redir(lst, lexer->next, cur);
+			fill_redir(&(global->lexer), lexer->next, cur);
 			lexer = lexer->next;
 		}
 		else
 		{
-			fill_redir(lst, lexer, cur);
-			lexer = *lst;
+			fill_redir(&(global->lexer), lexer, cur);
+			lexer = global->lexer;
 		}
 		lexer = fill_cmd_args(lexer, cur, args_size(lexer));
 		cur->builtin = fill_builtin(cur);
-		ft_cmdaddback(&cmd, cur);
+		ft_cmdaddback(&global->cmds, cur);
 	}
-	return (cmd);
+	return (0);
 }
