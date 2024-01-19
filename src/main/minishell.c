@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 20:56:40 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/18 12:23:51 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,43 +48,41 @@ char	*ft_readline(t_global *global)
 // 		return (131);
 // 	return (exit_c);
 // }
+void ft_set_global(t_global* global)
+{
+	global->here_doc_exit = 0;
+	global->lexer = NULL;
+	global->cmds = NULL;
+}
 
 int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
 	t_global	*global;
-	// int			exit_c; // GS
-	// char		**env; // GS
-	// t_lexer		*lex;  // GS
-	// t_cmd		*cmds;  // GS
-	
 	argv = NULL; // unused parameter
-	argc = 0; // unsused parameter
 	global = malloc(sizeof(t_global));
 	if (!global)
 		return (1);
-	// exit_c = 0; // GS->exit_c = 0;
 	global->exit_c = 0;
-	global->here_doc = 0;
-	// env = create_env(envp); // GS->env = create_env(envp);
+	ft_set_global(global);
 	global->env = create_env(envp);
 	while (1)
 	{
-		free_global(NULL, global, 0); // clean it if it's non empty;
-		// line = ft_readline(env);
+		if (argc == -1)
+		{
+			free_global(NULL, global, 0); // clean it if it's non empty;
+			ft_set_global(global);
+		}
+		argc = -1;
 		line = ft_readline(global);
-		// lex = ft_lexer(line); // GS->lex = ft_lexer(line);
 		global->lexer = ft_lexer(line);
-		// expand_env(&lex, env, exit_c); // expand_env(&(GS->lex), GS->env, GS->exit_c);
 		expand_env(global);
 		if (global->exit_c == 1)
 			continue ; 
-		global->cmds = get_cmds(global); // GS->cmds = get_cmds(&(GS->lex), lex);
+		global->cmds = get_cmds(global); 
 		if (global->exit_c == 1)
 			continue ; 
-		// ft_lexclean(lex); // WHY LEX CLEAN IS HERE??
-		global->exit_c = executor(global); // GS->exit_c = executor(GS->cmds, GS->env);
-		// ft_cmdclean(cmds); // ft_GSclean(GS);
+		global->exit_c = executor(global); 
 		free(line);
 	}
     free_arr(global->env); //QESTION:: in what case do we get to these lines?

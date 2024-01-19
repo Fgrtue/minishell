@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 20:58:01 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/18 17:51:16 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ int		check_redirection(t_cmd *cmd);
 int		set_redir(t_cmd* cmd, char* inf, char* outf);
 char*	redir_out(t_cmd*	cmd, t_lexer* redir);
 char*	redir_in(t_cmd*	cmd, t_lexer* redir);
-char	*here_doc(t_cmd *cmd, char *inf);
+char	*here_doc(char *heredoc, char *inf);
+int     process_here_doc(char* count, t_lexer* redir, t_global* global);
 int     create_heredoc(t_global* global);
 void 	close_fd(int fd[]);
 int		ft_wait(t_cmd* cmd);

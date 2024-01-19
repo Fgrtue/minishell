@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/29 17:03:26 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 18:56:00 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/18 19:53:31 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,13 @@ void	ft_unlink(t_cmd *cmds)
  */
 void	free_global(char *msg, t_global *global, int clean_env)
 {
+	if (!global)
+		return ;
 	if (errno && msg)
 		perror(msg);
 	else if (msg)
 		ft_putendl_fd(msg, STDERR_FILENO);
-	if (global->here_doc == 1)
+	if (global->here_doc_exit != 0)
 		ft_unlink(global->cmds);
 	if (global->cmds)
 		ft_cmdclean(global->cmds);
