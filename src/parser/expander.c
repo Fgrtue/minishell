@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 16:39:12 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 18:20:04 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/17 15:01:25 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,30 +66,31 @@ t_lexer	*ft_lexsplit(t_lexer **lst, t_lexer *lexer, char *str)
 	return (node->next);
 }
 
-void	expand_env(t_lexer **lst, char **env, int exit_c)
+// void	expand_env(t_lexer **lst, char **env, int exit_c)
+void	expand_env(t_global *global)
 {
 	char	*tmp;
 	t_lexer	*lex;
 	
-	lex = *lst;
+	lex = global->lexer;
 	while (lex)
 	{
 		if (lex->token == ENV)
 		{
-			tmp = find_variable(lex->content + 1, env, exit_c);
+			tmp = find_variable(lex->content + 1, global->env, global->exit_c);
 			if (arr_len(tmp, ' ') != 1 && lex->prev && (lex->prev->token == '<' \
 				|| lex->prev->token == '>' || lex->prev->token == DREDIR_OUT))
-				exit(1); // error("ambiguous redirect");
-			if (ft_strchr(tmp, ' ') && lex->state == GENERAL)
+				return(ft_error_void(global, "ambiguous redirect")); 
 			{
-				lex = ft_lexsplit(lst, lex, tmp);
+				lex = ft_lexsplit(&(global->lexer), lex, tmp);
 				free(tmp);
 				continue;
 			}
-			ft_lexinsert(lst, lex->prev, lex, ft_lexnew(tmp, WORD));
+			ft_lexinsert(&(global->lexer), lex->prev, lex, ft_lexnew(tmp, WORD));
 			lex = lex->prev;
-			ft_lexdel(ft_lexretract(lst, lex->next));
+			ft_lexdel(ft_lexretract(&(global->lexer), lex->next));
 		}
 		lex = lex->next;
 	}
+	polish_lex(&(global->lexer));
 }

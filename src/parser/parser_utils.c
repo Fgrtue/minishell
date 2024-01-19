@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/12 10:28:30 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/27 11:49:58 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/16 18:25:18 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ t_cmd*	ft_cmdnew(void)
     cmd->num_redir = 0;
     (cmd->fd_io)[0] = 0;
     (cmd->fd_io)[1] = 1;
-    // cmd->hd_bool = 0;
     cmd->dr_bool = 0;
     cmd->heredoc = NULL;
 	cmd->redir= NULL;
@@ -74,21 +73,24 @@ t_cmd*	ft_cmdlast(t_cmd* cmd)
 
 void	ft_cmddel(t_cmd* node)
 {
-    ft_lexclean(&(node->redir));
+    ft_lexclean(node->redir);
     free_arr(node->args); 
     free(node->heredoc);  
 	free(node);
 }
 
-void    ft_cmdclean(t_cmd** cmd)
+/* change to *cmd clean from the beginning */
+void    ft_cmdclean(t_cmd *cmd)
 {
     t_cmd*    temp;
     
     temp = NULL;
-    while(*cmd)
+    while (cmd && cmd->prev)
+        cmd = cmd->prev;
+    while(cmd)
     {   
-        temp = *cmd;
-        *cmd = (*cmd)->next;
+        temp = cmd;
+        cmd = cmd->next;
         ft_cmddel(temp);
     }
 }
