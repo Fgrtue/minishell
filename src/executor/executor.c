@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 13:09:34 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/18 19:55:37 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*get_path(char *cmd, char **env)
 	return (NULL);
 }
 
-void	execute_cmd(t_cmd *cmd, char **env)
+void	execute_cmd(t_cmd *cmd, char **env, t_global* global)
 {
 	char	*path;
 	
@@ -53,7 +53,7 @@ void	execute_cmd(t_cmd *cmd, char **env)
 	if (!cmd->args[0])
 		exit(EXIT_SUCCESS);
 	if (cmd->builtin != NULL)
-		exit(cmd->builtin(cmd, &env));
+		exit(cmd->builtin(cmd, &env, global));
 	path = get_path((cmd->args)[0], env);
 	if (path)
 		execve(path, cmd->args, env);
@@ -66,34 +66,33 @@ void	execute_cmd(t_cmd *cmd, char **env)
 	}
 }
 
-void	process_cmd(t_cmd *cmd, char **env)
-{
-	int	exit_c;
-	int	inf;
-	
+void	process_cmd(t_cmd *cmd, t_global* global)
+{	
 	cmd->pid = fork();
 	if (cmd->pid == -1)
-		free_cmd_exit("Fork", cmd, env, 1);
+		free_global("Fork", global, 1); //shouldn't we stop the execution in this case?
 	if (cmd->pid == 0)
 	{
-		execute_cmd(cmd, env);
+		execute_cmd(cmd, global->env, global);
 	}
 	else
 		close_fd(cmd->fd_io);
 }
 
-int pipe_exe(t_cmd* cmd, char** env)
+// int pipe_exe(t_cmd* cmd, char** env)
+int pipe_exe(t_global* global)
 {
 	int	fd[2];
+	t_cmd*	cmd;
 	
+	cmd = global->cmds;
 	while (cmd)
 	{
 		if (cmd->next && pipe(fd) == -1)
-			free_cmd_exit("Pipe", cmd, env, 1); // free global struct
+			free_global("Pipe", global, 1); // free global struct ???
 		if (cmd->next)
 			(cmd->fd_io)[1] = fd[1];
-		// check_redirection(cmd); -- put it in the child process so that we can have id once its executed
-		process_cmd(cmd, env);
+		process_cmd(cmd, global);
 		if (cmd->next) 
 			(cmd->next->fd_io)[0] = fd[0];
 		cmd = cmd->next;
@@ -104,27 +103,23 @@ int pipe_exe(t_cmd* cmd, char** env)
 // int	executor(t_cmd *cmd, char **env)
 int	executor(t_global *global)
 {
-	t_cmd *cmd;
-
 	if (!global->cmds)
 		return (0);
-	cmd = global->cmds;
-	// create_heredoc(cmd);
-	// if (g_sig != 0)
-	// 	return (130);
-	signals_handler(NON_INTERACTIVE);
-	if (!cmd->next && cmd->builtin)
+	global->here_doc_exit = create_heredoc(global); //function that creates all the heredocs
+	if (global->here_doc_exit)
+		return (global->here_doc_exit);
+	signals_handler(EXECUTE);
+	if (!global->cmds->next && global->cmds->builtin)
 	{
-		if (check_redirection(cmd))
+		if (check_redirection(global->cmds))
 			return (EXIT_FAILURE);
-		global->exit_c = cmd->builtin(cmd, &(global->env));
+		global->exit_c = global->cmds->builtin(global->cmds, &(global->env), global);
 	}
 	else
 	{
-		// create all the heredocs
-		// if signal return (130);
-		pipe_exe(cmd, global->env);
-		global->exit_c = ft_wait(cmd);
+		pipe_exe(global);
+		global->exit_c = ft_wait(global->cmds);
 	}
+	
 	return (global->exit_c);
 }

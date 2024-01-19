@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 16:44:19 by kkopnev       #+#    #+#                 */
-/*   Updated: 2024/01/17 13:15:57 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/18 12:21:20 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,31 +36,34 @@ static int	ft_isnumb(char *str)
 }
 
 // int ft_exit(t_cmd* cmd, char ***env)
-int ft_exit(t_global*	global)
+int ft_exit(t_cmd* cmd, char ***env, t_global* global)
 {
+	int	exit_c;
+	
 	global->exit_c = 0;
-	// (void) env; // why do we need that?
+	(void) env;
     write(STDOUT_FILENO, "exit\n", 5);
-	if (!global->cmds || !((global->cmds)->args[1]))
-		global->exit_c = 0; // why do we keep it 0?
-	else if (!ft_isnumb((global->cmds)->args[1]))
+	if (!cmd || !(cmd->args[1]))
+		global->exit_c = 0; 
+	else if (!ft_isnumb(cmd->args[1]))
 	{
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
-		ft_putstr_fd((global->cmds)->args[1], STDERR_FILENO);
+		ft_putstr_fd(cmd->args[1], STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
 	}
-    else if ((global->cmds)->args[2])
+    else if (cmd->args[2])
     {
         ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
-		if (ft_isnumb((global->cmds)->args[1]))
+		if (ft_isnumb(cmd->args[1]))
         	return (1);
     }
     else
-        global->exit_c = ft_atoi((global->cmds)->args[1]);
-	// free_lex_exit(...)
-	// free_cmd_exit(NULL, global->cmds, &(global->env), global->exit_c);
-	// free_global(global);
-    return (global->exit_c);
+		global->exit_c = ft_atoi(cmd->args[1]);
+	exit_c = global->exit_c;
+	free_global(NULL, global, 1);
+	free(global);
+	exit(exit_c);
+    return (exit_c);
 }
 
 // exit abc

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 13:09:59 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/18 19:46:29 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,25 @@
 
 */
 
-char	*here_doc(t_cmd *cmd, char *inf)
+
+/*
+	Function must: for every command it checks wheather there is a here doc.
+	If there is at least one, it increases the static counter and starts the process
+	of opening here_docs. There will be basicaly one here_doc file for every command.
+	If there are more here_doc redirections, this file will be just truncated and then
+	rewritten again. So once we found a heredoc, we start a child process, where we'll be
+	opening heredocs. This is done in order to be able to track the signal. We'll always wait
+	for all the here_docs to be finished for one command, and then record the exit code. If 
+	exit code is 130, then we finish the function, change the value of here_doc_exit in
+	our struct and leave the building, getting back to readline.  
+*/
+
+char	*here_doc(char *heredoc, char *inf)
 {
 	char*	line;
 	int		hd;
 
-	hd = open(cmd->heredoc, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	hd = open(heredoc, O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (hd == -1)
 	{
 		perror("heredoc");
@@ -46,17 +59,74 @@ char	*here_doc(t_cmd *cmd, char *inf)
 	{
 		ft_putendl_fd(line, hd);
 		free(line);
-		sign = 2;
 		line = readline("heredoc: ");
-		sign = 0;
 	}
 	if (line == NULL)
 		ft_putendl_fd("minishell: warning: delimited by EOF", 2);
 	else
 		free(line);
 	close(hd);
-	signals_handler(NON_INTERACTIVE);
-	return (cmd->heredoc);
+	signals_handler(EXECUTE);
+	exit (0);
+	return (heredoc);
+}
+
+int process_here_doc(char* count, t_lexer* redir, t_global* global)
+{
+	int	pid;
+	int	status;
+
+	status = 0;
+	if (!redir || !redir->next)
+		return (1);
+	pid = fork();
+	if (pid == -1)
+		free_global("Fork", global, 1);
+	if (pid == 0)
+	{
+		here_doc(count, redir->next->content);
+	}
+	else
+		waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+		return (WTERMSIG(status));
+	return (EXIT_SUCCESS);
+}
+
+int create_heredoc(t_global* global)
+{
+	t_cmd*	cmd;
+	t_lexer*	redir;
+	static int		hd;
+	char*	count;
+
+	cmd = global->cmds;
+	while (cmd)
+	{
+		count = ft_itoa(++hd);
+		redir = cmd->redir;
+		if (redir)
+			cmd->heredoc = ft_strdup(count);
+		while(redir)
+		{
+			if (redir->token == HERE_DOC)
+			{
+				if (process_here_doc(count, redir, global))
+				{
+					free(count);	
+					return (130); //returns the status of the opening of heredocs
+				}
+			}
+			if (redir) // switch to the new redirection linked list
+				redir = redir->next;
+		}
+		if (cmd)
+			cmd = cmd->next;
+		free(count);
+	}
+	return (0);
 }
 
 char*	redir_out(t_cmd *cmd, t_lexer *redir)
@@ -86,14 +156,14 @@ int set_redir(t_cmd *cmd, char *inf, char *outf)
 		(cmd->fd_io)[1] = open(outf, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else if (outf && cmd->dr_bool == 0)
 		(cmd->fd_io)[1] = open(outf, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (inf)
-		(cmd->fd_io)[0] = open(inf, O_RDONLY);
 	if ((cmd->fd_io)[1] == -1)
 		perror(outf);
+	if (inf)
+		(cmd->fd_io)[0] = open(inf, O_RDONLY);
 	if ((cmd->fd_io)[0] == -1)
 		perror(inf);
-	if (access(cmd->heredoc, F_OK) == -1)
-		perror(cmd->heredoc);
+	if (access(cmd->heredoc, F_OK) == 0)
+		unlink(cmd->heredoc);
 	if ((cmd->fd_io)[0] == -1 || (cmd->fd_io)[1] == -1)
 		return (1);
 	return (0);
@@ -105,16 +175,14 @@ int	check_redirection(t_cmd *cmd)
 	t_lexer	*redir;
 	char	*inf;
 	char	*outf;
-	static int	hd;
 
 	inf = NULL;
 	outf = NULL;
 	redir = cmd->redir;
-	cmd->heredoc = ft_itoa(++hd);
 	while (redir)
 	{
 		errno = 0;
-		if (redir->token == REDIR_IN && !access(redir->next->content, R_OK))
+		if (redir->token == REDIR_IN) //&& !access(redir->next->content, R_OK)
 			inf = redir->next->content;
 		if (redir->token == HERE_DOC) //&& !access(cmd->heredoc, R_OK)
 			inf = cmd->heredoc;

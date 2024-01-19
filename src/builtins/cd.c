@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 15:30:29 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/16 12:35:11 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/17 21:10:35 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,12 +110,13 @@ char	*expand_dir(t_cmd *cmd, char *dir, char **env)
 	return (new);
 }
 
-int	ft_cd(t_cmd *cmd, char ***env)
+int	ft_cd(t_cmd *cmd, char ***env, t_global *global)
 {
 	char	*dir;
 	char	*ptr;
 	char	pwd[1024];
 
+	global = NULL;
 	if ((cmd->args)[1] && (cmd->args)[2])
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
@@ -127,13 +128,13 @@ int	ft_cd(t_cmd *cmd, char ***env)
 	{
 		free(dir);
 		if (cmd->args[1])
-			free_cmd_exit(cmd->args[1], cmd, *env, 1);
+			free_global(cmd->args[1], global, 1);
 	}
 	ptr = (*env)[ft_find_key("PWD", *env)] + 4;
 	*env = ft_change_env("OLDPWD", ft_strjoin("OLDPWD=", ptr), *env);
 	*env = ft_change_env("PWD", ft_strjoin("PWD=", getcwd(pwd, sizeof(pwd))), *env);
 	free(dir);
 	if (!*env)
-		free_cmd_exit(NULL, cmd, *env, 1);
+		free_global(NULL, global, 0); //do we have to delete env here?
 	return (EXIT_SUCCESS);
 }
