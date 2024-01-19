@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/16 14:07:54 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/19 10:55:32 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,6 @@ void	execute_cmd(t_cmd *cmd, char **env)
 
 void	process_cmd(t_cmd *cmd, char **env)
 {
-	int	exit_c;
-	int	inf;
-	
 	cmd->pid = fork();
 	if (cmd->pid == -1)
 		free_cmd_exit("Fork", cmd, env, 1);

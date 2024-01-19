@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/16 18:08:01 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/19 10:54:36 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	main(int argc, char **argv, char **envp)
 	
 	exit_c = 0;
 	env = create_env(envp);
-	while (1)
+	while (argc || argv)
 	{
 		line = ft_readline(env);
 		exit_c = check_signal(exit_c);
