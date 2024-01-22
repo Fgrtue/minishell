@@ -13,7 +13,7 @@
 #include "../../include/minishell.h"
 #include <linux/limits.h>
 
-int	ft_pwd(t_cmd* cmd, t_global* global)
+int	ft_pwd(t_cmd *cmd, t_global *global)
 {
 	char	dir[PATH_MAX];
 

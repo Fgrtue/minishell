@@ -6,68 +6,49 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 14:44:50 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 16:13:09 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-/* 
+/*
 
 	in case of a redirection we have to close the previous file for input/output
-	in ft_io, and open a different file. 
+	in ft_io, and open a different file.
 
-	in case if we encounter a here_doc redirection we go to 
-	a function here_doc.  
-	
-	
-	
+	in case if we encounter a here_doc redirection we go to
+	a function here_doc.
+
+
+
 	, we start reading lines
 	and check wheather we encounter a delimiter that was provided to us.
-	once we find a delimiter -- we finish reading, save the file and then proceed
+	once we find a delimiter -- we finish reading,
+		save the file and then proceed
 	to the command.
 
 */
 
-
 /*
 	Function must: for every command it checks wheather there is a here doc.
-	If there is at least one, it increases the static counter and starts the process
-	of opening here_docs. There will be basicaly one here_doc file for every command.
-	If there are more here_doc redirections, this file will be just truncated and then
-	rewritten again. So once we found a heredoc, we start a child process, where we'll be
-	opening heredocs. This is done in order to be able to track the signal. We'll always wait
-	for all the here_docs to be finished for one command, and then record the exit code. If 
-	exit code is 130, then we finish the function, change the value of here_doc_exit in
-	our struct and leave the building, getting back to readline.  
+	If there is at least one,
+		it increases the static counter and starts the process
+	of opening here_docs. There will be basicaly one here_doc file for every 
+	command.
+	If there are more here_doc redirections,
+		this file will be just truncated and then
+	rewritten again. So once we found a heredoc, we start a child process,
+		where we'll be
+	opening heredocs. This is done in order to be able to track the signal. 
+	We'll always wait for all the here_docs to be finished for one command,
+		and then record the exit code. If
+	exit code is 130, then we finish the function,
+		change the value of here_doc_exit in
+	our struct and leave the building, getting back to readline.
 */
 
-void	here_doc(char *heredoc, char *inf)
-{
-	char*	line;
-	int		hd;
-
-	hd = open(heredoc, O_RDWR | O_CREAT | O_TRUNC, 0644);
-	if (hd == -1)
-	{
-		perror("heredoc");
-		return ;
-	}
-	line = readline("heredoc: ");
-	while (line && (!*line || ft_strncmp(line, inf, ft_strlen(line)) != 0))
-	{
-		ft_putendl_fd(line, hd);
-		free(line);
-		line = readline("heredoc: ");
-	}
-	if (line == NULL)
-		ft_putendl_fd("minishell: warning: delimited by EOF", 2);
-	else
-		free(line);
-	close(hd);
-}
-
-int process_here_doc(char* count, t_lexer* redir, t_global* global)
+int	process_here_doc(char *count, t_lexer *redir, t_global *global)
 {
 	int	pid;
 	int	status;
@@ -91,10 +72,10 @@ int process_here_doc(char* count, t_lexer* redir, t_global* global)
 	return (0);
 }
 
-int create_heredoc(t_global* global)
+int	create_heredoc(t_global *global)
 {
-	t_cmd*		cmd;
-	t_lexer*	redir;
+	t_cmd		*cmd;
+	t_lexer		*redir;
 	static int	hd;
 
 	cmd = global->cmds;
@@ -103,9 +84,10 @@ int create_heredoc(t_global* global)
 		redir = cmd->redir;
 		if (redir)
 			cmd->heredoc = ft_itoa(++hd);
-		while(redir)
+		while (redir)
 		{
-			if (redir->token == HERE_DOC && process_here_doc(cmd->heredoc, redir, global))
+			if (redir->token == HERE_DOC && process_here_doc(cmd->heredoc,
+					redir, global))
 				return (130);
 			redir = redir->next;
 		}
@@ -114,24 +96,24 @@ int create_heredoc(t_global* global)
 	return (0);
 }
 
-char*	redir_out(t_cmd *cmd, t_lexer *redir)
+char	*redir_out(t_cmd *cmd, t_lexer *redir)
 {
 	if (redir->token == REDIR_OUT)
-	{ 
+	{
 		cmd->dr_bool = 0;
-		return(redir->next->content);
+		return (redir->next->content);
 	}
 	else if (redir->token == DREDIR_OUT)
 	{
 		cmd->dr_bool = 1;
-		return(redir->next->content);
+		return (redir->next->content);
 	}
 	else
 		return (NULL);
 }
 
 /* return 1 if there is error */
-int set_redir(t_cmd *cmd, char *inf, char *outf)
+int	set_redir(t_cmd *cmd, char *inf, char *outf)
 {
 	if (inf && (cmd->fd_io)[0] != 0)
 		close((cmd->fd_io)[0]);

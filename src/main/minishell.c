@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 14:40:59 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 18:01:51 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,64 @@ int	main(int argc, char **argv, char **envp)
 	{
 		line = ft_readline(&global);
 		free_global(&global);
-		global.lexer = ft_lexer(line);
-		if (expand_env(&global))
-			continue;
-		if (get_cmds(&global))
-			continue ; 
-		global.exit_c = executor(&global); 
+		ft_lexer(line, &global);
 		free(line);
+		if (global.lexer == NULL)
+			continue ;
+		if (expand_env(&global) || get_cmds(&global))
+			continue ;
+		global.exit_c = executor(&global);
 	}
 	return (0);
 }
+
+
+void	print_lex(t_lexer *lexer)
+{
+	printf("################################\n");
+	while (lexer)
+	{
+		printf("LEXER: %p\n", lexer);
+		printf("################################\n");
+		printf("content:%s\n", lexer->content);
+		printf("len: %i\n", lexer->len);
+		printf("token: %i\n", lexer->token);
+		printf("state: %i\n", lexer->state);
+		printf("prev: %p\n", lexer->prev);
+		printf("next: %p\n", lexer->next);
+		printf("################################\n");
+		lexer = lexer->next;
+	}
+	printf("################################\n");
+}
+void	print_args(char **args)
+{
+	int	i;
+
+	i = 0;
+	printf("The content:\n");
+	while (args && args[i])
+	{
+		printf("    %d. %s\n", i, args[i]);
+		i++;
+	}
+}
+
+void	print_cmd(t_cmd *cmd)
+{
+	printf("************************************\n");
+	while (cmd)
+	{
+		printf("CMD: %p\n", cmd);
+		printf("************************************\n");
+		print_args(cmd->args);
+		printf("The num of redir: %d\n", cmd->num_redir);
+		printf("\nRedir: %p\n", cmd->redir);
+		print_lex(cmd->redir);
+		printf("\nprev: %p\n", cmd->prev);
+		printf("next: %p\n", cmd->next);
+		printf("************************************\n");
+		cmd = cmd->next;
+	}
+}
+

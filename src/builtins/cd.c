@@ -6,12 +6,11 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 15:30:29 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 14:45:14 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 17:42:37 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
 
 /**
  *  cd or cd ~ : cd HOME
@@ -23,12 +22,12 @@
  * 	cd - : change the dir to OLDPWD
  *  PWD=/home/jiajchen/Documents
  * change PWD and OLDPWD
-*/
+ */
 
 int	ft_find_key(char *var, char **env)
 {
-	int	i;
-	char* new_var;
+	int		i;
+	char	*new_var;
 
 	i = 0;
 	new_var = ft_strjoin(var, "=");
@@ -46,51 +45,49 @@ void	ft_move_env(char **env, char **tmp, int pos)
 	int	j;
 
 	i = 0;
-	j = -1;
-	while (tmp[++j])
+	j = 0;
+	while (tmp[j])
 	{
 		if (j == pos)
-			i++;
-		else
-		{
-			env[i] = tmp[j];
-			i++;
-		}
+			j++;
+		env[i] = tmp[j];
+		i++;
+		j++;
 	}
 }
 
 /* str is malloced for env, should not be freed */
-char	**ft_change_env(char *var, char *str, char **env)
+char	**ft_change_env(char *var, char *str, t_global *global)
 {
 	char	*tmp_str;
 	char	**tmp;
 	int		i;
 	int		size;
 
-	i = ft_find_key(var, env);
+	i = ft_find_key(var, global->env);
 	if (i != -1)
 	{
-		tmp_str = env[i];
-		env[i] = str;
+		tmp_str = global->env[i];
+		global->env[i] = str;
 		free(tmp_str);
-		return (env);
+		return (global->env);
 	}
-	tmp = env;
-	size = get_env_size(env) + 1;
-	env = ft_calloc(size + 1, sizeof(char *));
-	if (!env)
-		return (NULL);
-	ft_move_env(env, tmp, size);
-	env[size - 1] = str;
-	env[size] = NULL;
-	return (free(tmp), env);
+	tmp = global->env;
+	size = get_env_size(global->env) + 1;
+	global->env = ft_calloc(size + 1, sizeof(char *));
+	if (!global->env)
+		ft_error(global, "malloc", -1);
+	ft_move_env(global->env, tmp, size);
+	global->env[size - 1] = str;
+	global->env[size] = NULL;
+	return (free(tmp), global->env);
 }
 
 /* dir is not malloced */
 char	*expand_dir(t_cmd *cmd, char *dir, t_global *global)
 {
 	char	*new;
-	
+
 	if (!dir)
 		new = find_variable("HOME", global);
 	else if (dir[0] == '~')
@@ -123,8 +120,9 @@ int	ft_cd(t_cmd *cmd, t_global *global)
 		return (ft_error(global, (cmd->args)[1], 0));
 	}
 	ptr = (global->env)[ft_find_key("PWD", global->env)] + 4;
-	global->env = ft_change_env("OLDPWD", ft_strjoin("OLDPWD=", ptr), global->env);
-	global->env = ft_change_env("PWD", ft_strjoin("PWD=", getcwd(pwd, sizeof(pwd))), global->env);
+	global->env = ft_change_env("OLDPWD", ft_strjoin("OLDPWD=", ptr), global);
+	global->env = ft_change_env("PWD", ft_strjoin("PWD=", getcwd(pwd,
+					sizeof(pwd))), global);
 	free(dir);
 	if (!global->env)
 		return (ft_error(global, "malloc", -1));
