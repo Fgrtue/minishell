@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/19 17:34:01 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 12:27:09 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*ft_readline(t_global *global)
 	if (line == NULL)
 	{
 		rl_clear_history();
-		ft_exit(global->cmds, &(global->env), global);
+		ft_exit(NULL, &(global->env), global);
 	}
 	if (line && *line)
 		add_history(line);
@@ -39,16 +39,6 @@ char	*ft_readline(t_global *global)
 	return (line);
 }
 
-// /* when execute */
-// int	check_signal(int exit_c)
-// {
-// 	if (g_sig == SIGINT)
-// 		return (130);
-// 	if (g_sig == SIGQUIT)
-// 		return (131);
-// 	return (exit_c);
-// }
-
 void reset_global(t_global* global)
 {
 	ft_unlink(global->cmds);
@@ -56,6 +46,8 @@ void reset_global(t_global* global)
 		ft_cmdclean(global->cmds);
 	if (global->lexer)
 		ft_lexclean(global->lexer);
+	global->cmds = NULL;
+	global->lexer = NULL;
 	if (g_sig == SIGINT)
 		global->exit_c = 130;
 	else if (g_sig == SIGQUIT)
@@ -70,8 +62,8 @@ int	main(int argc, char **argv, char **envp)
 	global.env = create_env(envp);
 	while (argc && argv)
 	{
-		reset_global(&global);
 		line = ft_readline(&global);
+		reset_global(&global);
 		global.lexer = ft_lexer(line);
 		if (expand_env(&global))
 			continue;

@@ -2,7 +2,7 @@
 NAME		=	minishell
 LIBFT		=	$(LFT_PATH)libft.a
 
-CFLAGS		=	-Wall -Wextra -Werror -g
+CFLAGS		=	-Wall -Wextra -Werror -g -fsanitize=address
 RM			=	rm -rf
 LIB_CF		=	-L $(LFT_PATH) -lft
 READLINE_CF	=	-lreadline -lhistory
@@ -55,7 +55,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER) Makefile
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT)
-		cc $(OBJ) $(LIB_CF) $(READLINE_CF) -o $(NAME)
+		cc $(OBJ) $(CFLAGS) $(LIB_CF) $(READLINE_CF) -o $(NAME)
 		@echo "\n$(GREEN)Minishell created!$(DEFAULT)\n"
 
 $(LIBFT): $(LFT_PATH)

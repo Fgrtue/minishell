@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/19 14:12:15 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 11:51:35 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,16 +78,17 @@ int process_here_doc(char* count, t_lexer* redir, t_global* global)
 	pid = fork();
 	if (pid == -1)
 		free_global("Fork", global, 1);
+	signal(SIGINT, SIG_IGN);
 	if (pid == 0)
 	{
 		signals_handler(HEREDOC);
 		here_doc(count, redir->next->content);
+		exit(0);
 	}
-	else
-		waitpid(pid, &status, 0);
+	waitpid(pid, &status, 0);
 	if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
-			return (130);
-	return (EXIT_SUCCESS);
+		return (130);
+	return (0);
 }
 
 int create_heredoc(t_global* global)

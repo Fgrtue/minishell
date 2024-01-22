@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/19 17:24:13 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 10:04:35 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@
 # include "lexer.h"
 # include "../libft/libft.h"
 
-extern int sign; // GLOBAL VAR
 
 void    handl_ctrld(int signum);
 void    handl_ctrlc(int signum);
