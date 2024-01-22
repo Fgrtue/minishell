@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 12:27:09 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 14:39:18 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,13 @@ int	main(int argc, char **argv, char **envp)
 	{
 		line = ft_readline(&global);
 		reset_global(&global);
-		global.lexer = ft_lexer(line);
-		if (expand_env(&global))
-			continue;
-		if (get_cmds(&global))
-			continue ; 
-		global.exit_c = executor(&global); 
+		ft_lexer(line, &global);
 		free(line);
+		if (global.lexer == NULL)
+			continue;
+		if (expand_env(&global) || get_cmds(&global))
+			continue;
+		global.exit_c = executor(&global); 
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 16:44:19 by kkopnev       #+#    #+#                 */
-/*   Updated: 2024/01/22 11:51:26 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 14:35:02 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ int ft_exit(t_cmd* cmd, char ***env, t_global* global)
     else
 		global->exit_c = ft_atoi(cmd->args[1]);
 	exit_c = global->exit_c;
-	free_global(NULL, global, 1);
+	free_global(global);
+	free_arr(global->env);
 	exit(exit_c);
     return (exit_c);
 }

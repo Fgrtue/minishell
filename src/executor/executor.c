@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/19 14:47:06 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 14:32:57 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	process_cmd(t_cmd *cmd, t_global* global)
 {	
 	cmd->pid = fork();
 	if (cmd->pid == -1)
-		free_global("Fork", global, 1); //shouldn't we stop the execution in this case?
+		ft_error(global, "Fork", -1); //shouldn't we stop the execution in this case?
 	if (cmd->pid == 0)
 	{
 		execute_cmd(cmd, global->env, global);
@@ -89,7 +89,7 @@ int pipe_exe(t_global* global)
 	while (cmd)
 	{
 		if (cmd->next && pipe(fd) == -1)
-			free_global("Pipe", global, 1); // free global struct ???
+			ft_error(global, "Pipe", -1); // free global struct ???
 		if (cmd->next)
 			(cmd->fd_io)[1] = fd[1];
 		process_cmd(cmd, global);

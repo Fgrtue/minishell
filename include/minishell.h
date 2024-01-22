@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 10:04:35 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 14:28:38 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int     check_eq(char*   str);
 int     check_quotes(char *str);
 int     get_env_size(char **env);
 int		check_quotes(char *str);
-void	free_global(char *msg, t_global *global, int clean_env);
+void	free_global(t_global *global);
 
 void	signals_handler(t_mode mode);
 void	interrupt_interactive(int sig);

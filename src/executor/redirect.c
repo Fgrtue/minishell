@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 11:51:35 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 14:34:22 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int process_here_doc(char* count, t_lexer* redir, t_global* global)
 		return (1);
 	pid = fork();
 	if (pid == -1)
-		free_global("Fork", global, 1);
+		ft_error(global, "Fork",-1);
 	signal(SIGINT, SIG_IGN);
 	if (pid == 0)
 	{

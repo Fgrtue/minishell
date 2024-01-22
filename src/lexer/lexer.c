@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 11:09:00 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/22 10:43:16 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/22 13:51:57 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,22 +61,18 @@ t_lexer*    lexer_tokenizer(t_lexer** lexer, char* str)
 }
 
 
-t_lexer* ft_lexer(char* str)
+void ft_lexer(char* str, t_global* global)
 {
-	t_lexer*	lexer;
-	
-	lexer = NULL;
 	if (!str || !*str)
-		return(NULL);
-	lexer = lexer_tokenizer(&lexer, str);
-	if (!lexer)
+		return ;
+	global->lexer = lexer_tokenizer(&global->lexer, str);
+	if (!global->lexer)
 		perror("failed lexer: ");
-	add_empty(&lexer);
-	lexer_setstate(lexer);
-	set_env(lexer);
-	polish_lexer(&lexer);
-	check_lexer(&lexer);
-	return (lexer);
+	add_empty(&global->lexer);
+	lexer_setstate(global->lexer);
+	set_env(global->lexer);
+	polish_lexer(&global->lexer);
+	check_lexer(global);
 }
 
 // Test the tokenizer

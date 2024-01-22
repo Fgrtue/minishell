@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/27 12:25:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/19 17:07:03 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 14:35:40 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,6 @@ int	ft_unset(t_cmd* cmd, char ***env, t_global* global)
 	global = NULL;
 	global->env = ft_del_env((cmd->args)[1], *env);
 	if (!global->env)
-		free_global("malloc", global, 0);
+		ft_error(global, "malloc", -1);
 	return (EXIT_SUCCESS);
 }
