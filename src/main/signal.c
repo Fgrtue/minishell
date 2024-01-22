@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 12:25:13 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 14:39:18 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,59 +63,19 @@ void	interrupt_heredoc(int sig)
 void	signals_handler(t_mode mode)
 {
 	g_sig = 0;
-	if (mode == INTERACTIVE) //in readline
+	if (mode == INTERACTIVE)
 	{
 		signal(SIGINT, interrupt_read);
-		signal(SIGQUIT, SIG_IGN); // Why here we have an integer? Why do we have two lines here?
+		signal(SIGQUIT, SIG_IGN);
 	}
-	if (mode == EXECUTE) // in executor
+	if (mode == EXECUTE)
 	{
 		signal(SIGINT, interrupt_exe);
 		signal(SIGQUIT, interrupt_exe);
 	}
-	if (mode == HEREDOC) //sigquit wont affect
+	if (mode == HEREDOC)
 	{
 		signal(SIGINT, interrupt_heredoc);
 		signal(SIGQUIT, SIG_IGN);
 	}
 }
-
-/* do not use mode*/
-
-// volatile sig_atomic_t g_sig;
-
-// void	interrupt_interactive(int sig)
-// {
-// 	if (sig == SIGINT)
-// 	{
-// 		write(STDOUT_FILENO, "\n", 1);
-// 		rl_on_new_line();
-// 		rl_replace_line("", 0);
-// 		rl_redisplay();
-// 	}
-// 	g_sig = sig;
-// }
-
-// void	interrupt_execute(int sig)
-// {
-// 	if (sig == SIGINT)
-// 		kill(0, sig);
-// 	g_sig = sig;
-// }
-
-// void	interrupt_heredoc(int sig)
-// {
-// 	if (sig == SIGINT)
-// 	{
-// 		ioctl(0, TIOCSTI, "\n");
-// 		exit(130);
-// 	}
-// 	g_sig = sig;
-// }
-
-// void	signals_handler(__sighandler_t sighandle)
-// {
-// 	g_sig = 0;
-// 	signal(SIGINT, sighandle);
-// 	signal(SIGQUIT, sighandle);
-// }

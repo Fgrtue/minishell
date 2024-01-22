@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 10:36:14 by kkopnev       #+#    #+#                 */
-/*   Updated: 2024/01/17 20:38:15 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/22 13:36:34 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,18 +27,16 @@
 
 */
 
-int ft_echo(t_cmd* cmd, char ***env, t_global* global)
+int ft_echo(t_cmd* cmd, t_global* global)
 {
 	int     mode;
 	int     i;
 	char*   line;
 
-	(void) env;
-	global = NULL;
 	i = 1;
 	mode = 0;
 	line = NULL;
-	if ((cmd->args)[1]) 
+	if (global && (cmd->args)[1]) 
 	{
 		mode = ft_strncmp((cmd->args)[1], "-n", ft_strlen((cmd->args)[1]));
 		if (mode == 0)

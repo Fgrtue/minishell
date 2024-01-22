@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 16:39:12 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/19 17:20:18 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 14:34:37 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,24 @@
 
 /* find the variable in the env. Never return NULL, 
 only can be empty string!! */
-char	*find_variable(char *var, char **env, int exit_c)
+char	*find_variable(char *var, t_global *global)
 {
 	int		i;
 	char	*content;
 
 	if (*var == '?')
-		return (ft_itoa(exit_c));
+		return (ft_itoa(global->exit_c));
 	i = 0;
-	var = ft_strjoin(var, "="); //not free original var
-	while (env[i] && ft_strncmp(env[i], var, ft_strlen(var)) != 0)
+	var = ft_strjoin(var, "=");
+	while (global->env[i] && ft_strncmp(global->env[i], var, ft_strlen(var)) != 0)
 		i++;
-	if (env[i])
-		content = ft_strdup(env[i] + ft_strlen(var));
+	if (global->env[i])
+		content = ft_strdup(global->env[i] + ft_strlen(var));
 	else
 		content = ft_calloc(sizeof(char), 1);
 	if (!content)
-		perror("malloc"); // todo: write another error() to exit(0)
-	if (!env[i])
+		ft_error(global, "malloc", -1);
+	if (!global->env[i])
 		content[0] = '\0';
 	free(var);
 	return (content);
@@ -77,7 +77,7 @@ int	expand_env(t_global *global)
 	{
 		if (lex->token == ENV)
 		{
-			tmp = find_variable(lex->content + 1, global->env, global->exit_c);
+			tmp = find_variable(lex->content + 1, global);
 			if (arr_len(tmp, ' ') != 1 && lex->prev && (lex->prev->token == '<' \
 				|| lex->prev->token == '>' || lex->prev->token == DREDIR_OUT))
 				return(ft_error(global, "ambiguous redirect", 1)); 

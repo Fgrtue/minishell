@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/19 14:47:06 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 14:41:58 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	execute_cmd(t_cmd *cmd, char **env, t_global* global)
 	if (!cmd->args[0])
 		exit(EXIT_SUCCESS);
 	if (cmd->builtin != NULL)
-		exit(cmd->builtin(cmd, &env, global));
+		exit(cmd->builtin(cmd, global));
 	path = get_path((cmd->args)[0], env);
 	if (path)
 		execve(path, cmd->args, env);
@@ -70,7 +70,7 @@ void	process_cmd(t_cmd *cmd, t_global* global)
 {	
 	cmd->pid = fork();
 	if (cmd->pid == -1)
-		free_global("Fork", global, 1); //shouldn't we stop the execution in this case?
+		ft_error(global, "fork", -1);
 	if (cmd->pid == 0)
 	{
 		execute_cmd(cmd, global->env, global);
@@ -79,7 +79,6 @@ void	process_cmd(t_cmd *cmd, t_global* global)
 		close_fd(cmd->fd_io);
 }
 
-// int pipe_exe(t_cmd* cmd, char** env)
 int pipe_exe(t_global* global)
 {
 	int	fd[2];
@@ -89,7 +88,7 @@ int pipe_exe(t_global* global)
 	while (cmd)
 	{
 		if (cmd->next && pipe(fd) == -1)
-			free_global("Pipe", global, 1); // free global struct ???
+			ft_error(global, "pipe", -1);
 		if (cmd->next)
 			(cmd->fd_io)[1] = fd[1];
 		process_cmd(cmd, global);
@@ -100,19 +99,21 @@ int pipe_exe(t_global* global)
 	return (0);
 }
 	
-// int	executor(t_cmd *cmd, char **env)
 int	executor(t_global *global)
 {
 	if (!global->cmds)
 		return (0);
 	if (create_heredoc(global))
+	{
+		ft_unlink(global->cmds);
 		return (130);
+	}
 	signals_handler(EXECUTE);
 	if (!global->cmds->next && global->cmds->builtin)
 	{
 		if (check_redirection(global->cmds))
 			return (EXIT_FAILURE);
-		global->exit_c = global->cmds->builtin(global->cmds, &(global->env), global);
+		global->exit_c = global->cmds->builtin(global->cmds, global);
 	}
 	else
 	{

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 12:41:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/18 12:04:12 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/22 13:29:43 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ typedef struct s_lexer
 typedef struct s_cmd
 {
 	char			**args;
-	int				(*builtin)(struct s_cmd* cmd, char ***env, struct s_global* global);
+	int				(*builtin)(struct s_cmd* cmd, struct s_global* global);
 	int				num_redir;
 	int				pid;
 	int				fd_io[2];

@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 16:44:19 by kkopnev       #+#    #+#                 */
-/*   Updated: 2024/01/22 11:51:26 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 14:21:21 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,11 @@ static int	ft_isnumb(char *str)
 }
 
 // int ft_exit(t_cmd* cmd, char ***env)
-int ft_exit(t_cmd* cmd, char ***env, t_global* global)
+int ft_exit(t_cmd* cmd, t_global* global)
 {
 	int	exit_c;
 	
 	global->exit_c = 0;
-	(void) env;
     write(STDOUT_FILENO, "exit\n", 5);
 	if (!cmd || !(cmd->args[1]))
 		global->exit_c = 0; 
@@ -60,7 +59,8 @@ int ft_exit(t_cmd* cmd, char ***env, t_global* global)
     else
 		global->exit_c = ft_atoi(cmd->args[1]);
 	exit_c = global->exit_c;
-	free_global(NULL, global, 1);
+	free_arr(global->env);
+	free_global(global);
 	exit(exit_c);
     return (exit_c);
 }

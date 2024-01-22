@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/23 14:37:22 by kkopnev       #+#    #+#                 */
-/*   Updated: 2024/01/19 17:02:00 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 13:40:18 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int ft_print_exp(t_cmd* cmd, char **env)
 	return (0);
 }
 
-int ft_export(t_cmd* cmd, char ***env, t_global* global)
+int ft_export(t_cmd* cmd, t_global* global)
 {
 	int		i;
 	int		len;
@@ -34,11 +34,11 @@ int ft_export(t_cmd* cmd, char ***env, t_global* global)
 
     i = 0;
     if (!(cmd->args)[1])
-        return (ft_print_exp(cmd, *env));
+        return (ft_print_exp(cmd, global->env));
     while((cmd->args)[++i])
     {
         ptr_eq = ft_strchr((cmd->args)[i], '=');
-        if(!ptr_eq && ft_find_key((cmd->args)[i], *env) != -1) //key already in 
+        if(!ptr_eq && ft_find_key((cmd->args)[i], global->env) != -1)
             continue;
         if (!ptr_eq)
             len = ft_strlen((cmd->args)[i]);
@@ -46,9 +46,9 @@ int ft_export(t_cmd* cmd, char ***env, t_global* global)
             len = ptr_eq - (cmd->args)[i];
         key = ft_calloc(len + 1, sizeof(char));
         if (key == NULL)
-            return (127); // PROTECT
+            return (127);
         ft_memcpy(key, (cmd->args)[i], len);
-        global->env = ft_change_env(key, ft_strdup((cmd->args)[i]), *env);
+        global->env = ft_change_env(key, ft_strdup((cmd->args)[i]), global->env);
         free(key);
     }
     return (0);    
