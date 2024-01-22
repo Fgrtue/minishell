@@ -6,29 +6,30 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/15 14:48:02 by kkopnev       #+#    #+#                 */
-/*   Updated: 2023/12/29 15:38:31 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 14:39:26 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void check_lexer(t_lexer** lexer)
+int check_lexer(t_global* global)
 {
     t_lexer*    lex;
 
-    lex = *lexer;
+    lex = global->lexer;
     if(!lex || lex->token == PIPE_LINE || ft_lexlast(lex)->token == PIPE_LINE)
-        exit(1); //TO DO: clean lexer and go to next line;
+        return(ft_error(global, "Syntax error", 2));
     while(lex)
     {
         if (lex->token == REDIR_IN ||lex->token == REDIR_OUT
             || lex->token == HERE_DOC || lex->token == DREDIR_OUT)
         {
             if (!lex->next || (lex->next->token != WORD && lex->next->token != ENV))
-                exit (1);
+                return(ft_error(global, "Syntax error", 2));
         }
         lex = lex->next;
     }
+    return (0);
 }
 
 void polish_lexer(t_lexer** lexer)

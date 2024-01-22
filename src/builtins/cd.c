@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 15:30:29 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 21:10:35 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/19 17:25:46 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,7 @@ char	**ft_change_env(char *var, char *str, char **env)
 	ft_move_env(env, tmp, size);
 	env[size - 1] = str;
 	env[size] = NULL;
-	free(tmp);
-	return (env);
+	return (free(tmp), env);
 }
 
 /* dir is not malloced */
@@ -116,25 +115,22 @@ int	ft_cd(t_cmd *cmd, char ***env, t_global *global)
 	char	*ptr;
 	char	pwd[1024];
 
-	global = NULL;
 	if ((cmd->args)[1] && (cmd->args)[2])
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
 	dir = expand_dir(cmd, (cmd->args)[1], *env);
-	// ft_print_exp(cmd, *env);
 	if (chdir(dir) == -1)
 	{
 		free(dir);
-		if (cmd->args[1])
-			free_global(cmd->args[1], global, 1);
+		return (ft_error(global, (cmd->args)[1], 0));
 	}
 	ptr = (*env)[ft_find_key("PWD", *env)] + 4;
-	*env = ft_change_env("OLDPWD", ft_strjoin("OLDPWD=", ptr), *env);
-	*env = ft_change_env("PWD", ft_strjoin("PWD=", getcwd(pwd, sizeof(pwd))), *env);
+	global->env = ft_change_env("OLDPWD", ft_strjoin("OLDPWD=", ptr), *env);
+	global->env = ft_change_env("PWD", ft_strjoin("PWD=", getcwd(pwd, sizeof(pwd))), *env);
 	free(dir);
 	if (!*env)
-		free_global(NULL, global, 0); //do we have to delete env here?
+		return (ft_exit(cmd, env, global)); //do we have to delete env here?
 	return (EXIT_SUCCESS);
 }

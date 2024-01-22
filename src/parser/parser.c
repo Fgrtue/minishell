@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 20:57:10 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/19 17:25:09 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,19 +94,17 @@ int	args_size(t_lexer *lexer)
 }
 
 // t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
-t_cmd	*get_cmds(t_global* global)
+int	get_cmds(t_global* global)
 {
-	t_cmd 	*cmd;
 	t_cmd	*cur;
 	t_lexer *lexer;
 	
-	cmd = NULL;
 	lexer = global->lexer;
 	while (lexer)
 	{
 		cur = ft_cmdnew();
 		if (cur == NULL)
-			return((t_cmd *)ft_error_nvoid(global, "malloc"));// our error function   //ambig_redir(global));
+			return(ft_error(global, "malloc failed", 0)); //todo: error handler
 		if (lexer->token == PIPE_LINE)
 		{
 			fill_redir(&(global->lexer), lexer->next, cur);
@@ -119,7 +117,7 @@ t_cmd	*get_cmds(t_global* global)
 		}
 		lexer = fill_cmd_args(lexer, cur, args_size(lexer));
 		cur->builtin = fill_builtin(cur);
-		ft_cmdaddback(&cmd, cur);
+		ft_cmdaddback(&global->cmds, cur);
 	}
-	return (cmd);
+	return (0);
 }

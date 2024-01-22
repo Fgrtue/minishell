@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 16:11:54 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/18 12:23:51 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/22 14:39:18 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*ft_readline(t_global *global)
 	if (line == NULL)
 	{
 		rl_clear_history();
-		ft_exit(global->cmds, &(global->env), global);
+		ft_exit(NULL, &(global->env), global);
 	}
 	if (line && *line)
 		add_history(line);
@@ -39,53 +39,38 @@ char	*ft_readline(t_global *global)
 	return (line);
 }
 
-// /* when execute */
-// int	check_signal(int exit_c)
-// {
-// 	if (g_sig == SIGINT)
-// 		return (130);
-// 	if (g_sig == SIGQUIT)
-// 		return (131);
-// 	return (exit_c);
-// }
-void ft_set_global(t_global* global)
+void reset_global(t_global* global)
 {
-	global->here_doc_exit = 0;
-	global->lexer = NULL;
+	ft_unlink(global->cmds);
+	if (global->cmds)
+		ft_cmdclean(global->cmds);
+	if (global->lexer)
+		ft_lexclean(global->lexer);
 	global->cmds = NULL;
+	global->lexer = NULL;
+	if (g_sig == SIGINT)
+		global->exit_c = 130;
+	else if (g_sig == SIGQUIT)
+		global->exit_c = 131;
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		*line;
-	t_global	*global;
-	argv = NULL; // unused parameter
-	global = malloc(sizeof(t_global));
-	if (!global)
-		return (1);
-	global->exit_c = 0;
-	ft_set_global(global);
-	global->env = create_env(envp);
-	while (1)
+	char			*line;
+	static t_global	global;
+
+	global.env = create_env(envp);
+	while (argc && argv)
 	{
-		if (argc == -1)
-		{
-			free_global(NULL, global, 0); // clean it if it's non empty;
-			ft_set_global(global);
-		}
-		argc = -1;
-		line = ft_readline(global);
-		global->lexer = ft_lexer(line);
-		expand_env(global);
-		if (global->exit_c == 1)
-			continue ; 
-		global->cmds = get_cmds(global); 
-		if (global->exit_c == 1)
-			continue ; 
-		global->exit_c = executor(global); 
+		line = ft_readline(&global);
+		reset_global(&global);
+		ft_lexer(line, &global);
 		free(line);
+		if (global.lexer == NULL)
+			continue;
+		if (expand_env(&global) || get_cmds(&global))
+			continue;
+		global.exit_c = executor(&global); 
 	}
-    free_arr(global->env); //QESTION:: in what case do we get to these lines?
-	free(global);
 	return (0);
 }

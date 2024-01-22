@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/23 14:37:22 by kkopnev       #+#    #+#                 */
-/*   Updated: 2024/01/17 21:12:04 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/19 17:02:00 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ int ft_export(t_cmd* cmd, char ***env, t_global* global)
 	char	*key;
 
     i = 0;
-    global = NULL;
     if (!(cmd->args)[1])
         return (ft_print_exp(cmd, *env));
     while((cmd->args)[++i])
@@ -49,7 +48,7 @@ int ft_export(t_cmd* cmd, char ***env, t_global* global)
         if (key == NULL)
             return (127); // PROTECT
         ft_memcpy(key, (cmd->args)[i], len);
-        *env = ft_change_env(key, ft_strdup((cmd->args)[i]), *env);
+        global->env = ft_change_env(key, ft_strdup((cmd->args)[i]), *env);
         free(key);
     }
     return (0);    

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/18 19:55:37 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/22 14:32:57 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	process_cmd(t_cmd *cmd, t_global* global)
 {	
 	cmd->pid = fork();
 	if (cmd->pid == -1)
-		free_global("Fork", global, 1); //shouldn't we stop the execution in this case?
+		ft_error(global, "Fork", -1); //shouldn't we stop the execution in this case?
 	if (cmd->pid == 0)
 	{
 		execute_cmd(cmd, global->env, global);
@@ -89,7 +89,7 @@ int pipe_exe(t_global* global)
 	while (cmd)
 	{
 		if (cmd->next && pipe(fd) == -1)
-			free_global("Pipe", global, 1); // free global struct ???
+			ft_error(global, "Pipe", -1); // free global struct ???
 		if (cmd->next)
 			(cmd->fd_io)[1] = fd[1];
 		process_cmd(cmd, global);
@@ -105,9 +105,8 @@ int	executor(t_global *global)
 {
 	if (!global->cmds)
 		return (0);
-	global->here_doc_exit = create_heredoc(global); //function that creates all the heredocs
-	if (global->here_doc_exit)
-		return (global->here_doc_exit);
+	if (create_heredoc(global))
+		return (130);
 	signals_handler(EXECUTE);
 	if (!global->cmds->next && global->cmds->builtin)
 	{
@@ -120,6 +119,5 @@ int	executor(t_global *global)
 		pipe_exe(global);
 		global->exit_c = ft_wait(global->cmds);
 	}
-	
 	return (global->exit_c);
 }

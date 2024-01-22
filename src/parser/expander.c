@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 16:39:12 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 15:01:25 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/19 17:20:18 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,12 @@ t_lexer	*ft_lexsplit(t_lexer **lst, t_lexer *lexer, char *str)
 		ft_lexinsert(lst, lexer->prev, lexer, node);		
 	}
 	ft_lexdel(ft_lexretract(lst, lexer));
-	free(tabs); //only free the crust? not strings
+	free(tabs);
 	return (node->next);
 }
 
 // void	expand_env(t_lexer **lst, char **env, int exit_c)
-void	expand_env(t_global *global)
+int	expand_env(t_global *global)
 {
 	char	*tmp;
 	t_lexer	*lex;
@@ -80,7 +80,7 @@ void	expand_env(t_global *global)
 			tmp = find_variable(lex->content + 1, global->env, global->exit_c);
 			if (arr_len(tmp, ' ') != 1 && lex->prev && (lex->prev->token == '<' \
 				|| lex->prev->token == '>' || lex->prev->token == DREDIR_OUT))
-				return(ft_error_void(global, "ambiguous redirect")); 
+				return(ft_error(global, "ambiguous redirect", 1)); 
 			{
 				lex = ft_lexsplit(&(global->lexer), lex, tmp);
 				free(tmp);
@@ -93,4 +93,5 @@ void	expand_env(t_global *global)
 		lex = lex->next;
 	}
 	polish_lex(&(global->lexer));
+	return (0);
 }

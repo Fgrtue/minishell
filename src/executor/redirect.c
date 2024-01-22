@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/18 19:46:29 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/22 14:34:22 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 	our struct and leave the building, getting back to readline.  
 */
 
-char	*here_doc(char *heredoc, char *inf)
+void	here_doc(char *heredoc, char *inf)
 {
 	char*	line;
 	int		hd;
@@ -51,9 +51,8 @@ char	*here_doc(char *heredoc, char *inf)
 	if (hd == -1)
 	{
 		perror("heredoc");
-		return (NULL);
+		return ;
 	}
-	signals_handler(HEREDOC);
 	line = readline("heredoc: ");
 	while (line && (!*line || ft_strncmp(line, inf, ft_strlen(line)) != 0))
 	{
@@ -66,9 +65,6 @@ char	*here_doc(char *heredoc, char *inf)
 	else
 		free(line);
 	close(hd);
-	signals_handler(EXECUTE);
-	exit (0);
-	return (heredoc);
 }
 
 int process_here_doc(char* count, t_lexer* redir, t_global* global)
@@ -81,50 +77,39 @@ int process_here_doc(char* count, t_lexer* redir, t_global* global)
 		return (1);
 	pid = fork();
 	if (pid == -1)
-		free_global("Fork", global, 1);
+		ft_error(global, "Fork",-1);
+	signal(SIGINT, SIG_IGN);
 	if (pid == 0)
 	{
+		signals_handler(HEREDOC);
 		here_doc(count, redir->next->content);
+		exit(0);
 	}
-	else
-		waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	if (WIFSIGNALED(status))
-		return (WTERMSIG(status));
-	return (EXIT_SUCCESS);
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
+		return (130);
+	return (0);
 }
 
 int create_heredoc(t_global* global)
 {
-	t_cmd*	cmd;
+	t_cmd*		cmd;
 	t_lexer*	redir;
-	static int		hd;
-	char*	count;
+	static int	hd;
 
 	cmd = global->cmds;
 	while (cmd)
 	{
-		count = ft_itoa(++hd);
 		redir = cmd->redir;
 		if (redir)
-			cmd->heredoc = ft_strdup(count);
+			cmd->heredoc = ft_itoa(++hd);
 		while(redir)
 		{
-			if (redir->token == HERE_DOC)
-			{
-				if (process_here_doc(count, redir, global))
-				{
-					free(count);	
-					return (130); //returns the status of the opening of heredocs
-				}
-			}
-			if (redir) // switch to the new redirection linked list
-				redir = redir->next;
+			if (redir->token == HERE_DOC && process_here_doc(cmd->heredoc, redir, global))
+				return (130);
+			redir = redir->next;
 		}
-		if (cmd)
-			cmd = cmd->next;
-		free(count);
+		cmd = cmd->next;
 	}
 	return (0);
 }
@@ -182,11 +167,10 @@ int	check_redirection(t_cmd *cmd)
 	while (redir)
 	{
 		errno = 0;
-		if (redir->token == REDIR_IN) //&& !access(redir->next->content, R_OK)
+		if (redir->token == REDIR_IN)
 			inf = redir->next->content;
-		if (redir->token == HERE_DOC) //&& !access(cmd->heredoc, R_OK)
+		if (redir->token == HERE_DOC)
 			inf = cmd->heredoc;
-			// inf = here_doc(cmd, redir->next->content);
 		if (redir->token == REDIR_OUT || redir->token == DREDIR_OUT)
 			outf = redir_out(cmd, redir);
 		redir = redir->next->next;

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 10:10:35 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/18 17:51:16 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/22 14:28:38 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@
 # include "lexer.h"
 # include "../libft/libft.h"
 
-extern int sign; // GLOBAL VAR
 
 void    handl_ctrld(int signum);
 void    handl_ctrlc(int signum);
@@ -44,7 +43,7 @@ int     check_eq(char*   str);
 int     check_quotes(char *str);
 int     get_env_size(char **env);
 int		check_quotes(char *str);
-void	free_global(char *msg, t_global *global, int clean_env);
+void	free_global(t_global *global);
 
 void	signals_handler(t_mode mode);
 void	interrupt_interactive(int sig);
@@ -52,9 +51,9 @@ void	interrupt_execute(int sig);
 void	interrupt_heredoc(int sig);
 
 /* paser and polisher */
-void	expand_env(t_global *global);
+int		expand_env(t_global *global);
 void	polish_lex(t_lexer **lst);
-t_cmd   *get_cmds(t_global* global);
+int		get_cmds(t_global* global);
 
 void	print_lex(t_lexer* lexer);
 void	print_cmd(t_cmd* cmd);
@@ -76,7 +75,7 @@ int		check_redirection(t_cmd *cmd);
 int		set_redir(t_cmd* cmd, char* inf, char* outf);
 char*	redir_out(t_cmd*	cmd, t_lexer* redir);
 char*	redir_in(t_cmd*	cmd, t_lexer* redir);
-char	*here_doc(char *heredoc, char *inf);
+void	here_doc(char *heredoc, char *inf);
 int     process_here_doc(char* count, t_lexer* redir, t_global* global);
 int     create_heredoc(t_global* global);
 void 	close_fd(int fd[]);
@@ -109,7 +108,8 @@ void    print_args(char** args);
 void	print_lex(t_lexer* lexer);
 void	print_cmd(t_cmd* cmd);
 
-void	ft_error_void(t_global* global, char*	error_msg);
+int		ft_error(t_global* global, char* error_msg, int exit_c);
+void	ft_unlink(t_cmd *cmds);
 void*	ft_error_nvoid(t_global* global, char*	error_msg);
 
 #endif

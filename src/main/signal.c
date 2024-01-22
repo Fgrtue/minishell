@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/17 15:39:55 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/17 19:43:04 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/22 12:25:13 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,17 @@ volatile sig_atomic_t	g_sig;
 
 void	interrupt_exe(int sig)
 {
-	g_sig = sig;
 	if (sig == SIGINT) //exit_code = 130
 	{
 		write(STDERR_FILENO, "\n", 1);
+		g_sig = SIGINT;
 		// kill(0, sig);
 		// rl_redisplay();
 	}
 	if (sig == SIGQUIT) //exit_code = 131
 	{
 		write(STDERR_FILENO, "Quit\n", 5);
+		g_sig = SIGQUIT;
 		// kill(0, sig);
 		// rl_redisplay();
 	}
@@ -42,7 +43,7 @@ void	interrupt_exe(int sig)
 
 void	interrupt_read(int sig)
 {
-	sig = 0; // o/w unused parameter
+	g_sig = sig;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -51,7 +52,6 @@ void	interrupt_read(int sig)
 
 void	interrupt_heredoc(int sig)
 {
-	g_sig = sig;
 	if (sig == SIGINT)
 	{
 		write(STDERR_FILENO, "\n", 1);
