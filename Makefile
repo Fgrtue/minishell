@@ -21,6 +21,7 @@ SRC_FILES	=	lexer/lexer_list.c \
 				lexer/lexer_tokenizer.c \
 				lexer/lexer_utils.c \
 				lexer/lexer.c \
+				lexer/lexer_list_utils.c \
 				main/mini_utils.c \
 				main/minishell.c \
 				main/error.c \

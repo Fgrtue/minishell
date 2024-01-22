@@ -6,13 +6,13 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 14:37:24 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/19 17:25:09 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 16:28:46 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int	(*fill_builtin(t_cmd *cmd))(t_cmd* cmd, char ***env, t_global* global)
+int	(*fill_builtin(t_cmd *cmd))(t_cmd *cmd, t_global *global)
 {
 	if (!cmd->args || !(cmd->args)[0])
 		return (NULL);
@@ -33,19 +33,19 @@ int	(*fill_builtin(t_cmd *cmd))(t_cmd* cmd, char ***env, t_global* global)
 	return (NULL);
 }
 
-t_lexer	*fill_cmd_args(t_lexer *lexer, t_cmd *cmd, int size)
+t_lexer	*fill_cmd_args(t_lexer *lexer, t_cmd *cmd, int size, t_global *global)
 {
 	int	i;
-	
+
 	cmd->args = ft_calloc(sizeof(char *), size + 1);
 	if (cmd->args == NULL)
-		perror("malloc"); // todo: error()
+		ft_error(global, "malloc", -1);
 	i = 0;
 	while (lexer && lexer->token != PIPE_LINE)
 	{
 		cmd->args[i] = ft_strdup(lexer->content);
 		if (!cmd->args[i])
-			perror("malloc");
+			ft_error(global, "malloc", -1);
 		lexer = lexer->next;
 		i++;
 	}
@@ -57,7 +57,7 @@ void	fill_redir(t_lexer **lst, t_lexer *lexer, t_cmd *cmd)
 {
 	while (lexer && lexer->token != PIPE_LINE)
 	{
-		if (lexer->token == REDIR_IN || lexer->token == REDIR_OUT \
+		if (lexer->token == REDIR_IN || lexer->token == REDIR_OUT
 			|| lexer->token == HERE_DOC || lexer->token == DREDIR_OUT)
 		{
 			if (lexer->prev != NULL)
@@ -94,17 +94,17 @@ int	args_size(t_lexer *lexer)
 }
 
 // t_cmd	*get_cmds(t_lexer **lst, t_lexer *lexer)
-int	get_cmds(t_global* global)
+int	get_cmds(t_global *global)
 {
 	t_cmd	*cur;
-	t_lexer *lexer;
-	
+	t_lexer	*lexer;
+
 	lexer = global->lexer;
 	while (lexer)
 	{
 		cur = ft_cmdnew();
 		if (cur == NULL)
-			return(ft_error(global, "malloc failed", 0)); //todo: error handler
+			return (ft_error(global, "malloc", -1));
 		if (lexer->token == PIPE_LINE)
 		{
 			fill_redir(&(global->lexer), lexer->next, cur);
@@ -115,7 +115,7 @@ int	get_cmds(t_global* global)
 			fill_redir(&(global->lexer), lexer, cur);
 			lexer = global->lexer;
 		}
-		lexer = fill_cmd_args(lexer, cur, args_size(lexer));
+		lexer = fill_cmd_args(lexer, cur, args_size(lexer), global);
 		cur->builtin = fill_builtin(cur);
 		ft_cmdaddback(&global->cmds, cur);
 	}

@@ -6,13 +6,13 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 11:09:00 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 13:51:57 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/22 15:34:58 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void lexer_setstate(t_lexer* lexer)
+void	lexer_setstate(t_lexer *lexer)
 {
 	while (lexer)
 	{
@@ -39,17 +39,17 @@ void lexer_setstate(t_lexer* lexer)
 	}
 }
 
-t_lexer*    lexer_tokenizer(t_lexer** lexer, char* str)
+t_lexer	*lexer_tokenizer(t_lexer **lexer, char *str)
 {
-    while (*str)
+	while (*str)
 	{
-		if (*str == WHITE_SPACE || *str == QUOTE
-		|| *str == DOUBLE_QUOTE || *str == PIPE_LINE)
+		if (*str == WHITE_SPACE || *str == QUOTE || *str == DOUBLE_QUOTE
+			|| *str == PIPE_LINE)
 			str = handle_sntx(str, lexer, *str);
 		else if (*str == REDIR_OUT && *(str + 1) == REDIR_OUT)
 			str = handle_dredir(str, lexer, DREDIR_OUT);
-        else if (*str == REDIR_IN && *(str + 1) == REDIR_IN)
-            str = handle_dredir(str, lexer, HERE_DOC);
+		else if (*str == REDIR_IN && *(str + 1) == REDIR_IN)
+			str = handle_dredir(str, lexer, HERE_DOC);
 		else if (*str == REDIR_OUT)
 			str = handle_redir(str, lexer, REDIR_OUT);
 		else if (*str == REDIR_IN)
@@ -57,11 +57,10 @@ t_lexer*    lexer_tokenizer(t_lexer** lexer, char* str)
 		else
 			str = handle_word(str, lexer, WORD);
 	}
-    return (*lexer);
+	return (*lexer);
 }
 
-
-void ft_lexer(char* str, t_global* global)
+void	ft_lexer(char *str, t_global *global)
 {
 	if (!str || !*str)
 		return ;
@@ -74,6 +73,3 @@ void ft_lexer(char* str, t_global* global)
 	polish_lexer(&global->lexer);
 	check_lexer(global);
 }
-
-// Test the tokenizer
-// Test set the state
