@@ -6,24 +6,14 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/29 17:03:26 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 14:39:01 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/22 16:16:02 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-
-/* Function sets exit code to 1, writes an error message and returns a ptr */
-void*	ft_error_nvoid(t_global* global, char* error_msg)
-{
-	global->exit_c = 1;
-	errno = EPERM;
-	perror(error_msg);
-	return (NULL);
-}
-
 /* Function sets exit code to 1, writes an error message and returns nothing */
-int	ft_error(t_global* global, char* error_msg, int exit_c)
+int	ft_error(t_global *global, char *error_msg, int exit_c)
 {
 	if (errno && error_msg)
 		perror(error_msg);
@@ -42,7 +32,7 @@ int	ft_error(t_global* global, char* error_msg, int exit_c)
 
 void	ft_unlink(t_cmd *cmds)
 {
-	while(cmds)
+	while (cmds)
 	{
 		if (cmds->heredoc && !access(cmds->heredoc, F_OK))
 			unlink(cmds->heredoc);
@@ -50,9 +40,10 @@ void	ft_unlink(t_cmd *cmds)
 	}
 }
 
-/* 
+/*
 	Function prints an error message, if there is one, is case of here_doc mode
-	it unlinks all the hererdocs, and then cleans all the commands + lexer. Finally
+	it unlinks all the hererdocs, and then cleans all the commands
+		+ lexer. Finally
 	depending on the mode it either cleans environment or not.
  */
 void	free_global(t_global *global)
@@ -67,4 +58,8 @@ void	free_global(t_global *global)
 		ft_lexclean(global->lexer);
 	global->cmds = NULL;
 	global->lexer = NULL;
+	if (g_sig == SIGINT)
+		global->exit_c = 130;
+	else if (g_sig == SIGQUIT)
+		global->exit_c = 131;
 }

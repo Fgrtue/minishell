@@ -22,11 +22,11 @@ int	get_env_size(char **env)
 	return (i);
 }
 
-char** create_env(char** envp)
+char	**create_env(char **envp)
 {
-	int i;
-	int j;
-	char** env;
+	int		i;
+	int		j;
+	char	**env;
 
 	i = get_env_size(envp);
 	j = -1;
@@ -35,14 +35,14 @@ char** create_env(char** envp)
 	env = malloc(sizeof(char *) * (i + 1));
 	if (!env)
 		return (NULL);
-	while(++j < i)
+	while (++j < i)
 	{
 		env[j] = ft_strdup(envp[j]);
 		if (!env[j])
 			return (free_arr(env));
 	}
 	env[j] = NULL;
-	return (env); 
+	return (env);
 }
 
 int	check_quotes(char *str)
@@ -52,19 +52,19 @@ int	check_quotes(char *str)
 	i = -1;
 	if (!str)
 		return (0);
-	while(str[++i])
+	while (str[++i])
 	{
 		if (str[i] == '\"')
 		{
-			while(str[++i] && str[i] != '\"')
-				continue;
+			while (str[++i] && str[i] != '\"')
+				continue ;
 			if (!str[i])
 				return (0);
 		}
 		else if (str[i] == '\'')
 		{
-			while(str[++i] && str[i] != '\'')
-				continue;
+			while (str[++i] && str[i] != '\'')
+				continue ;
 			if (!str[i])
 				return (0);
 		}

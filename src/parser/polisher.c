@@ -6,23 +6,43 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/11 12:35:21 by jiajchen      #+#    #+#                 */
-/*   Updated: 2023/12/20 18:20:41 by kkopnev       ########   odam.nl         */
+/*   Updated: 2024/01/22 16:27:05 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
+t_cmd	*ft_cmdnew(void)
+{
+	t_cmd	*cmd;
+
+	cmd = malloc(sizeof(t_cmd));
+	if (cmd == NULL)
+		return (NULL);
+	cmd->args = NULL;
+	cmd->builtin = NULL;
+	cmd->num_redir = 0;
+	(cmd->fd_io)[0] = 0;
+	(cmd->fd_io)[1] = 1;
+	cmd->dr_bool = 0;
+	cmd->heredoc = NULL;
+	cmd->redir = NULL;
+	cmd->prev = NULL;
+	cmd->next = NULL;
+	return (cmd);
+}
+
 void	ft_lexjoin_quotes(t_lexer **lst, t_lexer *lexer)
 {
-	t_lexer			*node;
-	t_lexer			*track;
-	char			*str;
+	t_lexer	*node;
+	t_lexer	*track;
+	char	*str;
 
 	while (lexer)
 	{
 		str = NULL;
 		if (lexer->state != GENERAL)
-		{	
+		{
 			track = lexer;
 			while (track && track->state != GENERAL)
 			{
@@ -41,16 +61,15 @@ void	ft_lexjoin_quotes(t_lexer **lst, t_lexer *lexer)
 
 void	ft_lexjoin_word(t_lexer **lst, t_lexer *lexer)
 {
-	t_lexer			*node;
-	t_lexer			*track;
-	char			*str;
+	t_lexer	*node;
+	t_lexer	*track;
+	char	*str;
 
 	while (lexer)
 	{
 		str = NULL;
-		if (lexer->token == WORD && lexer->next && \
-			 lexer->next->token == WORD)
-		{	
+		if (lexer->token == WORD && lexer->next && lexer->next->token == WORD)
+		{
 			track = lexer;
 			while (track && track->token == WORD)
 			{
@@ -67,7 +86,7 @@ void	ft_lexjoin_word(t_lexer **lst, t_lexer *lexer)
 	}
 }
 
-void	polish_lex(t_lexer **lst)
+int	polish_lex(t_lexer **lst)
 {
 	t_lexer	*lex;
 	t_lexer	*tmp;
@@ -86,4 +105,5 @@ void	polish_lex(t_lexer **lst)
 		else
 			lex = lex->next;
 	}
+	return (0);
 }
