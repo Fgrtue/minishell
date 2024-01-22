@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 10:36:14 by kkopnev       #+#    #+#                 */
-/*   Updated: 2024/01/22 18:01:20 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/22 18:37:06 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,22 @@
 
 */
 
+static int check_option(char*	arg)
+{
+	int	i;
+
+	i = 0;
+	if (arg[i++] != '-')
+		return (1);
+	while (arg[i])
+	{
+		if (arg[i] != 'n')
+			return(1);
+		i++;
+	}
+	return (0);
+}
+
 int	ft_echo(t_cmd *cmd, t_global *global)
 {
 	int		mode;
@@ -38,10 +54,11 @@ int	ft_echo(t_cmd *cmd, t_global *global)
 	line = NULL;
 	if (global && (cmd->args)[1])
 	{
-		mode = ft_strncmp((cmd->args)[1], "-n",
-			ft_max(ft_strlen((cmd->args)[1]), 2));
-		if (mode == 0)
+		while((cmd->args)[i] && check_option((cmd->args)[i]) != 1)
+		{
 			i++;
+			mode = 1;
+		}
 		while ((cmd->args)[i])
 		{
 			line = ft_strjoin_free(line, (cmd->args)[i++]);
@@ -50,8 +67,7 @@ int	ft_echo(t_cmd *cmd, t_global *global)
 		}
 		write((cmd->fd_io)[1], line, ft_strlen(line));
 	}
-	if (mode != 0)
-		write((cmd->fd_io)[1], "\n", 1);
+	write((cmd->fd_io)[1], "\n", !mode);
 	free(line);
 	return (0);
 }
