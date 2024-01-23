@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/29 17:03:26 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 16:16:02 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 15:40:39 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,14 @@ void	ft_unlink(t_cmd *cmds)
 	}
 }
 
+void	check_sig(t_global *global)
+{
+	if (g_sig == SIGINT)
+		global->exit_c = 130;
+	else if (g_sig == SIGQUIT)
+		global->exit_c = 131;
+}
+
 /*
 	Function prints an error message, if there is one, is case of here_doc mode
 	it unlinks all the hererdocs, and then cleans all the commands
@@ -50,16 +58,12 @@ void	free_global(t_global *global)
 {
 	if (!global)
 		return ;
-	if (global->here_doc_exit != 0)
-		ft_unlink(global->cmds);
+	ft_unlink(global->cmds);
 	if (global->cmds)
 		ft_cmdclean(global->cmds);
 	if (global->lexer)
 		ft_lexclean(global->lexer);
 	global->cmds = NULL;
 	global->lexer = NULL;
-	if (g_sig == SIGINT)
-		global->exit_c = 130;
-	else if (g_sig == SIGQUIT)
-		global->exit_c = 131;
+	check_sig(global);
 }

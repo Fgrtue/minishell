@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 15:31:20 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 13:40:36 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 16:01:27 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_pwd(t_cmd *cmd, t_global *global)
 {
 	char	dir[PATH_MAX];
 
-	global = NULL;
+	(void) global;
 	if (getcwd(dir, sizeof(dir)) == NULL)
 	{
 		perror("minishell: pwd: ");

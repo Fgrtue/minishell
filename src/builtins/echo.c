@@ -6,7 +6,7 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 10:36:14 by kkopnev       #+#    #+#                 */
-/*   Updated: 2024/01/22 18:37:06 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 15:56:04 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,22 +52,19 @@ int	ft_echo(t_cmd *cmd, t_global *global)
 	i = 1;
 	mode = 0;
 	line = NULL;
-	if (global && (cmd->args)[1])
+	while(global && (cmd->args)[i] && check_option((cmd->args)[i]) != 1)
 	{
-		while((cmd->args)[i] && check_option((cmd->args)[i]) != 1)
-		{
-			i++;
-			mode = 1;
-		}
-		while ((cmd->args)[i])
-		{
-			line = ft_strjoin_free(line, (cmd->args)[i++]);
-			if ((cmd->args)[i])
-				line = ft_strjoin_free(line, " ");
-		}
-		write((cmd->fd_io)[1], line, ft_strlen(line));
+		i++;
+		mode = 1;
 	}
-	write((cmd->fd_io)[1], "\n", !mode);
+	while ((cmd->args)[i])
+	{
+		line = ft_strjoin_free(line, (cmd->args)[i++]);
+		if ((cmd->args)[i])
+			line = ft_strjoin_free(line, " ");
+	}
+	write(cmd->fd_io[1], line, ft_strlen(line));
+	write(cmd->fd_io[1], "\n", !mode);
 	free(line);
 	return (0);
 }

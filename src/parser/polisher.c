@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/11 12:35:21 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 16:27:05 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 15:27:07 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ t_cmd	*ft_cmdnew(void)
 	cmd->redir = NULL;
 	cmd->prev = NULL;
 	cmd->next = NULL;
+	cmd->pid = -2;
 	return (cmd);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/07 12:41:33 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 13:29:43 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 15:38:00 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ typedef struct s_global
 	t_cmd*	cmds;
 	char**	env;
 	int		exit_c;
-	int		here_doc_exit;
+	// int		here_doc_exit;
 }	t_global;
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/23 10:20:39 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 18:34:08 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,27 @@ char	*get_path(char *cmd, char **env)
 	return (NULL);
 }
 
+int	check_directory(char *path)
+{
+	struct stat	filestat;
+
+	if (stat(path, &filestat) == -1)
+	{
+		perror(path);
+		exit(0);
+	}
+	else if (S_ISDIR(filestat.st_mode))
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(path, STDERR_FILENO);
+		ft_putendl_fd(": Is a directory", STDERR_FILENO);
+		exit(127);
+	}
+	if (access(path, X_OK) == 0)
+		return (1);
+	return (0);
+}
+
 void	execute_cmd(t_cmd *cmd, char **env, t_global *global)
 {
 	char	*path;
@@ -48,12 +69,12 @@ void	execute_cmd(t_cmd *cmd, char **env, t_global *global)
 		exit(1);
 	dup2((cmd->fd_io)[0], STDIN_FILENO);
 	dup2((cmd->fd_io)[1], STDOUT_FILENO);
-	close_fd(cmd->fd_io);
 	if (!cmd->args[0])
 		exit(EXIT_SUCCESS);
 	if (cmd->builtin != NULL)
 		exit(cmd->builtin(cmd, global));
-	if (access((cmd->args)[0], F_OK) == 0)
+	close_fd(cmd->fd_io);
+	if (check_directory(cmd->args[0]))
 		path = (cmd->args)[0];
 	else
 		path = get_path((cmd->args)[0], env);
@@ -92,7 +113,7 @@ int	pipe_exe(t_global *global)
 		if (cmd->next && pipe(fd) == -1)
 			ft_error(global, "Pipe", -1);
 		if (cmd->next)
-			(cmd->fd_io)[1] = fd[1];
+			(cmd->fd_io)[1] = fd[1];	
 		process_cmd(cmd, global);
 		if (cmd->next)
 			(cmd->next->fd_io)[0] = fd[0];
@@ -116,6 +137,7 @@ int	executor(t_global *global)
 		if (check_redirection(global->cmds))
 			return (EXIT_FAILURE);
 		global->exit_c = global->cmds->builtin(global->cmds, global);
+		
 	}
 	else
 	{
