@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 15:15:43 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 16:13:09 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 15:49:18 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,13 @@ char	*redir_out(t_cmd *cmd, t_lexer *redir)
 	if (redir->token == REDIR_OUT)
 	{
 		cmd->dr_bool = 0;
+		close(open(redir->next->content, O_CREAT, 0644));
 		return (redir->next->content);
 	}
 	else if (redir->token == DREDIR_OUT)
 	{
 		cmd->dr_bool = 1;
+		close(open(redir->next->content, O_CREAT, 0644));
 		return (redir->next->content);
 	}
 	else

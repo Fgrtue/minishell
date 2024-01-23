@@ -6,11 +6,27 @@
 /*   By: kkopnev <kkopnev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/20 21:08:21 by kkopnev       #+#    #+#                 */
-/*   Updated: 2024/01/22 16:11:55 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 19:10:54 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+int	check_directory(char *path)
+{
+	struct stat	filestat;
+
+	if (stat(path, &filestat) == -1)
+		return (0);
+	else if (S_ISDIR(filestat.st_mode))
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(path, STDERR_FILENO);
+		ft_putendl_fd(": Is a directory", STDERR_FILENO);
+		return (1);
+	}
+	return (0);
+}
 
 void	here_doc(char *heredoc, char *inf)
 {

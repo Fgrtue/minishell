@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/01/22 16:19:22 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 16:21:23 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 13:37:53 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,13 @@ int	check_lexer(t_global *global)
 	t_lexer	*lex;
 
 	lex = global->lexer;
-	if (!lex || lex->token == PIPE_LINE || ft_lexlast(lex)->token == PIPE_LINE)
+	if (!lex || (lex->state == 0 && lex->token == PIPE_LINE) || 
+		(ft_lexlast(lex)->state == 0 && ft_lexlast(lex)->token == PIPE_LINE))
 		return (ft_error(global, "Syntax error", 2));
 	while (lex)
 	{
-		if (lex->token == REDIR_IN || lex->token == REDIR_OUT
-			|| lex->token == HERE_DOC || lex->token == DREDIR_OUT)
+		if (lex->state == 0 && (lex->token == REDIR_IN || lex->token == 62
+			|| lex->token == HERE_DOC || lex->token == DREDIR_OUT))
 		{
 			if (!lex->next || (lex->next->token != WORD
 					&& lex->next->token != ENV))

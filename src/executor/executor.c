@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/23 10:20:39 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 19:21:28 by kkopnev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,33 +48,34 @@ void	execute_cmd(t_cmd *cmd, char **env, t_global *global)
 		exit(1);
 	dup2((cmd->fd_io)[0], STDIN_FILENO);
 	dup2((cmd->fd_io)[1], STDOUT_FILENO);
-	close_fd(cmd->fd_io);
 	if (!cmd->args[0])
 		exit(EXIT_SUCCESS);
 	if (cmd->builtin != NULL)
 		exit(cmd->builtin(cmd, global));
-	if (access((cmd->args)[0], F_OK) == 0)
-		path = (cmd->args)[0];
+	close_fd(cmd->fd_io);
+	if (check_directory(cmd->args[0]))
+		exit(127);
+	if (access(cmd->args[0], X_OK) == 0)
+		path = cmd->args[0];
 	else
 		path = get_path((cmd->args)[0], env);
 	if (path)
 		execve(path, cmd->args, env);
-	else
-	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd((cmd->args)[0], STDERR_FILENO);
-		ft_putstr_fd(": command not found\n", STDERR_FILENO);
-		exit(127);
-	}
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd((cmd->args)[0], STDERR_FILENO);
+	ft_putstr_fd(": command not found\n", STDERR_FILENO);
+	exit(127);
 }
 
-void	process_cmd(t_cmd *cmd, t_global *global)
+void	process_cmd(t_cmd *cmd, t_global *global, int pipe_inpt)
 {
 	cmd->pid = fork();
 	if (cmd->pid == -1)
 		ft_error(global, "Fork", -1);
 	if (cmd->pid == 0)
 	{
+		if (pipe_inpt != 0)
+			close(pipe_inpt);
 		execute_cmd(cmd, global->env, global);
 	}
 	else
@@ -86,6 +87,8 @@ int	pipe_exe(t_global *global)
 	int		fd[2];
 	t_cmd	*cmd;
 
+	fd[0] = 0;
+	fd[1] = 0;
 	cmd = global->cmds;
 	while (cmd)
 	{
@@ -93,9 +96,11 @@ int	pipe_exe(t_global *global)
 			ft_error(global, "Pipe", -1);
 		if (cmd->next)
 			(cmd->fd_io)[1] = fd[1];
-		process_cmd(cmd, global);
+		process_cmd(cmd, global, fd[0]);
 		if (cmd->next)
 			(cmd->next->fd_io)[0] = fd[0];
+		else if (fd[0] != 0)
+			close(fd[0]);
 		cmd = cmd->next;
 	}
 	return (0);

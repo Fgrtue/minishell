@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/08 16:39:12 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 17:26:59 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 12:45:02 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,21 +67,20 @@ t_lexer	*ft_lexsplit(t_lexer **lst, t_lexer *lexer, char *str)
 }
 
 // void	expand_env(t_lexer **lst, char **env, int exit_c)
-int	expand_env(t_global *global)
+int	expand_env(t_lexer	*lex, t_global *global)
 {
 	char	*tmp;
-	t_lexer	*lex;
 
-	lex = global->lexer;
 	while (lex)
 	{
 		if (lex->token == ENV)
 		{
 			tmp = find_variable(lex->content + 1, global);
-			if (arr_len(tmp, ' ') != 1 && lex->prev && (lex->prev->token == '<'
-					|| lex->prev->token == '>' || lex->prev->token == 64))
-				return (ft_error(global, "ambiguous redirect", 1));
-			else if (ft_strchr(tmp, ' '))
+			if (lex->state == 0 && arr_len(tmp, ' ') != 1 && lex->prev &&
+				(lex->prev->token == '<' || lex->prev->token == '>' 
+				|| lex->prev->token == DREDIR_OUT))
+				return (free(tmp), ft_error(global, "ambiguous redirect", 1));
+			else if (lex->state == GENERAL && ft_strchr(tmp, ' '))
 			{
 				lex = ft_lexsplit(&(global->lexer), lex, tmp);
 				free(tmp);
