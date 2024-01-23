@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/18 15:05:45 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 15:45:28 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 10:20:39 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ char	*get_path(char *cmd, char **env)
 	char	*path;
 	int		i;
 
-	if (cmd && access(cmd, F_OK) == 0)
-		return (cmd);
 	i = 0;
-	while (ft_strncmp(env[i], "PATH=", 5) != 0)
+	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
+	if (!env[i])
+		return (NULL);
 	patharr = ft_split(env[i] + 5, ':');
 	i = -1;
 	while (patharr[++i])
@@ -53,7 +53,10 @@ void	execute_cmd(t_cmd *cmd, char **env, t_global *global)
 		exit(EXIT_SUCCESS);
 	if (cmd->builtin != NULL)
 		exit(cmd->builtin(cmd, global));
-	path = get_path((cmd->args)[0], env);
+	if (access((cmd->args)[0], F_OK) == 0)
+		path = (cmd->args)[0];
+	else
+		path = get_path((cmd->args)[0], env);
 	if (path)
 		execve(path, cmd->args, env);
 	else

@@ -6,7 +6,7 @@
 /*   By: jiajchen <jiajchen@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/12/22 15:30:29 by jiajchen      #+#    #+#                 */
-/*   Updated: 2024/01/22 17:42:37 by jiajchen      ########   odam.nl         */
+/*   Updated: 2024/01/23 11:15:22 by jiajchen      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ int	ft_find_key(char *var, char **env)
 
 	i = 0;
 	new_var = ft_strjoin(var, "=");
-	while (env[i] && ft_strncmp(env[i], new_var, ft_strlen(new_var)) != 0)
+	while (env[i] && ft_strncmp(env[i], new_var, ft_strlen(new_var)) != 0 &&
+			ft_strncmp(env[i], var, ft_strlen(env[i])) != 0)
 		i++;
 	free(new_var);
 	if (env[i])
